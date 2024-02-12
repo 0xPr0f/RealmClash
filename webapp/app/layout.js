@@ -1,0 +1,24 @@
+import { Inter } from "next/font/google";
+import "./globals.css";
+import Header from "./header";
+import Footer from "./footer";
+import Interloop from "./Interloop";
+
+const inter = Inter({ subsets: ["latin"] });
+
+export const metadata = {
+  title: "Realm Clash",
+  description: "TCG and alot of unga bunga",
+};
+
+export default function RootLayout({ children }) {
+  return (
+    <html lang="en">
+      <body className={inter.className}>
+        <div>
+          <Interloop> {children} </Interloop>
+        </div>
+      </body>
+    </html>
+  );
+}

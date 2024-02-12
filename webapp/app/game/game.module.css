@@ -1,0 +1,12 @@
+.centeredcontainer {
+  justify-content: center; /* Center horizontally */
+  align-items: center;
+  /* height: 100%; */ /* Set container height to full viewport height */
+}
+.centereddiv {
+  margin: 0 auto; /* Auto margin horizontally centers the div */
+  padding-top: 50px;
+  padding-bottom: 50px;
+  width: 400px;
+  flex: 1; /* Allow the content to grow to fill the available space */
+}
