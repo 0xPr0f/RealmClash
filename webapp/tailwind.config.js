@@ -14,9 +14,5 @@ module.exports = {
       },
     },
   },
-  plugins: [
-    commonjs({
-      ignore: ["pino-pretty"],
-    }),
-  ],
+  plugins: [],
 };
