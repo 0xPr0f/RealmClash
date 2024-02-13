@@ -11,7 +11,7 @@
 body {
   background: #1a1a1d;
   color: #c3073f;
-
+  /* overflow-y: hidden; */
   flex-direction: column;
 }
 .divfixer {

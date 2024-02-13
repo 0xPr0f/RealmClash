@@ -6,11 +6,11 @@ export default function Header() {
   return (
     <div>
       <div className="navbar">
-        <a>Realm Clash</a>
-        <Link href="/game">Game</Link>
-        <Link href="/portfolio">Portfolio</Link>
-        <Link href="/leaderboard">Leaderboard</Link>
-        <Link href="/activity">Activity</Link>
+        <Link href="/">REALM ClASH</Link>
+        <Link href="/game">GAME</Link>
+        <Link href="/portfolio">PORTFOLIO</Link>
+        <Link href="/leaderboard">LEADERBOARD</Link>
+        <Link href="/activity">ACTIVITY</Link>
 
         <div className="connectclass">
           <ConnectButton

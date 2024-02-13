@@ -27,7 +27,6 @@ export const BoxButton = ({
       }}
       className={[styles.button].join(" ")}
     >
-      {" "}
       {children}
     </button>
   );

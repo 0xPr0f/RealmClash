@@ -5,6 +5,10 @@ import styles from "./game.module.css";
 import BoxButton from "../components/boxButton/boxButton";
 export default function Game() {
   const [challengee, setChallengee] = useState("");
+
+  const requestChallenge = () => {
+    console.log("requested challenge", challengee);
+  };
   return (
     <div>
       <div className={styles.centeredcontainer}>
@@ -29,7 +33,7 @@ export default function Game() {
               <div>This is were the cards will be, they can be much lmao</div>
             </div>
           </div>
-          <BoxButton> Request Challenge</BoxButton>
+          <BoxButton onClick={requestChallenge}> Request Challenge</BoxButton>
         </div>
       </div>
     </div>

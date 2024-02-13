@@ -1,0 +1,29 @@
+.game-board {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  height: 80vh;
+}
+
+.cards-up,
+.cards-down {
+  display: flex;
+  justify-content: space-around;
+  padding: 20px;
+  align-items: center;
+}
+
+.buttons {
+  display: flex;
+  /* flex-direction: column; */
+}
+
+.buttons button {
+  margin: 5px;
+  padding: 10px;
+}
+
+.card.selected {
+  transform: translateY(-40px); /* Move the selected card up by 10px */
+}
