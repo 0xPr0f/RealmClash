@@ -142,10 +142,10 @@ export default function GameRoom({ params }) {
                 <BoxButton
                   outsidePadding="20px"
                   borderRadius="100%"
-                  height="50px"
-                  width="50px"
+                  height="40px"
+                  width="40px"
                 >
-                  <FaArrowsRotate size={30} fontWeight={1} />
+                  <FaArrowsRotate size={20} fontWeight={1} />
                 </BoxButton>
               </div>
               <div className="cards-down">

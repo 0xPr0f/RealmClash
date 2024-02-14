@@ -3,12 +3,24 @@ import React, { useEffect, useRef, useState } from "react";
 import InputField from "../components/inputField/inputField";
 import styles from "./game.module.css";
 import BoxButton from "../components/boxButton/boxButton";
+import { GAMEFACTORY_CONTRACTADDRESS } from "../ADDRESSES";
+import { GAMEFACTORY_ABI } from "../ABI";
 export default function Game() {
   const [challengee, setChallengee] = useState("");
 
   const requestChallenge = () => {
     console.log("requested challenge", challengee);
   };
+
+  const challengePlayerByID = (_2ndPlayeraddress, _1stPlayerCharDeck) =>
+    writeContract({
+      abi: GAMEFACTORY_ABI,
+      address: GAMEFACTORY_CONTRACTADDRESS,
+      functionName: "createNewGameManual",
+      args: [_2ndPlayeraddress, _1stPlayerCharDeck],
+      account: account,
+    });
+
   return (
     <div>
       <div className={styles.centeredcontainer}>
