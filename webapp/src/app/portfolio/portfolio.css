@@ -10,7 +10,7 @@
   width: 1000px;
   flex: 1; /* Allow the content to grow to fill the available space */
 }
-.grid-container {
+.gridcontainer {
   width: 1000px; /* Adjust the width as needed */
   height: 800px; /* Adjust the height as needed */
   overflow: auto; /* Enable scrollbars if content overflows */
