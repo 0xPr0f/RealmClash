@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-//import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 
 interface WeaponCardInterface {
@@ -21,7 +23,7 @@ interface WeaponCardInterface {
     ) external view returns (WeaponCardStats memory);
 }
 
-contract RealmClashCharacters is ERC721, ERC721URIStorage {
+contract RealmClashCharacters is ERC721, ERC721Enumerable, ERC721URIStorage {
     uint256 private _tokenIdCounter;
     mapping(address => bool) public _allowedMinters;
     address public WeaponCardContract;
@@ -223,16 +225,60 @@ contract RealmClashCharacters is ERC721, ERC721URIStorage {
         return _characterStatsMap(_tokenId).ult3;
     }
 
+    // Updated functions
+    
+    function setTokenURI (uint _tokenId, string memory _tokenURI ) Minters external {
+        _setTokenURI(_tokenId, _tokenURI);
+    }
+
+    function _tokenOfOwnerByIndex (address owner, uint index) external view returns (uint) {
+       return tokenOfOwnerByIndex(owner, index);
+    }
+      function _tokenByIndex (uint index) external view returns (uint) {
+       return tokenByIndex(index);
+    }
+    function _getOwnerByIndex(uint index) public view returns (uint256) {
+    // added `return`
+    return tokenOfOwnerByIndex(address(msg.sender), index);
+}
+    function getOwnerByIndex(uint256 index) public view returns (address) {
+    uint256 tokenId = tokenByIndex(index);
+    address owner = ownerOf(tokenId);
+    return owner;
+}
+
     // The following functions are overrides required by Solidity.
-    function tokenURI(
-        uint256 tokenId
-    ) public view override(ERC721, ERC721URIStorage) returns (string memory) {
+
+    function _update(address to, uint256 tokenId, address auth)
+        internal
+        override(ERC721, ERC721Enumerable)
+        returns (address)
+    {
+        return super._update(to, tokenId, auth);
+    }
+
+    function _increaseBalance(address account, uint128 value)
+        internal
+        override(ERC721, ERC721Enumerable)
+    {
+        super._increaseBalance(account, value);
+    }
+
+    function tokenURI(uint256 tokenId)
+        public
+        view
+        override(ERC721, ERC721URIStorage)
+        returns (string memory)
+    {
         return super.tokenURI(tokenId);
     }
 
-    function supportsInterface(
-        bytes4 interfaceId
-    ) public view override(ERC721, ERC721URIStorage) returns (bool) {
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        override(ERC721, ERC721Enumerable, ERC721URIStorage)
+        returns (bool)
+    {
         return super.supportsInterface(interfaceId);
     }
 }

@@ -205,13 +205,23 @@ contract Game {
     function checkFor3cards(address _addr) public view returns (bool) {
         return playerToCharCards[_addr].length == 3;
     }
-
+    function returnOtherPlayer (address _returnOpp) external view returns(address){
+        return __returnOtherValues(
+        _returnOpp,
+        matchDetails.playersInGame
+    );
+    }
     function checkAddressIsInGame() public view returns (bool) {
         return (matchDetails.firstInitiatedPlayer == msg.sender ||
             matchDetails.secondInitiatedPlayer == msg.sender);
     }
+     function checkAddressIsInGame(address _addr) public view returns (bool) {
+        return (matchDetails.firstInitiatedPlayer == _addr ||
+            matchDetails.secondInitiatedPlayer == _addr);
+    }
 
-    function getActiveCharacter(address _addr) internal view returns (uint x) {
+
+    function getActiveCharacter(address _addr) public view returns (uint x) {
         uint[] storage values = matchDetails.addressToCharacterIdIngame[_addr];
         for (uint256 i = 0; i < values.length; i++) {
             if (_activeCharacter[_addr][values[i]] == true) {
@@ -219,6 +229,7 @@ contract Game {
             }
         }
     }
+
 
     function setSwitchActiveCharacter(
         uint _tokenId
@@ -274,6 +285,7 @@ contract Game {
             addressToPlay = matchDetails.firstInitiatedPlayer;
             nextPlayer = matchDetails.firstInitiatedPlayer;
         }
+        // emit an event
     }
 
     function __takedamage(
@@ -329,7 +341,7 @@ contract Game {
 
     function getCharacterInGameStats(
         uint _tokenId
-    ) internal view returns (uint health, uint attack, bool isAlive) {
+    ) public view returns (uint health, uint attack, bool isAlive) {
         CharacterCardsInGameStats memory stats = characterStatsInGame[_tokenId];
         (health, attack, isAlive) = (stats.Health, stats.Attack, stats.isAlive);
     }

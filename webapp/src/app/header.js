@@ -1,11 +1,21 @@
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import Link from "next/link";
-import { useAccount } from "wagmi";
 import "../../styles/headers.css";
+import Image from "next/image";
+import logoImage from "../../public/LogoImage-nobg.png";
+
 export default function Header() {
   return (
     <div>
       <div className="navbar">
+        <div className="picture">
+          <Image
+            src={logoImage}
+            width={50}
+            height={50}
+            alt="Picture of the project"
+          />
+        </div>
         <Link href="/">REALM ClASH</Link>
         <Link href="/game">GAME</Link>
         <Link href="/portfolio">PORTFOLIO</Link>

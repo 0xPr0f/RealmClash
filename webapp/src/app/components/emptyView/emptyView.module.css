@@ -1,0 +1,23 @@
+.centeredcontainer {
+  justify-content: center; /* Center horizontally */
+  align-items: center;
+  border-radius: 20px;
+  padding: 100px;
+  /* height: 100%; */ /* Set container height to full viewport height */
+}
+.centereddiv {
+  margin: 0 auto; /* Auto margin horizontally centers the div */
+  padding-top: 50px;
+  padding-bottom: 50px;
+  width: 400px;
+  color: #1a1a1d;
+  flex: 1;
+  text-align: center;
+  align-items: center;
+
+  border-radius: 20px;
+  border-color: #6f2232;
+  background-color: #6f2232;
+  font-weight: 700;
+  font-size: 2rem;
+}

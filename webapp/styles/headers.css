@@ -16,6 +16,12 @@
   font-size: 1rem; /* 24px */
   line-height: 1.5rem; /* 32px */
 }
+.picture {
+  float: left;
+  display: block;
+  padding-left: 30px;
+}
+
 .connectclass {
   float: right;
   padding: 8px 30px;
@@ -38,4 +44,26 @@
 .copyrights {
   order: 2;
   margin: 1.8em 0;
+}
+.line-loader {
+  width: 100%;
+  height: 4px; /* Adjust the height of the line */
+  background-color: #ddd; /* Background color of the line */
+  overflow: hidden;
+}
+
+.line {
+  width: 100%;
+  height: 100%;
+  background-color: #007bff; /* Color of the loading line */
+  animation: loading 2s infinite; /* Adjust the animation duration as needed */
+}
+
+@keyframes loading {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
 }

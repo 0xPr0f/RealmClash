@@ -13,6 +13,13 @@
   padding: 20px;
   align-items: center;
 }
+.cardsdown {
+  display: flex;
+  justify-content: space-around;
+  width: fit-content;
+  padding: 20px;
+  align-items: flex-end;
+}
 
 .buttons {
   display: flex;
@@ -26,4 +33,7 @@
 
 .card.selected {
   transform: translateY(-40px); /* Move the selected card up by 10px */
+}
+.theAttackButtons {
+  padding-left: 30px;
 }

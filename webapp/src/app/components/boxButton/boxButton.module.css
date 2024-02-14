@@ -15,4 +15,19 @@
   cursor: pointer;
   border-radius: 0;
   font-weight: 300;
+  transition: transform 0.4s;
+}
+
+.button:hover .spaninside {
+  transform: rotate(180deg); /* Rotate the content 360 degrees on hover */
+}
+
+.spaninside {
+  display: inline-block;
+  transition: transform 0.5s; /* Add transition for smooth animation */
+}
+.button:hover {
+  transform: rotate(
+    -360deg
+  ); /* Rotate the button itself 360 degrees on hover */
 }
