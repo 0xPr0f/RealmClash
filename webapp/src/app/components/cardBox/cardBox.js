@@ -10,9 +10,13 @@ export default function CardBox({
   borderRadius,
   health,
   attack,
+  style,
 }) {
   return (
-    <div className={[styles.cardHolder, className].join(" ")}>
+    <div
+      style={style}
+      className={[styles.cardHolder, className ? className : ""].join(" ")}
+    >
       {showStats ? (
         <div className={styles.StatusBar}>
           <span>H:{health}</span>

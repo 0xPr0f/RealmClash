@@ -4,13 +4,5 @@
       "source": "/(.*)",
       "destination": "/"
     }
-  ],
-  "routes": [
-    { "src": "/", "dest": "/" },
-    { "src": "/game", "dest": "/" },
-    { "src": "/portfolio", "dest": "/" },
-    { "src": "/leaderboard", "dest": "/" },
-    { "src": "/game/(.*)", "dest": "/" },
-    { "src": "/charactercard/(.*)", "dest": "/" }
   ]
 }

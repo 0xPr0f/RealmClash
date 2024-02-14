@@ -10,12 +10,12 @@ import {
   lightTheme,
 } from "@rainbow-me/rainbowkit";
 import {
-  argentWallet,
+  rainbowWallet,
+  rabbyWallet,
   trustWallet,
   ledgerWallet,
 } from "@rainbow-me/rainbowkit/wallets";
 import { WagmiProvider } from "wagmi";
-import { mainnet, polygon, optimism } from "wagmi/chains";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import Footer from "./footer";
 import Header from "./header";
@@ -46,12 +46,12 @@ export const opBNBchain = {
 
 const config = getDefaultConfig({
   appName: "Realm Clash",
-  projectId: "YOUR_PROJECT_ID",
+  projectId: process.env.NEXT_PUBLIC_PROJECT_ID,
   wallets: [
     ...wallets,
     {
       groupName: "Other",
-      wallets: [argentWallet, trustWallet, ledgerWallet],
+      wallets: [rainbowWallet, rabbyWallet, trustWallet, ledgerWallet],
     },
   ],
   chains: [opBNBchain],
@@ -67,8 +67,8 @@ export default function Interloop({ children }) {
           <RainbowKitProvider
             modalSize="compact"
             theme={lightTheme({
-              accentColor: "#7b3fe4",
-              accentColorForeground: "white",
+              accentColor: "#c3073f",
+              accentColorForeground: "#1a1a1d",
               borderRadius: "none",
               fontStack: "system",
               overlayBlur: "small",

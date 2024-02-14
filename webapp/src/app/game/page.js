@@ -3,13 +3,36 @@ import React, { useEffect, useRef, useState } from "react";
 import InputField from "../components/inputField/inputField";
 import styles from "./game.module.css";
 import BoxButton from "../components/boxButton/boxButton";
-import { GAMEFACTORY_CONTRACTADDRESS } from "../ADDRESSES";
-import { GAMEFACTORY_ABI } from "../ABI";
+import {
+  CHARACTERCARD_CONTRACTADDRESS,
+  GAMEFACTORY_CONTRACTADDRESS,
+} from "../ADDRESSES";
+import { CHARACTERCARD_ABI, GAMEFACTORY_ABI } from "../ABI";
+import CardBox from "../components/cardBox/cardBox";
+import { useReadContract, useAccount, useWriteContract } from "wagmi";
+
 export default function Game() {
   const [challengee, setChallengee] = useState("");
+  const account = useAccount();
+  const { writeContract } = useWriteContract();
+  const [selectedCards, setSelectedCards] = useState([]);
+
+  const handleCardClick = (cardId) => {
+    if (selectedCards.includes(cardId)) {
+      setSelectedCards(selectedCards.filter((id) => id !== cardId));
+    } else {
+      if (selectedCards.length < 3) {
+        setSelectedCards([...selectedCards, cardId]);
+      }
+    }
+  };
 
   const requestChallenge = () => {
-    console.log("requested challenge", challengee);
+    if (selectedCards.length === 3) {
+      console.log("game started", challengee, selectedCards);
+    } else {
+      console.log("you need three characters");
+    }
   };
 
   const challengePlayerByID = (_2ndPlayeraddress, _1stPlayerCharDeck) =>
@@ -20,6 +43,14 @@ export default function Game() {
       args: [_2ndPlayeraddress, _1stPlayerCharDeck],
       account: account,
     });
+
+  const allCharacterToken = useReadContract({
+    abi: CHARACTERCARD_ABI,
+    address: CHARACTERCARD_CONTRACTADDRESS,
+    functionName: "returnAllOwnerTokenId",
+    args: [account],
+    account: account,
+  });
 
   return (
     <div>
@@ -42,7 +73,44 @@ export default function Game() {
               <span>Select Cards</span>
             </div>
             <div className="pb-5">
-              <div>This is were the cards will be, they can be much lmao</div>
+              <div className={styles.scrollablegridcontainer}>
+                <div className={styles.cardgrid}>
+                  {[1, 2, 4, 5].map((cardId) => (
+                    <CardBox
+                      showStats={false}
+                      key={cardId}
+                      onClick={() => handleCardClick(cardId)}
+                      style={{
+                        backgroundColor: selectedCards.includes(cardId)
+                          ? "#c3073f"
+                          : "#1a1a1d",
+
+                        padding: "5px",
+                        margin: "5px",
+                        cursor: "pointer",
+                      }}
+                      height={80}
+                      width={67}
+                    >
+                      Card {cardId}
+                    </CardBox>
+                  ))}
+                </div>
+              </div>
+              {selectedCards.length > 0 ? (
+                <div>
+                  <h3>Selected Cards:</h3>
+                  <ul style={{ display: "flex" }}>
+                    {selectedCards.map((id) => (
+                      <li style={{ paddingRight: "10px" }} key={id}>
+                        Card {id}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : (
+                ""
+              )}
             </div>
           </div>
           <BoxButton onClick={requestChallenge}> Request Challenge</BoxButton>
