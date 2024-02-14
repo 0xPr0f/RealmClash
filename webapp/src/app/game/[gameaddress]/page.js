@@ -2,8 +2,8 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import "./game.css";
-import CardBox from "@/app/components/cardBox/cardBox";
-import BoxButton from "@/app/components/boxButton/boxButton";
+import CardBox from "@/src/app/components/cardBox/cardBox";
+import BoxButton from "@/src/app/components/boxButton/boxButton";
 
 export default function GameRoom({ params }) {
   const router = useRouter();

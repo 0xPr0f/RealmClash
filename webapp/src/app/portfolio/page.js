@@ -1,6 +1,9 @@
 import CardBox from "../components/cardBox/cardBox";
 import "./portfolio.css";
+import { useAccount } from "wagmi";
+
 export default function Portfolio() {
+  const { address } = useAccount();
   return (
     <div>
       This is the portfolio page

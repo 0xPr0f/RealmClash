@@ -1,7 +1,7 @@
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import Link from "next/link";
 import { useAccount } from "wagmi";
-import "../styles/headers.css";
+import "../../styles/headers.css";
 export default function Header() {
   return (
     <div>

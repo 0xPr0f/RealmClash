@@ -1,4 +1,4 @@
-import "../styles/headers.css";
+import "../../styles/headers.css";
 import { SiGithub } from "react-icons/si";
 export default function Footer() {
   return (

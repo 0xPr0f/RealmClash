@@ -16,6 +16,18 @@ to install everything and then start the application, if there are any issues, c
 
 This repo contain a POC for an idea i dreamt off.
 
-Today functions POC
+#### Today functions POC
 
-Soon
+- Equip weapon
+- Game mechanics like battle challenge mode, attack and defend and strategies
+- Randomness, minimalist UI
+- 3 v 3, 2 player duel mode
+
+#### Soon
+
+- Player lobby system (where players can find a random match up)
+- more modes
+- On chain store and upgrade to smart contracts
+- gas optimaztions and unit computational testing
+- Introduction of armor and boosts(spells)
+- QOL, better UI and smart contracts
