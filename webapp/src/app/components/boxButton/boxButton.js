@@ -10,6 +10,7 @@ export const BoxButton = ({
   cursor = "pointer",
   disabled,
   outsidePadding,
+  className,
 }) => {
   return (
     <div style={{ padding: outsidePadding }}>
@@ -27,7 +28,7 @@ export const BoxButton = ({
           padding: padding,
           cursor: cursor,
         }}
-        className={[styles.button].join(" ")}
+        className={[styles.button, className].join(" ")}
       >
         <span className={styles.spaninside}> {children}</span>
       </button>
