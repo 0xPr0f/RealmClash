@@ -46,7 +46,7 @@ export const opBNBchain = {
 
 const config = getDefaultConfig({
   appName: "Realm Clash",
-  projectId: process.env.NEXT_PUBLIC_PROJECT_ID,
+  projectId: process.env.PROJECT_ID,
   wallets: [
     ...wallets,
     {

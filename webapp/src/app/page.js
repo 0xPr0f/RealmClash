@@ -1,5 +1,5 @@
 import React from "react";
-import "../../styles/headers.css"; // Import CSS for styling
+import "../../styles/headers.css";
 import BoxButton from "./components/boxButton/boxButton";
 export default function Home() {
   return (
@@ -60,26 +60,11 @@ export default function Home() {
             fast and efficient gameplay experiences, ensuring that players can
             enjoy seamless battles and card trading with minimal friction.
           </p>
-          {/*
-          <img
-            src={opbnbSpeedImage}
-            alt="OpBNB Speed"
-            className="opbnb-image"
-          />
-          <img
-            src={opbnbSecureImage}
-            alt="OpBNB Security"
-            className="opbnb-image"
-          />
-          <img
-            src={opbnbCommunityImage}
-            alt="OpBNB Community"
-            className="opbnb-image"
-          />
-        
-  */}
         </div>
-        <div style={{ display: "flex" }} className="cta">
+        <div
+          style={{ display: "flex", justifyContent: "space-between" }}
+          className="cta"
+        >
           <BoxButton className="ctabutton">Read Rules</BoxButton>
           <BoxButton className="ctabutton">Mechanics</BoxButton>
           <BoxButton className="ctabutton">Play Game</BoxButton>

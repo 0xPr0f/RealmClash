@@ -6,7 +6,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
   title: "Realm Clash",
-  description: "TCG and alot of unga bunga",
+  description: "Fully Onchain TCG and alot of unga bunga",
 };
 
 export default function RootLayout({ children }) {
