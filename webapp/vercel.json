@@ -3,5 +3,7 @@
       {
         "source": "/(.*)",
         "destination": "/"
-      }
+      },
+      { "src": "/game/(.*)", "dest": "/" },
+      { "src": "/charactercard/(.*)", "dest": "/" }
     ]}
