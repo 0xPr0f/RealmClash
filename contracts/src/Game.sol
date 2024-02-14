@@ -131,8 +131,10 @@ contract Game {
     function startGameAndRowDice() external {
         require(!matchDetails.gameStarted, "Started");
         // get the two players a random number and display it, the higher number goes first;
-        playerToDiceRow[matchDetails.firstInitiatedPlayer] = 12;
-        playerToDiceRow[matchDetails.secondInitiatedPlayer] = 13;
+        uint number1 = _generateRandomNumber(msg.sender, matchDetails.playersInGame); 
+        uint number2 = _generateRandomNumber(address(this), matchDetails.playersInGame); 
+        playerToDiceRow[matchDetails.firstInitiatedPlayer] = number1;
+        playerToDiceRow[matchDetails.secondInitiatedPlayer] = number2;
         (uint firstplayerno, uint secondplayerno) = (
             playerToDiceRow[matchDetails.firstInitiatedPlayer],
             playerToDiceRow[matchDetails.secondInitiatedPlayer]
@@ -392,5 +394,11 @@ contract Game {
             }
         }
         return address(0);
+    }
+
+    // This isnt the best way to do this, but this is for testing purpose.
+    // In the future, this will be changed to use binance oracle
+  function _generateRandomNumber(address _hash, address [] memory values) public view returns (uint256) {
+        return uint (keccak256(abi.encodePacked (msg.sender, block.timestamp,_hash, values ))) % 8 + 8;
     }
 }

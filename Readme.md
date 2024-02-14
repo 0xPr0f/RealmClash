@@ -15,3 +15,7 @@ also move out and back to the webapp and run the npm install
 to install everything and then start the application, if there are any issues, create an issue on the github and it will be looked at.
 
 This repo contain a POC for an idea i dreamt off.
+
+Today functions POC
+
+Soon
