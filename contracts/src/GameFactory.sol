@@ -5,7 +5,7 @@ import {Game} from "./Game.sol";
  * @title RealmClash
  * @dev Contract for managing Realm Clash games and player statistics.
  */
-contract RealmClash {
+contract RealmFactory {
     // Event emitted when a new game is created
     event GameCreated (address indexed initiator, address indexed challengee, uint[] initiatorDeck);
     
@@ -23,6 +23,8 @@ contract RealmClash {
 
     // Address of the CharacterCard contract
     address public characterCardAddress; // Set during contract deployment
+
+    uint private gameIdCounter;
 
     // Array to store all game contracts
     address[] private _allGames;
@@ -54,15 +56,20 @@ contract RealmClash {
      * @param _1stPlayerCharDeck The deck of the first player.
      */
     function createNewGameManual(address _2ndPlayer, uint[] memory _1stPlayerCharDeck) external {
+        gameIdCounter++;
         // Create a new Game contract
-        Game game = new Game(msg.sender, _2ndPlayer, _1stPlayerCharDeck, address(this), characterCardAddress);
+        Game game = new Game(msg.sender, _2ndPlayer, _1stPlayerCharDeck, address(this), characterCardAddress,gameIdCounter);
         // Store the address of the new game contract
         _allGames.push(address(game));
         // Update playerToGames mapping for both players
-        _playerToGames[msg.sender].push(address(game));
+       // _playerToGames[msg.sender].push(address(game));
         _playerToGames[_2ndPlayer].push(address(game));
         // Emit GameCreated event
         emit GameCreated(msg.sender, _2ndPlayer, _1stPlayerCharDeck); 
+    }
+
+    function totalGames () external view returns(uint){
+        return gameIdCounter;
     }
 
     // Functions for updating player win/lose counts

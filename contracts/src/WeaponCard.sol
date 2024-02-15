@@ -218,19 +218,20 @@ contract RealmClashWeapons is ERC721, ERC721Enumerable, ERC721URIStorage {
         return owner;
     }
 
-    /**
-     * @dev Return all token IDs owned by a given address.
-     * @param _address The address of the token owner.
-     * @return An array of token IDs.
-     */
-    function returnAllOwnerTokenId(address _address) external view returns (uint[] memory) {
-        uint balance = balanceOf(_address);
-        uint[] memory _token = new uint[](balance); // Initialize dynamic array in memory
-        for(uint i = 0; i < balance; ++i ){
-            _token[i] = _tokenByIndex(i);
-        }
-        return _token;
+ /**
+ * @dev Function to return all token IDs owned by an address.
+ * @param _address Address of the owner.
+ * @return An array containing all token IDs owned by the address.
+ */
+function returnAllOwnerTokenId(address _address) external view returns (uint[] memory) {
+    uint balance = balanceOf(_address);
+    uint[] memory _token = new uint[](balance); // Initialize dynamic array in memory
+    for(uint i = 0; i < balance; ++i ){
+        _token[i] =  tokenOfOwnerByIndex(_address,i);
     }
+    return _token;
+}
+
 
       /**
      * @dev Override function to update token data.

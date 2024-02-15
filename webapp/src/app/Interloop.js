@@ -11,7 +11,6 @@ import {
   darkTheme,
 } from "@rainbow-me/rainbowkit";
 import {
-  rainbowWallet,
   rabbyWallet,
   trustWallet,
   ledgerWallet,
@@ -52,7 +51,7 @@ const config = getDefaultConfig({
     ...wallets,
     {
       groupName: "Other",
-      wallets: [rainbowWallet, rabbyWallet, trustWallet, ledgerWallet],
+      wallets: [rabbyWallet, trustWallet, ledgerWallet],
     },
   ],
   chains: [opBNBchainTestnet],

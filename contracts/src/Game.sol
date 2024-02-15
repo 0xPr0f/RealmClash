@@ -19,8 +19,8 @@ interface CharacterCardInterface {
 contract Game {
     // Address of the ClashFactory contract
     address public ClashFactory;
-    // Address of the RealmClashCharactersContract
-    address public RealmClashCharactersContract;
+    // Address of the CharactersContract
+    address public CharactersContract;
     // Array of players
     address[] public players;
     // Mapping of player addresses to their character cards
@@ -35,9 +35,6 @@ contract Game {
     address addressPreviouslyPlayed;
     // Mapping of players to the time remaining for their ultimates
     mapping(address => uint) timeForUlt;
-    // Interface for interacting with CharacterCard contract
-    CharacterCardInterface public CharCardInterface;
-
     /// @dev Struct for storing match details
     struct MatchDetails {
         uint gameId; // ID of the game
@@ -69,7 +66,7 @@ contract Game {
         uint number = playerToCharCards[_addr].length;
         uint[] memory array = playerToCharCards[_addr];
         for (uint i = 0; i < number; ++i) {
-            require(CharCardInterface._isCharacterOwner(array[i], _addr), "Not yours sadly");
+            require(CharacterCardInterface(CharactersContract)._isCharacterOwner(array[i], _addr), "Not yours sadly");
         }
     }
 
@@ -95,7 +92,8 @@ contract Game {
         address _2ndPlayer,
         uint[] memory _1stPlayerCharDeck,
         address _factory,
-        address _characterCards
+        address _characterCards,
+        uint _id
     ) checkPlayerAgainstCards(_1stPlayer) {
         require(_1stPlayer != _2ndPlayer && _1stPlayerCharDeck.length == 3);
         playerToCharCards[_1stPlayer] = _1stPlayerCharDeck;
@@ -106,18 +104,20 @@ contract Game {
         matchDetails.firstInitiatedPlayer = _1stPlayer;
         matchDetails.secondInitiatedPlayer = _2ndPlayer;
         matchDetails.addressToCharacterIdIngame[_1stPlayer] = _1stPlayerCharDeck;
-        fixAllCharacterAndStats(_1stPlayerCharDeck);
-        _configureGameFiles(_factory, _characterCards);
+         _configureGameFiles(_factory, _characterCards);
+        fixAllCharacterAndStats(_1stPlayerCharDeck, _1stPlayer);
+        _setGameId(_id);
         require(!matchDetails.gameStarted, "Game has started");
     }
 
      function _configureGameFiles (address _factory, address _characterCards) internal {
         ClashFactory = _factory;
-        RealmClashCharactersContract = _characterCards;
+        CharactersContract = _characterCards;
     }
 
    /// @dev Event emitted when a new game is created
-    event GameUnderWay(address indexed initiator, address indexed game);
+    event GameStarted(address indexed initiator, address indexed game, uint indexed gameId);
+    event GameAccepted(address indexed initiator, address indexed game,uint[] carddeck, uint indexed gameId);
 
 
     /// @dev Function to accept the match initiated by the second player
@@ -125,7 +125,7 @@ contract Game {
     function acceptMatch(uint[] memory _2ndPlayerCharDeck) external checkPlayerAgainstCards(msg.sender) {
         require(
             matchDetails.gameAcceptedTime == 0 &&
-            matchDetails.gameAccepted &&
+            !(matchDetails.gameAccepted) &&
             msg.sender == matchDetails.secondInitiatedPlayer,
             "Not Allowed"
         );
@@ -136,12 +136,17 @@ contract Game {
         matchDetails.addressToCharacterIdIngame[msg.sender] = _2ndPlayerCharDeck;
         matchDetails.gameAcceptedTime = block.timestamp;
         matchDetails.gameAccepted = true;
-        fixAllCharacterAndStats(_2ndPlayerCharDeck);
+        fixAllCharacterAndStats(_2ndPlayerCharDeck,msg.sender);
+        emit GameAccepted(msg.sender,address(this),_2ndPlayerCharDeck,matchDetails.gameId);
+    }
+
+    function _setGameId (uint _id) internal {
+        matchDetails.gameId = _id;
     }
 
     /// @dev Function to start the game and roll the dice to determine the player's turn
     function startGameAndRowDice() external {
-        require(!matchDetails.gameStarted, "Game has started");
+        require(!matchDetails.gameStarted && matchDetails.gameAccepted , "Started");
 
         uint number1 = _generateRandomNumber(msg.sender, matchDetails.playersInGame);
         uint number2 = _generateRandomNumber(address(this), matchDetails.playersInGame);
@@ -157,7 +162,7 @@ contract Game {
             : addressToPlay = matchDetails.secondInitiatedPlayer;
         matchDetails.gameStarted = true;
 
-        emit GameUnderWay(msg.sender,  matchDetails.secondInitiatedPlayer);
+        emit GameStarted(msg.sender, matchDetails.secondInitiatedPlayer,matchDetails.gameId);
     }
 
 
@@ -309,7 +314,7 @@ contract Game {
         ) {
             timeForUlt[msg.sender] -= 2;
             playerToDiceRow[_player] = __subtractToZero(2, playerToDiceRow[_player]);
-            return _attack + CharCardInterface.getUlt2(_tokenId);
+            return _attack + CharacterCardInterface(CharactersContract).getUlt2(_tokenId);
         } else if (
             ult == 3 &&
             playerToDiceRow[_player] >= 4 &&
@@ -317,7 +322,7 @@ contract Game {
         ) {
             timeForUlt[msg.sender] -= 3;
             playerToDiceRow[_player] = __subtractToZero(4, playerToDiceRow[_player]);
-            return _attack + CharCardInterface.getUlt3(_tokenId);
+            return _attack + CharacterCardInterface(CharactersContract).getUlt3(_tokenId);
         } else {
             return _attack + 0;
         }
@@ -349,12 +354,12 @@ contract Game {
      * @dev Initialize character stats for all characters in the game.
      * @param value An array containing the token IDs of the characters.
      */
-    function fixAllCharacterAndStats(uint[] memory value) internal {
+    function fixAllCharacterAndStats(uint[] memory value, address _address) public {
         for (uint i = 0; i < value.length; ++i) {
-            require(CharCardInterface._isCharacterOwner(value[i], msg.sender));
+            require(CharacterCardInterface(CharactersContract)._isCharacterOwner(value[i],  _address),"N_O");
             characterStatsInGame[value[i]] = CharacterCardsInGameStats(
-                CharCardInterface.healthStats(value[i]),
-                CharCardInterface.attackStats(value[i]),
+                CharacterCardInterface(CharactersContract).healthStats(value[i]),
+                CharacterCardInterface(CharactersContract).attackStats(value[i]),
                 true
             );
         }

@@ -55,6 +55,13 @@ contract RealmClashCharacters is ERC721, ERC721Enumerable, ERC721URIStorage {
         _allowedMinters[msg.sender] = true;
     }
 
+    function setWeaponCard (address _add) external Minters {
+        WeaponCardContract = _add;
+    }
+    function setArmorCard (address _add) external Minters {
+        ArmorCardContract = _add;
+    }
+
     /**
      * @dev Modifier to restrict minting to authorized addresses.
      */
@@ -191,12 +198,8 @@ contract RealmClashCharacters is ERC721, ERC721Enumerable, ERC721URIStorage {
         uint _tokenIdofWeapon
     ) external {
         require(
-            _isCharacterOwner(_tokenIdofCharacter, msg.sender),
-            "Character does not belong to you"
-        );
-        require(
-            _isWeaponOwner(_tokenIdofCharacter, msg.sender),
-            "Weapon does not belong to you"
+            _isCharacterOwner(_tokenIdofCharacter, msg.sender) &&  _isWeaponOwner(_tokenIdofCharacter, msg.sender),
+            "Character/Weapon does not belong to you"
         );
         characterStats[_tokenIdofCharacter].weaponId = _tokenIdofWeapon;
     }
@@ -258,13 +261,14 @@ function _characterStatsMap(
  * @return The health statistics of the character card.
  */
 function healthStats(uint _tokenId) public view returns (uint) {
-    return
-        (
-            (_characterStatsMap(_tokenId).baseHealth +
-                WeaponCardInterface(WeaponCardContract)
+     uint characterhealth;
+     characterhealth = _characterStatsMap(_tokenId).baseHealth;
+      if(__returnValueBool0(_characterStatsMap(_tokenId).weaponId)){
+        characterhealth += ( WeaponCardInterface(WeaponCardContract)
                     ._weaponStatsMap(_characterStatsMap(_tokenId).weaponId)
-                    .baseHealth)
-        ) * 2;
+                    .baseHealth);
+      } 
+    return characterhealth * 2;
 }
 
 /**
@@ -273,10 +277,12 @@ function healthStats(uint _tokenId) public view returns (uint) {
  * @return The attack statistics of the character card.
  */
 function attackStats(uint _tokenId) external view returns (uint) {
-    return (((_characterStatsMap(_tokenId).baseAttack +
+    uint characterattack;
+    characterattack = ((_characterStatsMap(_tokenId).baseAttack +
         (_characterStatsMap(_tokenId).baseMagicPower)) *
-        (_characterStatsMap(_tokenId).baseSkillMultipier)) +
-        (
+        (_characterStatsMap(_tokenId).baseSkillMultipier));
+    if(__returnValueBool0(_characterStatsMap(_tokenId).weaponId)){
+        characterattack += (
             (
                 WeaponCardInterface(WeaponCardContract)
                     ._weaponStatsMap(_characterStatsMap(_tokenId).weaponId)
@@ -288,11 +294,17 @@ function attackStats(uint _tokenId) external view returns (uint) {
                 ._weaponStatsMap(_characterStatsMap(_tokenId).weaponId)
                 .baseMagicPower
         ) *
-        WeaponCardInterface(WeaponCardContract)
+       ( WeaponCardInterface(WeaponCardContract)
             ._weaponStatsMap(_characterStatsMap(_tokenId).weaponId)
             .baseWeaponSkill);
+    }
+
+    return characterattack;
 }
 
+    function __returnValueBool0 (uint value) internal pure returns (bool) {
+        return !(value < 1) ? true : false;
+    }
 /**
  * @dev Function to get the ID of the second ultimate ability of a character card.
  * @param _tokenId ID of the character card.
@@ -329,7 +341,7 @@ function setTokenURI (uint _tokenId, string memory _tokenURI ) Minters external 
  * @return The token ID.
  */
 function _tokenOfOwnerByIndex (address owner, uint index) external view returns (uint) {
-   return tokenOfOwnerByIndex(owner, index);
+   return super.tokenOfOwnerByIndex(owner, index);
 }
 
 /**
@@ -338,7 +350,7 @@ function _tokenOfOwnerByIndex (address owner, uint index) external view returns 
  * @return The token ID.
  */
 function _tokenByIndex (uint index) public view returns (uint) {
-   return tokenByIndex(index);
+   return super.tokenByIndex(index);
 }
 
 /**
@@ -347,7 +359,7 @@ function _tokenByIndex (uint index) public view returns (uint) {
  * @return The owner address.
  */
 function _getOwnerByIndex(uint index) public view returns (uint256) {
-    return tokenOfOwnerByIndex(address(msg.sender), index);
+    return super.tokenOfOwnerByIndex(address(msg.sender), index);
 }
 
 /**
@@ -370,10 +382,11 @@ function returnAllOwnerTokenId(address _address) external view returns (uint[] m
     uint balance = balanceOf(_address);
     uint[] memory _token = new uint[](balance); // Initialize dynamic array in memory
     for(uint i = 0; i < balance; ++i ){
-        _token[i] = _tokenByIndex(i);
+        _token[i] =  tokenOfOwnerByIndex(_address,i);
     }
     return _token;
 }
+
 
 // The following functions are overrides required by Solidity.
 
