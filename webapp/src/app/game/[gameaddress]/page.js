@@ -123,7 +123,7 @@ export default function GameRoom({ params }) {
   return (
     <div>
       {console.log(JSON.stringify(params.gameaddress))}
-      <div style={{ paddingLeft: "20px" }}>
+      <div style={{ padding: "20px" }}>
         address : {JSON.stringify(params.gameaddress)}
       </div>
       {params.gameaddress.length === 42 ? (

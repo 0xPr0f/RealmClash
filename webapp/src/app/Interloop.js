@@ -8,6 +8,7 @@ import {
   getDefaultWallets,
   getDefaultConfig,
   lightTheme,
+  darkTheme,
 } from "@rainbow-me/rainbowkit";
 import {
   rainbowWallet,
@@ -66,7 +67,7 @@ export default function Interloop({ children }) {
         <QueryClientProvider client={queryClient}>
           <RainbowKitProvider
             modalSize="compact"
-            theme={lightTheme({
+            theme={darkTheme({
               accentColor: "#c3073f",
               accentColorForeground: "#1a1a1d",
               borderRadius: "none",
