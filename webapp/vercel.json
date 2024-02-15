@@ -1,6 +1,6 @@
 {
   "rewrites": [
-    { "source": "/(.*)", "destination": "/" },
+    { "source": "/", "destination": "/" },
     { "source": "/game/:gameaddress", "destination": "/game/[gameaddress]" },
     { "source": "/charactercard/:id", "destination": "/charactercard/[id]" }
   ]
