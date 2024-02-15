@@ -23,7 +23,7 @@ import Header from "./header";
 
 const { wallets } = getDefaultWallets();
 
-export const opBNBchain = {
+export const opBNBchainTestnet = {
   id: 5611,
   name: "opBNB Testnet",
   network: "Optimistic BNB Testnet",
@@ -55,7 +55,7 @@ const config = getDefaultConfig({
       wallets: [rainbowWallet, rabbyWallet, trustWallet, ledgerWallet],
     },
   ],
-  chains: [opBNBchain],
+  chains: [opBNBchainTestnet],
   ssr: true,
 });
 const queryClient = new QueryClient();

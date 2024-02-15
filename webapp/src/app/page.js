@@ -21,6 +21,10 @@ export default function Home() {
               Experience randomness and minimalist UI for immersive gameplay
             </li>
             <li>Participate in 3 v 3 and 2 player duel modes</li>
+            <li>
+              A complete representation of the envisioned project as a Proof of
+              Concept
+            </li>
           </ul>
         </div>
         <div className="feature">
@@ -39,8 +43,11 @@ export default function Home() {
               Introduction of armor and boosts (spells) for enhanced gameplay
             </li>
             <li>
+              Tiers and rarity for all cards, plus advanced multipier metrics
+            </li>
+            <li>
               Quality of Life (QOL) improvements, including better UI and
-              smarter contracts
+              smarter contracts (no pun intended)
             </li>
           </ul>
         </div>

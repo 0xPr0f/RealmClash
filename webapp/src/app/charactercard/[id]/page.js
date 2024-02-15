@@ -11,7 +11,7 @@ export default function CharacterCardViewFullPage({
   params,
   imageUrl,
   name = "PRINCE OF ZYON",
-  description = "MASTER FULL SWORDS MAN",
+  description = "MASTERFULL SWORDSMAN",
   attributes = { power: "45", speed: "62", awesomeness: "900" },
 }) {
   const account = useAccount();
@@ -70,20 +70,21 @@ export default function CharacterCardViewFullPage({
               justifyContent: "center",
               maxWidth: "1500px",
               backgroundColor: "#1a1a1d",
+              gap: "40px",
               color: "#c3073f",
               borderRadius: "10px",
               padding: "20px",
               boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.5)",
             }}
           >
-            <di>
+            <div>
               <div
                 style={{
                   paddingBottom: "10px",
                 }}
               >
                 <span>
-                  Character Card Address :{" "}
+                  Card Address :{" "}
                   {shortenText(CHARACTERCARD_CONTRACTADDRESS, 6, 6)}
                 </span>
               </div>
@@ -105,9 +106,9 @@ export default function CharacterCardViewFullPage({
                   {/* You can replace the background color with the actual image */}
                 </div>
               </div>
-            </di>
+            </div>
             <div style={{ flex: "1", padding: "20px" }}>
-              <h2>{name}</h2>
+              <h2>Title : {name}</h2>
               <p style={{ fontSize: "16px" }}>{description}</p>
 
               <div style={{ paddingTop: "20px" }}>

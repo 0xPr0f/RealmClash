@@ -1,4 +1,5 @@
 "use client";
+import { CHARACTERCARD_ABI } from "../ABI";
 import { CHARACTERCARD_CONTRACTADDRESS } from "../ADDRESSES";
 import CardBox from "../components/cardBox/cardBox";
 import "./portfolio.css";
@@ -8,21 +9,27 @@ export default function Portfolio() {
   const account = useAccount();
 
   const characterCardBalance = useReadContract({
-    abi: "ABI",
-    address: "CHARACTERCARD_CONTRACTADDRESS",
+    abi: CHARACTERCARD_ABI,
+    address: CHARACTERCARD_CONTRACTADDRESS,
     functionName: "balanceOf",
     args: [account],
     account: account,
   });
   const characterCardTokenID = (index) =>
     useReadContract({
-      abi: "ABI",
-      address: "CHARACTERCARD_CONTRACTADDRESS",
+      abi: CHARACTERCARD_ABI,
+      address: CHARACTERCARD_CONTRACTADDRESS,
       functionName: "_tokenOfOwnerByIndex",
       args: [account, index],
       account: account,
     });
-
+  const allCharacterToken = useReadContract({
+    abi: CHARACTERCARD_ABI,
+    address: CHARACTERCARD_CONTRACTADDRESS,
+    functionName: "returnAllOwnerTokenId",
+    args: [account],
+    account: account,
+  });
   return (
     <div>
       This is the portfolio page
