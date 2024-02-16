@@ -7,23 +7,16 @@ import { TextHelper } from "./helper";
 import BoxButton from "@/app/components/boxButton/boxButton";
 import { CHARACTERCARD_ABI } from "@/app/ABI";
 
-export default function CharacterCardViewFullPage({
-  params,
-  imageUrl,
-  name = "PRINCE OF ZYON",
-  description = "MASTERFULL SWORDSMAN",
-  attributes = { power: "45", speed: "62", awesomeness: "900" },
-}) {
+export default function CharacterCardViewFullPage({ params }) {
   const account = useAccount();
   const { writeContract } = useWriteContract();
-  const getCharacterStats = (tokenId) =>
-    useReadContract({
-      abi: CHARACTERCARD_ABI,
-      address: CHARACTERCARD_CONTRACTADDRESS,
-      functionName: "characterStats",
-      args: [tokenId],
-      account: account,
-    });
+  //getCharacterStats
+  const { data, error, isPending } = useReadContract({
+    abi: CHARACTERCARD_ABI,
+    address: CHARACTERCARD_CONTRACTADDRESS,
+    functionName: "characterStats",
+    args: [params.id],
+  });
 
   const equipWeapon = (tokenIdofCharacter, tokenIdofWeapon) =>
     writeContract({
@@ -33,6 +26,22 @@ export default function CharacterCardViewFullPage({
       args: [BigInt(tokenIdofCharacter), BigInt(tokenIdofWeapon)],
       account: account,
     });
+  const equipWeapon1 = (tokenIdofCharacter, tokenIdofWeapon, account) => {
+    try {
+      writeContract({
+        abi: CHARACTERCARD_ABI,
+        address: CHARACTERCARD_CONTRACTADDRESS,
+        functionName: "equipWeapon",
+        args: [tokenIdofCharacter, tokenIdofWeapon],
+        account: account,
+      });
+    } catch (error) {
+      // Handle error
+      console.error("Error while equipping weapon:", error);
+      // Optionally, you can rethrow the error to propagate it further
+      throw error;
+    }
+  };
 
   const detachWeapon = (tokenIdofCharacter, tokenIdofWeapon) =>
     writeContract({
@@ -42,9 +51,12 @@ export default function CharacterCardViewFullPage({
       args: [BigInt(tokenIdofCharacter), BigInt(tokenIdofWeapon)],
       account: account,
     });
-
+  const test = () => {
+    console.log(data);
+  };
   return (
     <div>
+      {console.log(data)}
       <div style={{ padding: "20px" }}>
         Token ID : {JSON.stringify(params.id)}
       </div>
@@ -108,9 +120,6 @@ export default function CharacterCardViewFullPage({
               </div>
             </div>
             <div style={{ flex: "1", padding: "20px" }}>
-              <h2>Title : {name}</h2>
-              <p style={{ fontSize: "16px" }}>{description}</p>
-
               <div style={{ paddingTop: "20px" }}>
                 <TextHelper lhsv="Name" rhsv="Henry SitWelth" />
                 <TextHelper lhsv="Base Health" rhsv="200" />
@@ -126,11 +135,16 @@ export default function CharacterCardViewFullPage({
                 <TextHelper lhsv="Owner" rhsv="0x0000000001" />
               </div>
               <div>
-                {Object.entries(attributes).map(([key, value]) => (
-                  <p key={key}>
-                    <strong>{key}:</strong> {value}
-                  </p>
-                ))}
+                {/*
+                {
+                  Object.entries(attributes)[1, 2, 3, 4].map(
+                    ([key, value]) => (
+                      <p key={key}>
+                        <strong>{key}:</strong> {value}
+                      </p>
+                    )
+                  )
+                } */}
               </div>
               <div
                 style={{
@@ -138,7 +152,13 @@ export default function CharacterCardViewFullPage({
                   display: "flex",
                 }}
               >
-                <BoxButton>Equip Weapon</BoxButton>
+                <BoxButton
+                  onClick={() => {
+                    test();
+                  }}
+                >
+                  Equip Weapon
+                </BoxButton>
                 <BoxButton>RemoveWeapon</BoxButton>
               </div>
             </div>
