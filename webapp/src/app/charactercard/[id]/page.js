@@ -1,21 +1,48 @@
 "use client";
 import { CHARACTERCARD_CONTRACTADDRESS } from "@/app/ADDRESSES";
 import { shortenText } from "@/app/components/utilities/utilities";
-import React from "react";
+import React, { useEffect } from "react";
 import { useReadContract, useAccount, useWriteContract } from "wagmi";
+import { readContract } from "@wagmi/core";
 import { TextHelper } from "./helper";
 import BoxButton from "@/app/components/boxButton/boxButton";
 import { CHARACTERCARD_ABI } from "@/app/ABI";
+import { opBNBTestnet } from "@wagmi/core/chains";
+import { http, createConfig } from "@wagmi/core";
+
+export const config = createConfig({
+  chains: [opBNBTestnet],
+  transports: {
+    [opBNBTestnet.id]: http(),
+  },
+});
 
 export default function CharacterCardViewFullPage({ params }) {
   const account = useAccount();
   const { writeContract } = useWriteContract();
   //getCharacterStats
-  const { data, error, isPending } = useReadContract({
+  const { data, error, isPending } = useReadContract(config, {
     abi: CHARACTERCARD_ABI,
     address: CHARACTERCARD_CONTRACTADDRESS,
     functionName: "characterStats",
-    args: [params.id],
+    args: [BigInt(1)],
+    account: account,
+    chainId: opBNBTestnet.id,
+  });
+
+  const getCharacterStats = useReadContract({
+    abi: CHARACTERCARD_ABI,
+    address: CHARACTERCARD_CONTRACTADDRESS,
+    functionName: "characterStats",
+    args: [BigInt(1)],
+    account: account,
+    chainId: opBNBTestnet.id,
+    onSuccess(data) {
+      console.log(data);
+    },
+    onError(error) {
+      console.log(error);
+    },
   });
 
   const equipWeapon = (tokenIdofCharacter, tokenIdofWeapon) =>
@@ -51,12 +78,20 @@ export default function CharacterCardViewFullPage({ params }) {
       args: [BigInt(tokenIdofCharacter), BigInt(tokenIdofWeapon)],
       account: account,
     });
-  const test = () => {
-    console.log(data);
+
+  const runUpdates = async () => {
+    const result = await readContract(config, {
+      abi: CHARACTERCARD_ABI,
+      address: CHARACTERCARD_CONTRACTADDRESS,
+      functionName: "characterStats",
+      args: [BigInt(1)],
+      account: account,
+      chainId: opBNBTestnet.id,
+    });
+    return result;
   };
   return (
     <div>
-      {console.log(data)}
       <div style={{ padding: "20px" }}>
         Token ID : {JSON.stringify(params.id)}
       </div>
@@ -154,7 +189,7 @@ export default function CharacterCardViewFullPage({ params }) {
               >
                 <BoxButton
                   onClick={() => {
-                    test();
+                    console.log(getCharacterStats);
                   }}
                 >
                   Equip Weapon
