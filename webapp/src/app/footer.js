@@ -21,7 +21,14 @@ export default function Footer() {
           </span>
         </div>
         <div className="flex text-center items-center">
-          <div className="" style={{ fontSize: "17px", fontWeight: "300" }}>
+          <div
+            className=""
+            style={{
+              fontSize: "17px",
+              fontWeight: "300",
+              paddingRight: "10px",
+            }}
+          >
             <span>Built by 0xProf </span>
           </div>
           <div>

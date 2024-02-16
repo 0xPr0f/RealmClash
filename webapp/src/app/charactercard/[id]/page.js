@@ -1,7 +1,7 @@
 "use client";
 import { CHARACTERCARD_CONTRACTADDRESS } from "@/app/ADDRESSES";
 import { shortenText } from "@/app/components/utilities/utilities";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useReadContract, useAccount, useWriteContract } from "wagmi";
 import { readContract } from "@wagmi/core";
 import { TextHelper } from "./helper";
@@ -15,36 +15,38 @@ export const config = createConfig({
   transports: {
     [opBNBTestnet.id]: http(),
   },
+  ssr: true,
 });
 
 export default function CharacterCardViewFullPage({ params }) {
+  const [characterdetails, setCharacterdetails] = useState();
+  const [owner, setowner] = useState();
   const account = useAccount();
   const { writeContract } = useWriteContract();
-  //getCharacterStats
-  const { data, error, isPending } = useReadContract(config, {
-    abi: CHARACTERCARD_ABI,
-    address: CHARACTERCARD_CONTRACTADDRESS,
-    functionName: "characterStats",
-    args: [BigInt(1)],
-    account: account,
-    chainId: opBNBTestnet.id,
-  });
 
   const getCharacterStats = useReadContract({
     abi: CHARACTERCARD_ABI,
     address: CHARACTERCARD_CONTRACTADDRESS,
-    functionName: "characterStats",
-    args: [BigInt(1)],
+    functionName: "_characterStatsMap",
+    config,
+    args: [BigInt(params.id)],
     account: account,
     chainId: opBNBTestnet.id,
-    onSuccess(data) {
-      console.log(data);
-    },
-    onError(error) {
-      console.log(error);
-    },
+  });
+  const _owner = useReadContract({
+    abi: CHARACTERCARD_ABI,
+    address: CHARACTERCARD_CONTRACTADDRESS,
+    functionName: "ownerOf",
+    config,
+    args: [BigInt(params.id)],
+    account: account,
+    chainId: opBNBTestnet.id,
   });
 
+  useEffect(() => {
+    setCharacterdetails(getCharacterStats.data);
+    setowner(_owner.data);
+  }, [getCharacterStats]);
   const equipWeapon = (tokenIdofCharacter, tokenIdofWeapon) =>
     writeContract({
       abi: CHARACTERCARD_ABI,
@@ -79,17 +81,6 @@ export default function CharacterCardViewFullPage({ params }) {
       account: account,
     });
 
-  const runUpdates = async () => {
-    const result = await readContract(config, {
-      abi: CHARACTERCARD_ABI,
-      address: CHARACTERCARD_CONTRACTADDRESS,
-      functionName: "characterStats",
-      args: [BigInt(1)],
-      account: account,
-      chainId: opBNBTestnet.id,
-    });
-    return result;
-  };
   return (
     <div>
       <div style={{ padding: "20px" }}>
@@ -156,18 +147,53 @@ export default function CharacterCardViewFullPage({ params }) {
             </div>
             <div style={{ flex: "1", padding: "20px" }}>
               <div style={{ paddingTop: "20px" }}>
-                <TextHelper lhsv="Name" rhsv="Henry SitWelth" />
-                <TextHelper lhsv="Base Health" rhsv="200" />
-                <TextHelper lhsv="Base Attack" rhsv="19" />
-                <TextHelper lhsv="Base Magic Power" rhsv="4" />
-                <TextHelper lhsv="Base Skill Multipier" rhsv="2" />
-                <TextHelper lhsv="Class Name" rhsv="Knight" />
-                <TextHelper lhsv="Is Usable" rhsv="true" />
-                <TextHelper lhsv="TokenId" rhsv="1167" />
-                <TextHelper lhsv="WeaponId" rhsv="0" />
-                <TextHelper lhsv="ULT 2 power" rhsv="15" />
-                <TextHelper lhsv="ULT 3 power" rhsv="40" />
-                <TextHelper lhsv="Owner" rhsv="0x0000000001" />
+                <TextHelper lhsv="Name" rhsv={characterdetails?.name} />
+                <TextHelper
+                  lhsv="Base Health"
+                  rhsv={characterdetails?.baseHealth.toString()}
+                />
+                <TextHelper
+                  lhsv="Base Attack"
+                  rhsv={characterdetails?.baseAttack.toString()}
+                />
+                <TextHelper
+                  lhsv="Base Magic Power"
+                  rhsv={characterdetails?.baseMagicPower.toString()}
+                />
+                <TextHelper
+                  lhsv="Base Skill Multipier"
+                  rhsv={characterdetails?.baseSkillMultipier.toString()}
+                />
+                <TextHelper
+                  lhsv="Class Name"
+                  rhsv={characterdetails?.className.toString()}
+                />
+                <TextHelper
+                  lhsv="Is Usable"
+                  rhsv={characterdetails?.isUsable.toString()}
+                />
+                <TextHelper
+                  lhsv="TokenId"
+                  rhsv={characterdetails?.tokenId.toString()}
+                />
+
+                <TextHelper
+                  lhsv="ULT 2 power"
+                  rhsv={characterdetails?.ult2.toString()}
+                />
+                <TextHelper
+                  lhsv="ULT 3 power"
+                  rhsv={characterdetails?.ult3.toString()}
+                />
+                <TextHelper lhsv="Owner" rhsv={shortenText(owner, 4, 6)} />
+                <TextHelper
+                  lhsv="WeaponId"
+                  rhsv={characterdetails?.weaponId.toString()}
+                />
+                <TextHelper
+                  lhsv="ArmorId"
+                  rhsv={characterdetails?.armorId.toString()}
+                />
               </div>
               <div>
                 {/*
@@ -190,6 +216,7 @@ export default function CharacterCardViewFullPage({ params }) {
                 <BoxButton
                   onClick={() => {
                     console.log(getCharacterStats);
+                    console.log(characterdetails?.isUsable);
                   }}
                 >
                   Equip Weapon

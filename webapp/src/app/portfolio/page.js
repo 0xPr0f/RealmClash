@@ -1,13 +1,20 @@
 "use client";
+import { useState, useEffect } from "react";
 import { CHARACTERCARD_ABI } from "../ABI";
 import { CHARACTERCARD_CONTRACTADDRESS } from "../ADDRESSES";
 import CardBox from "../components/cardBox/cardBox";
 import "./portfolio.css";
 import { useReadContract, useAccount } from "wagmi";
+import { config } from "../charactercard/[id]/page";
+import { opBNBTestnet } from "viem/chains";
+import { useRouter } from "next/navigation";
+import { TextHelper } from "../charactercard/[id]/helper";
 
 export default function Portfolio() {
   const account = useAccount();
-
+  const { address } = useAccount();
+  const router = useRouter();
+  const [alltokenId, setAlltokenId] = useState([]);
   const characterCardBalance = useReadContract({
     abi: CHARACTERCARD_ABI,
     address: CHARACTERCARD_CONTRACTADDRESS,
@@ -27,30 +34,38 @@ export default function Portfolio() {
     abi: CHARACTERCARD_ABI,
     address: CHARACTERCARD_CONTRACTADDRESS,
     functionName: "returnAllOwnerTokenId",
-    args: [account],
+    config: config,
+    args: [address],
     account: account,
+    chainId: opBNBTestnet.id,
   });
+  useEffect(() => {
+    setAlltokenId(allCharacterToken?.data);
+  }, [allCharacterToken]);
+
   return (
     <div>
-      This is the portfolio page
       <div className="centeredcontainer">
         <div className="centereddiv">
-          <span>Your character cards, click to view</span>
+          <TextHelper lhsv="Your character cards, click to view" />
           <div className="padbox">
             <div className="gridcontainer">
               <div className="grid">
-                <CardBox height={300} width={200} showStats={false} />
-                <CardBox height={300} width={200} showStats={false} />
-                <CardBox height={300} width={200} showStats={false} />
-                <CardBox height={300} width={200} showStats={false} />
-                <CardBox height={300} width={200} showStats={false} />
-                <CardBox height={300} width={200} showStats={false} />
-                <CardBox height={300} width={200} showStats={false} />
-                <CardBox height={300} width={200} showStats={false} />
-                <CardBox height={300} width={200} showStats={false} />
-                <CardBox height={300} width={200} showStats={false} />
-                <CardBox height={300} width={200} showStats={false} />
-                <CardBox height={300} width={200} showStats={false} />
+                {alltokenId?.map((cardId) => (
+                  <CardBox
+                    showStats={false}
+                    key={cardId}
+                    height={300}
+                    width={200}
+                    onClick={() => {
+                      router.push(`/charactercard/${cardId.toString()}`, {
+                        scroll: false,
+                      });
+                    }}
+                  >
+                    Card {cardId.toString()}
+                  </CardBox>
+                ))}
               </div>
             </div>
           </div>

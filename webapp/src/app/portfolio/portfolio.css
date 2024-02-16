@@ -11,10 +11,8 @@
   flex: 1; /* Allow the content to grow to fill the available space */
 }
 .gridcontainer {
-  width: 1000px; /* Adjust the width as needed */
   height: 700px; /* Adjust the height as needed */
   overflow: auto; /* Enable scrollbars if content overflows */
-  padding: 20px;
 }
 
 .grid {
@@ -23,7 +21,7 @@
     auto-fill,
     minmax(200px, 1fr)
   ); /* Adjust column width as needed */
-  gap: 10px; /* Adjust gap between grid items */
+  gap: 8px; /* Adjust gap between grid items */
 }
 
 .padbox {

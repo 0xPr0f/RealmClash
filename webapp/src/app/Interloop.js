@@ -35,7 +35,7 @@ export const opBNBchainTestnet = {
     symbol: "tBNB",
   },
   rpcUrls: {
-    default: "https://opbnb-testnet-rpc.bnbchain.org/",
+    default: "https://opbnb-testnet-rpc.bnbchain.org",
   },
   blockExplorers: {
     default: { name: "opBNBscan", url: "https://opbnb-testnet.bscscan.com/" },
@@ -55,6 +55,7 @@ const config = getDefaultConfig({
     },
   ],
   chains: [opBNBchainTestnet],
+
   ssr: true,
 });
 const queryClient = new QueryClient();

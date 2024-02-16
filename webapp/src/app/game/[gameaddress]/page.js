@@ -1,8 +1,8 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import "./game.css";
-import CardBox from "@/app/components/cardBox/cardBox";
+import CardBox, { CardBoxGame } from "@/app/components/cardBox/cardBox";
 import BoxButton from "@/app/components/boxButton/boxButton";
 import { useReadContract, useAccount, useWriteContract } from "wagmi";
 import { GAME_ABI } from "@/app/ABI";
@@ -10,58 +10,99 @@ import Tooltip from "@/app/components/toolTip/toolTip";
 import EmptyView from "@/app/components/emptyView/emptyView";
 import { GiCrossedSwords, GiSwordWound, GiPointySword } from "react-icons/gi";
 import { FaRotate, FaArrowsRotate } from "react-icons/fa6";
+import { opBNBTestnet } from "viem/chains";
+import { config } from "@/app/charactercard/[id]/page";
+import { readContract } from "@wagmi/core";
 
 export default function GameRoom({ params }) {
   const router = useRouter();
   const account = useAccount();
+  const { address } = useAccount();
   const { writeContract } = useWriteContract();
   const [selectedCard, setSelectedCard] = useState(null);
+  const [allYourCardsInGame, setAllYourCardsInGame] = useState();
+  const [allOppositeCardsInGame, setAllOppositeCardsInGame] = useState();
+  const [oppositePlayerAddress, setOppositePlayerAddress] = useState();
 
   const handleCardClick = (index) => {
     setSelectedCard((prevSelectedCard) => {
-      console.log(index);
       return prevSelectedCard === index ? null : index;
     });
+  };
+  const _useNormalAttack = () => {
+    console.log(selectedCard);
+  };
+  const _useUlt2Attack = () => {
+    console.log(selectedCard);
+  };
+  const _useUlt3Attack = () => {
+    console.log(selectedCard);
+  };
+  const _useSwitchCharacter = () => {
+    console.log(selectedCard);
   };
 
   const matchDetails = useReadContract({
     abi: GAME_ABI,
     address: params.gameaddress,
     functionName: "matchDetails",
+    config: config,
+    account: account,
+    chainId: opBNBTestnet.id,
   });
   const activeCharacter = useReadContract({
     abi: GAME_ABI,
     address: params.gameaddress,
     functionName: "getActiveCharacter",
-    args: [account],
+    args: [address],
     account: account,
+    config: config,
+    account: account,
+    chainId: opBNBTestnet.id,
   });
-  const charactersTokenIds = (_address) =>
-    useReadContract({
-      abi: GAME_ABI,
-      address: params.gameaddress,
-      functionName: "matchDetails.addressToCharacterIdIngame",
-      args: [_address],
-      account: account,
-    });
+  const charactersTokenIdsY = useReadContract({
+    abi: GAME_ABI,
+    address: params.gameaddress,
+    functionName: "returnAddressToCharacterIdIngame",
+    args: [address],
+    config: config,
+    account: account,
+    chainId: opBNBTestnet.id,
+  });
+  const charactersTokenIdsO = useReadContract({
+    abi: GAME_ABI,
+    address: params.gameaddress,
+    functionName: "returnAddressToCharacterIdIngame",
+    args: [oppositePlayerAddress],
+    config: config,
+    account: account,
+    chainId: opBNBTestnet.id,
+  });
   const returnOtherAddress = useReadContract({
     abi: GAME_ABI,
     address: params.gameaddress,
     functionName: "returnOtherPlayer",
-    args: [account],
+    args: [address],
     account: account,
+    config: config,
+    account: account,
+    chainId: opBNBTestnet.id,
   });
   const isAddressInGame = useReadContract({
     abi: GAME_ABI,
     address: params.gameaddress,
     functionName: "checkAddressIsInGame",
     account: account,
+    config: config,
+    chainId: opBNBTestnet.id,
   });
   const powerPointCount = useReadContract({
     abi: GAME_ABI,
     address: params.gameaddress,
     functionName: "playerToDiceRow",
     account: account,
+    config: config,
+    chainId: opBNBTestnet.id,
   });
   const timeToULTCount = useReadContract({
     abi: GAME_ABI,
@@ -69,23 +110,34 @@ export default function GameRoom({ params }) {
     functionName: "timeForUlt",
     args: [account],
     account: account,
+    config: config,
+    chainId: opBNBTestnet.id,
   });
   const addressToPlay = useReadContract({
     abi: GAME_ABI,
     address: params.gameaddress,
     functionName: "addressToPlay",
-    args: [account],
+    args: [address],
     account: account,
+    config: config,
+    chainId: opBNBTestnet.id,
   });
-  const getCharacterStats = (tokenId) =>
-    useReadContract({
-      abi: GAME_ABI,
-      address: params.gameaddress,
-      functionName: "getCharacterInGameStats",
-      args: [BigInt(tokenId)],
-      account: account,
-    });
-
+  /*
+  const getCharacterStats = async (tokenId) => {
+    try {
+      const result = await readContract(config, {
+        abi: GAME_ABI,
+        address: params.gameaddress,
+        functionName: "getCharacterInGameStats",
+        args: [BigInt(tokenId)],
+        account: account,
+        chainId: opBNBTestnet.id,
+      });
+      return result;
+    } catch (error) {
+      return "lottts of errorss";
+    }
+  }; */
   const useNormalAttack = (tokenId) =>
     writeContract({
       abi: GAME_ABI,
@@ -119,10 +171,15 @@ export default function GameRoom({ params }) {
       args: [BigInt(tokenId)],
       account: account,
     });
+  useEffect(() => {
+    setOppositePlayerAddress(returnOtherAddress.data);
+    setAllYourCardsInGame(charactersTokenIdsY.data);
+
+    setAllOppositeCardsInGame(charactersTokenIdsO.data);
+  }, [charactersTokenIdsY, returnOtherAddress]);
 
   return (
     <div>
-      {console.log(JSON.stringify(params.gameaddress))}
       <div style={{ padding: "20px" }}>
         address : {JSON.stringify(params.gameaddress)}
       </div>
@@ -130,12 +187,12 @@ export default function GameRoom({ params }) {
         <div>
           <div className="game-board">
             <div className="cards-up">
-              <Tooltip text="Tooltip content is awesome for doing stuffs">
-                <CardBox />
-              </Tooltip>
-
-              <CardBox />
-              <CardBox />
+              {allOppositeCardsInGame ||
+                [1, 2, 3]?.map((cardId) => (
+                  <CardBoxGame key={cardId}>
+                    Card {cardId.toString()}
+                  </CardBoxGame>
+                ))}
             </div>
             <div className="cardsdown">
               <div className="buttons">
@@ -144,23 +201,27 @@ export default function GameRoom({ params }) {
                   borderRadius="100%"
                   height="40px"
                   width="40px"
+                  onClick={() => {
+                    _useSwitchCharacter();
+                  }}
                 >
                   <FaArrowsRotate size={20} fontWeight={1} />
                 </BoxButton>
               </div>
               <div className="cards-down">
-                <CardBox
-                  className={`card ${selectedCard === 0 ? "selected" : ""}`}
-                  onClick={() => handleCardClick(0)}
-                />
-                <CardBox
-                  className={`card ${selectedCard === 3 ? "selected" : ""}`}
-                  onClick={() => handleCardClick(3)}
-                />
-                <CardBox
-                  className={`card ${selectedCard === 6 ? "selected" : ""}`}
-                  onClick={() => handleCardClick(6)}
-                />
+                {allYourCardsInGame?.map((cardId) => (
+                  <CardBoxGame
+                    gameaddress={params.gameaddress}
+                    tokenId={cardId}
+                    key={cardId}
+                    className={`card ${
+                      selectedCard === Number(cardId) ? "selected" : ""
+                    }`}
+                    onClick={() => handleCardClick(Number(cardId))}
+                  >
+                    Card {cardId.toString()}
+                  </CardBoxGame>
+                ))}
               </div>
               {/*You will have to be connected to be able to see the buttons to do stuff*/}
               <div className="theAttackButtons">
@@ -170,10 +231,20 @@ export default function GameRoom({ params }) {
                     borderRadius="100%"
                     height="80px"
                     width="80px"
+                    onClick={async () => {
+                      _useNormalAttack();
+                    }}
                   >
                     <GiCrossedSwords size={43} />
                   </BoxButton>
-                  <BoxButton borderRadius="100%" height="68px" width="68px">
+                  <BoxButton
+                    borderRadius="100%"
+                    height="68px"
+                    width="68px"
+                    onClick={() => {
+                      _useUlt2Attack();
+                    }}
+                  >
                     <GiSwordWound size={40} />
                   </BoxButton>
                   <BoxButton
@@ -181,6 +252,9 @@ export default function GameRoom({ params }) {
                     borderRadius="100%"
                     height="60px"
                     width="60px"
+                    onClick={() => {
+                      _useUlt3Attack();
+                    }}
                   >
                     <GiPointySword size={40} />
                   </BoxButton>

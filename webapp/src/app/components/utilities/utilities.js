@@ -70,3 +70,16 @@ export function blobToFile(theBlob, fileName) {
   theBlob.name = fileName;
   return theBlob;
 }
+
+function check(address) {
+  const re = /(?:0[xX])?[0-9a-fA-F]+/;
+  if (re.test(address)) {
+  }
+}
+export function isValidAddress(address) {
+  // Regular expression pattern for Ethereum addresses
+  const pattern = /^(0x)?[0-9a-fA-F]{40}$/;
+
+  // Check if the address matches the pattern
+  return pattern.test(address);
+}

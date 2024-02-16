@@ -2183,6 +2183,12 @@ export const GAMEFACTORY_ABI = [
       {
         indexed: true,
         internalType: "address",
+        name: "game",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
         name: "initiator",
         type: "address",
       },
@@ -2201,6 +2207,49 @@ export const GAMEFACTORY_ABI = [
     ],
     name: "GameCreated",
     type: "event",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    name: "_allGames",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    name: "_playerToGames",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
   },
   {
     inputs: [
@@ -2239,6 +2288,19 @@ export const GAMEFACTORY_ABI = [
     name: "addWin",
     outputs: [],
     stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "allGames",
+    outputs: [
+      {
+        internalType: "address[]",
+        name: "",
+        type: "address[]",
+      },
+    ],
+    stateMutability: "view",
     type: "function",
   },
   {
@@ -2805,6 +2867,25 @@ export const GAME_ABI = [
         internalType: "address",
         name: "",
         type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "_add",
+        type: "address",
+      },
+    ],
+    name: "returnAddressToCharacterIdIngame",
+    outputs: [
+      {
+        internalType: "uint256[]",
+        name: "",
+        type: "uint256[]",
       },
     ],
     stateMutability: "view",
