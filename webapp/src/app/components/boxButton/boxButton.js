@@ -1,4 +1,4 @@
-import styles from "./boxButton.module.css";
+import styles from './boxButton.module.css'
 export const BoxButton = ({
   border,
   children,
@@ -7,8 +7,9 @@ export const BoxButton = ({
   height,
   borderRadius,
   padding,
-  cursor = "pointer",
+  cursor = 'pointer',
   disabled,
+  customloading,
   outsidePadding,
   className,
 }) => {
@@ -21,19 +22,19 @@ export const BoxButton = ({
           border: border,
           width: width,
           height: height,
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
           borderRadius: borderRadius,
           padding: padding,
           cursor: cursor,
         }}
-        className={[styles.button, className].join(" ")}
+        className={[styles.button, className].join(' ')}
       >
         <span className={styles.spaninside}> {children}</span>
       </button>
     </div>
-  );
-};
+  )
+}
 
-export default BoxButton;
+export default BoxButton

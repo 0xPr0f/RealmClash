@@ -9,6 +9,7 @@ import {
 } from '../ADDRESSES'
 import { CHARACTERCARD_ABI, GAMEFACTORY_ABI } from '../ABI'
 import CardBox from '../components/cardBox/cardBox'
+import ScaleLoader from 'react-spinners/ScaleLoader'
 import {
   useReadContract,
   useAccount,
@@ -20,10 +21,14 @@ import { isValidAddress } from '../components/utilities/utilities'
 import { writeContract, waitForTransactionReceipt } from '@wagmi/core'
 import { config } from '../Interloop'
 import { ethers } from 'ethers'
+import { decodeTransactionLogs } from './helper'
+import { useRouter } from 'next/navigation'
 
 export default function Game() {
   const [challengee, setChallengee] = useState('')
+  const [isLoadingNice, setIsLoadingNice] = useState(false)
   const account = useAccount()
+  const router = useRouter()
   const { address } = useAccount()
   //const { writeContract } = useWriteContract()
   const [selectedCards, setSelectedCards] = useState([])
@@ -51,31 +56,11 @@ export default function Game() {
   const requestChallenge = () => {
     if (selectedCards.length === 3 && isValidAddress(challengee)) {
       console.log('game started', challengee, selectedCards)
+      setIsLoadingNice(true)
       sendRequest()
     } else {
       console.log('you need three characters')
     }
-  }
-  async function submit() {
-    writeContract({
-      address: GAMEFACTORY_CONTRACTADDRESS,
-      abi: GAMEFACTORY_ABI,
-      functionName: 'createNewGameManual',
-
-      args: [challengee, selectedCards],
-    })
-  }
-
-  const challengePlayerByID = (_2ndPlayeraddress, _1stPlayerCharDeck) => {
-    const call = writeContract({
-      abi: GAMEFACTORY_ABI,
-      address: GAMEFACTORY_CONTRACTADDRESS,
-      functionName: 'createNewGameManual',
-      args: [_2ndPlayeraddress, _1stPlayerCharDeck],
-      chainId: opBNBTestnet.id,
-      account: address,
-    })
-    console.log(call)
   }
   // test address 0x772A4f348d85FDd00e89fDE4C7CAe8628c8DAd19
   const allCharacterToken = useReadContract({
@@ -91,29 +76,38 @@ export default function Game() {
   }, [allCharacterToken])
 
   const sendRequest = async () => {
-    const request = await writeContract(config, {
-      abi: GAMEFACTORY_ABI,
-      address: GAMEFACTORY_CONTRACTADDRESS,
-      functionName: 'createNewGameManual',
-      args: [challengee, selectedCards],
-      chainId: opBNBTestnet.id,
-      account: address,
-    })
-    console.log(request)
+    try {
+      const request = await writeContract(config, {
+        abi: GAMEFACTORY_ABI,
+        address: GAMEFACTORY_CONTRACTADDRESS,
+        functionName: 'createNewGameManual',
+        args: [challengee, selectedCards],
+        chainId: opBNBTestnet.id,
+        account: address,
+      })
+      console.log(request)
+      decodeTx(request)
+    } catch (e) {
+      setIsLoadingNice(false)
+    }
   }
 
-  const sort = async () => {
+  const decodeTx = async (hashTx) => {
     const transactionReceipt = await waitForTransactionReceipt(config, {
-      hash: '0x32e2edfff504bfb36ce53c3ab84d3f85ac6e448d495a62344c33581647d3383b',
+      hash: hashTx,
     })
-    console.log(transactionReceipt)
-
-    const ABI = new ethers.utils.Interface(GAMEFACTORY_ABI)
-
-    transactionReceipt.logs.map((i) => {
-      const nice = ABI.parseLog(i)
-      console.log(nice)
-    })
+    let abi = [
+      'event GameCreated(address indexed game, address indexed initiator, address indexed challengee, uint[] initiatorDeck)',
+    ]
+    let iface = new ethers.utils.Interface(abi)
+    let gameEventDecode = decodeTransactionLogs(
+      transactionReceipt.logs[0].data,
+      transactionReceipt.logs[0].topics,
+      iface
+    )
+    setIsLoadingNice(false)
+    console.log('game :', gameEventDecode.args.game)
+    router.push(`/game/${gameEventDecode.args.game}`)
   }
   return (
     <div>
@@ -180,15 +174,33 @@ export default function Game() {
             </div>
           </div>
           <BoxButton
+            disabled={isLoadingNice}
             onClick={async () => {
-              //requestChallenge();
-              console.log('button working')
-              // requestChallenge()
-              sort()
+              console.log('Initiating')
+              requestChallenge()
             }}
           >
-            Request Challenge
+            {isLoadingNice ? (
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                {' '}
+                <ScaleLoader
+                  color="#c3073f"
+                  height={15}
+                  margin={1}
+                  radius={1}
+                  width={3}
+                />{' '}
+                Loading
+              </div>
+            ) : (
+              <>Request Challenge</>
+            )}
           </BoxButton>
+          {isLoadingNice ? (
+            <span>You will be redirected to the Game when tx is done</span>
+          ) : (
+            ''
+          )}
         </div>
       </div>
     </div>
