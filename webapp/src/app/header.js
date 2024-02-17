@@ -1,8 +1,8 @@
-import { ConnectButton } from "@rainbow-me/rainbowkit";
-import Link from "next/link";
-import "../../styles/headers.css";
-import Image from "next/image";
-import logoImage from "../../public/LogoImage-nobg.png";
+import { ConnectButton } from '@rainbow-me/rainbowkit'
+import Link from 'next/link'
+import '../../styles/headers.css'
+import Image from 'next/image'
+import logoImage from '../../public/LogoImage-nobg.png'
 
 export default function Header() {
   return (
@@ -25,22 +25,22 @@ export default function Header() {
         <div className="connectclass">
           <ConnectButton
             accountStatus={{
-              smallScreen: "address",
-              largeScreen: "address",
+              smallScreen: 'address',
+              largeScreen: 'address',
             }}
-            chainStatus={{ smallScreen: "icon", largeScreen: "full" }}
+            chainStatus={{ smallScreen: 'icon', largeScreen: 'icon' }}
             showBalance={true}
           />
         </div>
       </div>
       <hr
         style={{
-          background: "#6f2232",
-          color: "#6f2232",
-          borderColor: "#6f2232",
-          height: "2px",
+          background: '#6f2232',
+          color: '#6f2232',
+          borderColor: '#6f2232',
+          height: '2px',
         }}
       />
     </div>
-  );
+  )
 }

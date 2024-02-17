@@ -6,8 +6,15 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 /// @title Character Card Interface
 /// @notice Interface for interacting with the Character Card contract
 interface CharacterCardInterface {
-    function deatchWeapon(uint _tokenIdofCharacter, uint _tokenIdofWeapon, address _user) external;
-    function _isCharacterOwner(uint _tokenId, address _addr) external view returns (bool);
+    function deatchWeapon(
+        uint _tokenIdofCharacter,
+        uint _tokenIdofWeapon,
+        address _user
+    ) external;
+    function _isCharacterOwner(
+        uint _tokenId,
+        address _addr
+    ) external view returns (bool);
     function attackStats(uint _tokenId) external view returns (uint);
     function healthStats(uint _tokenId) external view returns (uint);
     function getUlt2(uint _tokenId) external view returns (uint);
@@ -66,7 +73,13 @@ contract Game {
         uint number = playerToCharCards[_addr].length;
         uint[] memory array = playerToCharCards[_addr];
         for (uint i = 0; i < number; ++i) {
-            require(CharacterCardInterface(CharactersContract)._isCharacterOwner(array[i], _addr), "Not yours sadly");
+            require(
+                CharacterCardInterface(CharactersContract)._isCharacterOwner(
+                    array[i],
+                    _addr
+                ),
+                "Not yours sadly"
+            );
         }
     }
 
@@ -103,53 +116,84 @@ contract Game {
         matchDetails.characterTokenIdsInGame = _1stPlayerCharDeck;
         matchDetails.firstInitiatedPlayer = _1stPlayer;
         matchDetails.secondInitiatedPlayer = _2ndPlayer;
-        matchDetails.addressToCharacterIdIngame[_1stPlayer] = _1stPlayerCharDeck;
-         _configureGameFiles(_factory, _characterCards);
+        matchDetails.addressToCharacterIdIngame[
+            _1stPlayer
+        ] = _1stPlayerCharDeck;
+        _configureGameFiles(_factory, _characterCards);
         fixAllCharacterAndStats(_1stPlayerCharDeck, _1stPlayer);
         _setGameId(_id);
         require(!matchDetails.gameStarted, "Game has started");
     }
 
-     function _configureGameFiles (address _factory, address _characterCards) internal {
+    function _configureGameFiles(
+        address _factory,
+        address _characterCards
+    ) internal {
         ClashFactory = _factory;
         CharactersContract = _characterCards;
     }
 
-   /// @dev Event emitted when a new game is created
-    event GameStarted(address indexed initiator, address indexed game, uint indexed gameId);
-    event GameAccepted(address indexed initiator, address indexed game,uint[] carddeck, uint indexed gameId);
-
+    /// @dev Event emitted when a new game is created
+    event GameStarted(
+        address indexed initiator,
+        address indexed game,
+        uint indexed gameId
+    );
+    event GameAccepted(
+        address indexed initiator,
+        address indexed game,
+        uint[] carddeck,
+        uint indexed gameId
+    );
 
     /// @dev Function to accept the match initiated by the second player
     /// @param _2ndPlayerCharDeck Character deck of the second player
-    function acceptMatch(uint[] memory _2ndPlayerCharDeck) external checkPlayerAgainstCards(msg.sender) {
+    function acceptMatch(
+        uint[] memory _2ndPlayerCharDeck
+    ) external checkPlayerAgainstCards(msg.sender) {
         require(
             matchDetails.gameAcceptedTime == 0 &&
-            !(matchDetails.gameAccepted) &&
-            msg.sender == matchDetails.secondInitiatedPlayer,
+                !(matchDetails.gameAccepted) &&
+                msg.sender == matchDetails.secondInitiatedPlayer,
             "Not Allowed"
         );
 
         for (uint256 i = 0; i < _2ndPlayerCharDeck.length; i++) {
             matchDetails.characterTokenIdsInGame.push(_2ndPlayerCharDeck[i]);
         }
-        matchDetails.addressToCharacterIdIngame[msg.sender] = _2ndPlayerCharDeck;
+        matchDetails.addressToCharacterIdIngame[
+            msg.sender
+        ] = _2ndPlayerCharDeck;
         matchDetails.gameAcceptedTime = block.timestamp;
         matchDetails.gameAccepted = true;
-        fixAllCharacterAndStats(_2ndPlayerCharDeck,msg.sender);
-        emit GameAccepted(msg.sender,address(this),_2ndPlayerCharDeck,matchDetails.gameId);
+        fixAllCharacterAndStats(_2ndPlayerCharDeck, msg.sender);
+        emit GameAccepted(
+            msg.sender,
+            address(this),
+            _2ndPlayerCharDeck,
+            matchDetails.gameId
+        );
     }
 
-    function _setGameId (uint _id) internal {
+    function _setGameId(uint _id) internal {
         matchDetails.gameId = _id;
     }
 
     /// @dev Function to start the game and roll the dice to determine the player's turn
     function startGameAndRowDice() external {
-        require(!matchDetails.gameStarted && matchDetails.gameAccepted , "Started");
+        require(
+            !matchDetails.gameStarted && matchDetails.gameAccepted,
+            "Started"
+        );
 
-        uint number1 = _generateRandomNumber(msg.sender, matchDetails.playersInGame);
-        uint number2 = _generateRandomNumber(address(this), matchDetails.playersInGame);
+        uint number1 = _generateRandomNumber(
+            msg.sender,
+            matchDetails.playersInGame
+        );
+        uint number2 = _generateRandomNumber(
+            address(this),
+            matchDetails.playersInGame
+        );
         playerToDiceRow[matchDetails.firstInitiatedPlayer] = number1;
         playerToDiceRow[matchDetails.secondInitiatedPlayer] = number2;
         (uint firstplayerno, uint secondplayerno) = (
@@ -162,10 +206,12 @@ contract Game {
             : addressToPlay = matchDetails.secondInitiatedPlayer;
         matchDetails.gameStarted = true;
 
-        emit GameStarted(msg.sender, matchDetails.secondInitiatedPlayer,matchDetails.gameId);
+        emit GameStarted(
+            msg.sender,
+            matchDetails.secondInitiatedPlayer,
+            matchDetails.gameId
+        );
     }
-
-
 
     //ATTACK LOGIC AND PATTERNS
 
@@ -176,7 +222,10 @@ contract Game {
         require(!__checkIfGameLost(msg.sender), "Game over, switch player");
 
         uint totalDamage = __dishTotalDamage(_tokenId, 1, msg.sender);
-        address def = __returnOtherValues(addressToPlay, matchDetails.playersInGame);
+        address def = __returnOtherValues(
+            addressToPlay,
+            matchDetails.playersInGame
+        );
         uint defTokenId = getActiveCharacter(def);
         require(isCharacterAlive(defTokenId), "Defender's character is down");
 
@@ -192,7 +241,10 @@ contract Game {
         require(!__checkIfGameLost(msg.sender), "Game over, switch player");
 
         uint totalDamage = __dishTotalDamage(_tokenId, 2, msg.sender);
-        address def = __returnOtherValues(addressToPlay, matchDetails.playersInGame);
+        address def = __returnOtherValues(
+            addressToPlay,
+            matchDetails.playersInGame
+        );
         uint defTokenId = getActiveCharacter(def);
         require(isCharacterAlive(defTokenId), "Defender's character is down");
 
@@ -208,7 +260,10 @@ contract Game {
         require(!__checkIfGameLost(msg.sender), "Game over, switch player");
 
         uint totalDamage = __dishTotalDamage(_tokenId, 3, msg.sender);
-        address def = __returnOtherValues(addressToPlay, matchDetails.playersInGame);
+        address def = __returnOtherValues(
+            addressToPlay,
+            matchDetails.playersInGame
+        );
         uint defTokenId = getActiveCharacter(def);
         require(isCharacterAlive(defTokenId), "Defender's character is down");
 
@@ -217,8 +272,7 @@ contract Game {
         __checkAfterPlay();
     }
 
-        // ACCESS CONTROL AND VALIDATION LOGIC
-    
+    // ACCESS CONTROL AND VALIDATION LOGIC
 
     /**
      * @dev Overloaded function to check if a specific address is in the game.
@@ -226,12 +280,9 @@ contract Game {
      * @return Whether the address is in the game.
      */
     function checkAddressIsInGame(address _addr) public view returns (bool) {
-        return (matchDetails.firstInitiatedPlayer == _addr || matchDetails.secondInitiatedPlayer == _addr);
+        return (matchDetails.firstInitiatedPlayer == _addr ||
+            matchDetails.secondInitiatedPlayer == _addr);
     }
-
-
- 
-
 
     /**
      * @dev Check if the game is over and update game state accordingly before a play.
@@ -239,7 +290,10 @@ contract Game {
     function __beforePlay() internal {
         matchDetails.gameOver = __checkIfGameLost(msg.sender);
         if (matchDetails.gameOver) {
-            matchDetails.winner = __returnOtherValues(msg.sender, matchDetails.playersInGame);
+            matchDetails.winner = __returnOtherValues(
+                msg.sender,
+                matchDetails.playersInGame
+            );
         }
     }
 
@@ -247,7 +301,10 @@ contract Game {
      * @dev Check conditions before a play.
      */
     function __checkBeforePlay() internal view {
-        require(isCharacterAlive(getActiveCharacter(msg.sender)), "char down, switch");
+        require(
+            isCharacterAlive(getActiveCharacter(msg.sender)),
+            "char down, switch"
+        );
         require(addressToPlay == msg.sender);
     }
 
@@ -282,12 +339,15 @@ contract Game {
         // emit an event
     }
 
-       /**
+    /**
      * @dev Inflict damage on the defending character.
      * @param _attackingDamage The amount of damage to inflict.
      * @param _defendingTokenId The token ID of the defending character.
      */
-    function __takedamage(uint _attackingDamage, uint _defendingTokenId) internal {
+    function __takedamage(
+        uint _attackingDamage,
+        uint _defendingTokenId
+    ) internal {
         uint temphealth = characterStatsInGame[_defendingTokenId].Health;
         if (temphealth > _attackingDamage) {
             characterStatsInGame[_defendingTokenId].Health -= _attackingDamage;
@@ -305,7 +365,11 @@ contract Game {
      * @param _player The address of the attacking player.
      * @return The total damage to be inflicted.
      */
-    function __dishTotalDamage(uint _tokenId, uint ult, address _player) internal returns (uint) {
+    function __dishTotalDamage(
+        uint _tokenId,
+        uint ult,
+        address _player
+    ) internal returns (uint) {
         (, uint _attack, ) = getCharacterInGameStats(_tokenId);
         if (
             ult == 2 &&
@@ -313,16 +377,26 @@ contract Game {
             timeForUlt[msg.sender] >= 2
         ) {
             timeForUlt[msg.sender] -= 2;
-            playerToDiceRow[_player] = __subtractToZero(2, playerToDiceRow[_player]);
-            return _attack + CharacterCardInterface(CharactersContract).getUlt2(_tokenId);
+            playerToDiceRow[_player] = __subtractToZero(
+                2,
+                playerToDiceRow[_player]
+            );
+            return
+                _attack +
+                CharacterCardInterface(CharactersContract).getUlt2(_tokenId);
         } else if (
             ult == 3 &&
             playerToDiceRow[_player] >= 4 &&
             timeForUlt[msg.sender] >= 3
         ) {
             timeForUlt[msg.sender] -= 3;
-            playerToDiceRow[_player] = __subtractToZero(4, playerToDiceRow[_player]);
-            return _attack + CharacterCardInterface(CharactersContract).getUlt3(_tokenId);
+            playerToDiceRow[_player] = __subtractToZero(
+                4,
+                playerToDiceRow[_player]
+            );
+            return
+                _attack +
+                CharacterCardInterface(CharactersContract).getUlt3(_tokenId);
         } else {
             return _attack + 0;
         }
@@ -335,12 +409,14 @@ contract Game {
      * @return attack The current attack of the character.
      * @return isAlive The status of the character (true if alive, false if not).
      */
-    function getCharacterInGameStats(uint _tokenId) public view returns (uint health, uint attack, bool isAlive) {
+    function getCharacterInGameStats(
+        uint _tokenId
+    ) public view returns (uint health, uint attack, bool isAlive) {
         CharacterCardsInGameStats memory stats = characterStatsInGame[_tokenId];
         (health, attack, isAlive) = (stats.Health, stats.Attack, stats.isAlive);
     }
 
-        /**
+    /**
      * @dev Check if a character is still alive.
      * @param _tokenId The token ID of the character.
      * @return true if the character is alive, false otherwise.
@@ -354,12 +430,25 @@ contract Game {
      * @dev Initialize character stats for all characters in the game.
      * @param value An array containing the token IDs of the characters.
      */
-    function fixAllCharacterAndStats(uint[] memory value, address _address) public {
+    function fixAllCharacterAndStats(
+        uint[] memory value,
+        address _address
+    ) public {
         for (uint i = 0; i < value.length; ++i) {
-            require(CharacterCardInterface(CharactersContract)._isCharacterOwner(value[i],  _address),"N_O");
+            require(
+                CharacterCardInterface(CharactersContract)._isCharacterOwner(
+                    value[i],
+                    _address
+                ),
+                "N_O"
+            );
             characterStatsInGame[value[i]] = CharacterCardsInGameStats(
-                CharacterCardInterface(CharactersContract).healthStats(value[i]),
-                CharacterCardInterface(CharactersContract).attackStats(value[i]),
+                CharacterCardInterface(CharactersContract).healthStats(
+                    value[i]
+                ),
+                CharacterCardInterface(CharactersContract).attackStats(
+                    value[i]
+                ),
                 true
             );
         }
@@ -388,7 +477,10 @@ contract Game {
      * @param __from The value to subtract from.
      * @return newValue The result of the subtraction.
      */
-    function __subtractToZero(uint __value, uint __from) internal pure returns (uint newValue) {
+    function __subtractToZero(
+        uint __value,
+        uint __from
+    ) internal pure returns (uint newValue) {
         if (__from > __value) {
             return __from - __value;
         } else if (__from <= __value) {
@@ -402,7 +494,10 @@ contract Game {
      * @param __num2l The second player's dice roll.
      * @return true if the first player's roll is greater, false otherwise.
      */
-    function __checkBiggerNumber(uint __num1g, uint __num2l) internal pure returns (bool) {
+    function __checkBiggerNumber(
+        uint __num1g,
+        uint __num2l
+    ) internal pure returns (bool) {
         if (__num1g >= __num2l) {
             return true;
         } else {
@@ -416,7 +511,10 @@ contract Game {
      * @param values An array containing the addresses of both players.
      * @return The address of the other player.
      */
-    function __returnOtherValues(address value, address[] memory values) internal pure returns (address) {
+    function __returnOtherValues(
+        address value,
+        address[] memory values
+    ) internal pure returns (address) {
         for (uint i = 0; i < values.length; i++) {
             if (values[i] == value && i + 1 < values.length) {
                 return values[i + 1];
@@ -425,7 +523,7 @@ contract Game {
         return address(0);
     }
 
-       /**
+    /**
      * @dev Retrieve the active character token ID for a player.
      * @param _addr The address of the player.
      * @return x  The token ID of the active character.
@@ -444,8 +542,12 @@ contract Game {
      * @param _tokenId The token ID of the character to set as active.
      * @return activeCharacter The token ID of the newly active character.
      */
-    function setSwitchActiveCharacter(uint _tokenId) external returns (uint activeCharacter) {
-        uint[] storage values = matchDetails.addressToCharacterIdIngame[msg.sender];
+    function setSwitchActiveCharacter(
+        uint _tokenId
+    ) external returns (uint activeCharacter) {
+        uint[] storage values = matchDetails.addressToCharacterIdIngame[
+            msg.sender
+        ];
         for (uint256 i = 0; i < values.length; i++) {
             _activeCharacter[msg.sender][values[i]] = false;
         }
@@ -455,7 +557,6 @@ contract Game {
         __switchPlayer();
         // emit an event
     }
-
 
     /**
      * @dev Check if the given address is participating in the game.
@@ -475,20 +576,28 @@ contract Game {
         return playerToCharCards[_addr].length == 3;
     }
 
-   /**
+    /**
      * @dev Return the other player in the game.
      * @param _returnOpp The address of the current player.
      * @return The address of the other player.
      */
-    function returnOtherPlayer(address _returnOpp) external view returns(address) {
+    function returnOtherPlayer(
+        address _returnOpp
+    ) external view returns (address) {
         return __returnOtherValues(_returnOpp, matchDetails.playersInGame);
     }
 
-        // This isnt the best way to do this, but this is for testing purpose.
+    // This isnt the best way to do this, but this is for testing purpose.
     // In the future, this will be changed to use binance oracle
-  function _generateRandomNumber(address _hash, address [] memory values) public view returns (uint256) {
-        return uint (keccak256(abi.encodePacked (msg.sender, block.timestamp,_hash, values ))) % 8 + 8;
+    function _generateRandomNumber(
+        address _hash,
+        address[] memory values
+    ) public view returns (uint256) {
+        return
+            (uint(
+                keccak256(
+                    abi.encodePacked(msg.sender, block.timestamp, _hash, values)
+                )
+            ) % 8) + 8;
     }
-
-
 }

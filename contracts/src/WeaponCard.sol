@@ -67,14 +67,17 @@ contract RealmClashWeapons is ERC721, ERC721Enumerable, ERC721URIStorage {
      * @param uri The URI for the token metadata.
      * @return The minted token ID.
      */
-    function mint(address to, string memory uri) public Minters returns (uint256) {
+    function mint(
+        address to,
+        string memory uri
+    ) public Minters returns (uint256) {
         _tokenIdCounter++;
         _safeMint(to, _tokenIdCounter);
         _setTokenURI(_tokenIdCounter, uri);
         return _tokenIdCounter;
     }
 
-     /**
+    /**
      * @dev Burn a weapon NFT.
      * @param _tokenId The ID of the token to burn.
      * @return The burned token ID.
@@ -168,13 +171,15 @@ contract RealmClashWeapons is ERC721, ERC721Enumerable, ERC721URIStorage {
         return weaponStats[_tokenId];
     }
 
-  
-      /**
+    /**
      * @dev Set the token URI for a given token ID.
      * @param _tokenId The ID of the token.
      * @param _tokenURI The URI for the token metadata.
      */
-    function setTokenURI(uint _tokenId, string memory _tokenURI) Minters external {
+    function setTokenURI(
+        uint _tokenId,
+        string memory _tokenURI
+    ) external Minters {
         _setTokenURI(_tokenId, _tokenURI);
     }
 
@@ -184,7 +189,10 @@ contract RealmClashWeapons is ERC721, ERC721Enumerable, ERC721URIStorage {
      * @param index The index of the token.
      * @return The token ID of the owner.
      */
-    function _tokenOfOwnerByIndex(address owner, uint index) external view returns (uint) {
+    function _tokenOfOwnerByIndex(
+        address owner,
+        uint index
+    ) external view returns (uint) {
         return tokenOfOwnerByIndex(owner, index);
     }
 
@@ -218,33 +226,34 @@ contract RealmClashWeapons is ERC721, ERC721Enumerable, ERC721URIStorage {
         return owner;
     }
 
- /**
- * @dev Function to return all token IDs owned by an address.
- * @param _address Address of the owner.
- * @return An array containing all token IDs owned by the address.
- */
-function returnAllOwnerTokenId(address _address) external view returns (uint[] memory) {
-    uint balance = balanceOf(_address);
-    uint[] memory _token = new uint[](balance); // Initialize dynamic array in memory
-    for(uint i = 0; i < balance; ++i ){
-        _token[i] =  tokenOfOwnerByIndex(_address,i);
+    /**
+     * @dev Function to return all token IDs owned by an address.
+     * @param _address Address of the owner.
+     * @return An array containing all token IDs owned by the address.
+     */
+    function returnAllOwnerTokenId(
+        address _address
+    ) external view returns (uint[] memory) {
+        uint balance = balanceOf(_address);
+        uint[] memory _token = new uint[](balance); // Initialize dynamic array in memory
+        for (uint i = 0; i < balance; ++i) {
+            _token[i] = tokenOfOwnerByIndex(_address, i);
+        }
+        return _token;
     }
-    return _token;
-}
 
-
-      /**
+    /**
      * @dev Override function to update token data.
      * @param to The address to update the token to.
      * @param tokenId The ID of the token to update.
      * @param auth The authorizing address.
      * @return The updated address.
      */
-    function _update(address to, uint256 tokenId, address auth)
-        internal
-        override(ERC721, ERC721Enumerable)
-        returns (address)
-    {
+    function _update(
+        address to,
+        uint256 tokenId,
+        address auth
+    ) internal override(ERC721, ERC721Enumerable) returns (address) {
         return super._update(to, tokenId, auth);
     }
 
@@ -253,10 +262,10 @@ function returnAllOwnerTokenId(address _address) external view returns (uint[] m
      * @param account The account to increase balance for.
      * @param value The value to increase balance by.
      */
-    function _increaseBalance(address account, uint128 value)
-        internal
-        override(ERC721, ERC721Enumerable)
-    {
+    function _increaseBalance(
+        address account,
+        uint128 value
+    ) internal override(ERC721, ERC721Enumerable) {
         super._increaseBalance(account, value);
     }
 
@@ -265,12 +274,9 @@ function returnAllOwnerTokenId(address _address) external view returns (uint[] m
      * @param tokenId The ID of the token.
      * @return The token URI.
      */
-    function tokenURI(uint256 tokenId)
-        public
-        view
-        override(ERC721, ERC721URIStorage)
-        returns (string memory)
-    {
+    function tokenURI(
+        uint256 tokenId
+    ) public view override(ERC721, ERC721URIStorage) returns (string memory) {
         return super.tokenURI(tokenId);
     }
 
@@ -279,7 +285,9 @@ function returnAllOwnerTokenId(address _address) external view returns (uint[] m
      * @param interfaceId The interface ID.
      * @return Whether the interface is supported.
      */
-    function supportsInterface(bytes4 interfaceId)
+    function supportsInterface(
+        bytes4 interfaceId
+    )
         public
         view
         override(ERC721, ERC721Enumerable, ERC721URIStorage)
@@ -292,5 +300,3 @@ function returnAllOwnerTokenId(address _address) external view returns (uint[] m
      * @dev Final closing comment for the RealmClashWeapons contract.
      */
 }
-
-

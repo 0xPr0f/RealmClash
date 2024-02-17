@@ -1,82 +1,120 @@
-"use client";
-import React, { useEffect, useRef, useState } from "react";
-import InputField from "../components/inputField/inputField";
-import styles from "./game.module.css";
-import BoxButton from "../components/boxButton/boxButton";
-import { writeContract } from "@wagmi/core";
+'use client'
+import React, { useEffect, useRef, useState } from 'react'
+import InputField from '../components/inputField/inputField'
+import styles from './game.module.css'
+import BoxButton from '../components/boxButton/boxButton'
 import {
   CHARACTERCARD_CONTRACTADDRESS,
   GAMEFACTORY_CONTRACTADDRESS,
-} from "../ADDRESSES";
-import { CHARACTERCARD_ABI, GAMEFACTORY_ABI } from "../ABI";
-import CardBox from "../components/cardBox/cardBox";
-import { useReadContract, useAccount, useWriteContract } from "wagmi";
-import { config } from "../charactercard/[id]/page";
-import { opBNBTestnet } from "viem/chains";
-import { isValidAddress } from "../components/utilities/utilities";
+} from '../ADDRESSES'
+import { CHARACTERCARD_ABI, GAMEFACTORY_ABI } from '../ABI'
+import CardBox from '../components/cardBox/cardBox'
+import {
+  useReadContract,
+  useAccount,
+  useWriteContract,
+  useSimulateContract,
+} from 'wagmi'
+import { goerli, opBNBTestnet } from 'viem/chains'
+import { isValidAddress } from '../components/utilities/utilities'
+import { writeContract, waitForTransactionReceipt } from '@wagmi/core'
+import { config } from '../Interloop'
+import { ethers } from 'ethers'
 
 export default function Game() {
-  const [challengee, setChallengee] = useState("");
-  const account = useAccount();
-  const { address } = useAccount();
-  //const { data: hash, writeContract } = useWriteContract();
-  const [selectedCards, setSelectedCards] = useState([]);
-  const [alltokenId, setAlltokenId] = useState([]);
+  const [challengee, setChallengee] = useState('')
+  const account = useAccount()
+  const { address } = useAccount()
+  //const { writeContract } = useWriteContract()
+  const [selectedCards, setSelectedCards] = useState([])
+  const [alltokenId, setAlltokenId] = useState([])
+
+  const { data: simulateData, error: simulateError } = useSimulateContract({
+    abi: GAMEFACTORY_ABI,
+    address: GAMEFACTORY_CONTRACTADDRESS,
+    functionName: 'createNewGameManual',
+    args: [challengee, selectedCards],
+    account: address,
+    chainId: opBNBTestnet.id,
+  })
 
   const handleCardClick = (cardId) => {
     if (selectedCards.includes(cardId)) {
-      setSelectedCards(selectedCards.filter((id) => id !== cardId));
+      setSelectedCards(selectedCards.filter((id) => id !== cardId))
     } else {
       if (selectedCards.length < 3) {
-        setSelectedCards([...selectedCards, cardId]);
+        setSelectedCards([...selectedCards, cardId])
       }
     }
-  };
+  }
 
   const requestChallenge = () => {
     if (selectedCards.length === 3 && isValidAddress(challengee)) {
-      console.log("game started", challengee, selectedCards);
-      challengePlayerByID(challengee, selectedCards);
+      console.log('game started', challengee, selectedCards)
+      sendRequest()
     } else {
-      console.log("you need three characters");
+      console.log('you need three characters')
     }
-  };
+  }
+  async function submit() {
+    writeContract({
+      address: GAMEFACTORY_CONTRACTADDRESS,
+      abi: GAMEFACTORY_ABI,
+      functionName: 'createNewGameManual',
+
+      args: [challengee, selectedCards],
+    })
+  }
 
   const challengePlayerByID = (_2ndPlayeraddress, _1stPlayerCharDeck) => {
     const call = writeContract({
       abi: GAMEFACTORY_ABI,
       address: GAMEFACTORY_CONTRACTADDRESS,
-      functionName: "createNewGameManual",
+      functionName: 'createNewGameManual',
       args: [_2ndPlayeraddress, _1stPlayerCharDeck],
       chainId: opBNBTestnet.id,
-    });
-    console.log(call);
-  };
+      account: address,
+    })
+    console.log(call)
+  }
   // test address 0x772A4f348d85FDd00e89fDE4C7CAe8628c8DAd19
   const allCharacterToken = useReadContract({
     abi: CHARACTERCARD_ABI,
     address: CHARACTERCARD_CONTRACTADDRESS,
-    functionName: "returnAllOwnerTokenId",
-    config: config,
+    functionName: 'returnAllOwnerTokenId',
     args: [address],
-    account: account,
+    account: address,
     chainId: opBNBTestnet.id,
-  });
+  })
   useEffect(() => {
-    setAlltokenId(allCharacterToken?.data);
-  }, [allCharacterToken]);
+    setAlltokenId(allCharacterToken?.data)
+  }, [allCharacterToken])
 
-  const test = async () => {
-    const result = await writeContract(config, {
+  const sendRequest = async () => {
+    const request = await writeContract(config, {
       abi: GAMEFACTORY_ABI,
       address: GAMEFACTORY_CONTRACTADDRESS,
-      functionName: "createNewGameManual",
+      functionName: 'createNewGameManual',
       args: [challengee, selectedCards],
       chainId: opBNBTestnet.id,
-    });
-    console.log(result);
-  };
+      account: address,
+    })
+    console.log(request)
+  }
 
+  const sort = async () => {
+    const transactionReceipt = await waitForTransactionReceipt(config, {
+      hash: '0x32e2edfff504bfb36ce53c3ab84d3f85ac6e448d495a62344c33581647d3383b',
+    })
+    console.log(transactionReceipt)
+
+    const ABI = new ethers.utils.Interface(GAMEFACTORY_ABI)
+
+    transactionReceipt.logs.map((i) => {
+      const nice = ABI.parseLog(i)
+      console.log(nice)
+    })
+  }
   return (
     <div>
       <div className={styles.centeredcontainer}>
@@ -88,9 +126,9 @@ export default function Game() {
             <InputField
               value={challengee}
               onChange={(e) => {
-                const re = /(?:0[xX])?[0-9a-fA-F]+/;
-                if (e.target.value === "" || re.test(e.target.value)) {
-                  setChallengee(e.target.value);
+                const re = /(?:0[xX])?[0-9a-fA-F]+/
+                if (e.target.value === '' || re.test(e.target.value)) {
+                  setChallengee(e.target.value)
                 }
               }}
               placeholder="Player ID"
@@ -110,12 +148,12 @@ export default function Game() {
                       onClick={() => handleCardClick(cardId)}
                       style={{
                         backgroundColor: selectedCards.includes(cardId)
-                          ? "#c3073f"
-                          : "#1a1a1d",
+                          ? '#c3073f'
+                          : '#1a1a1d',
 
-                        padding: "5px",
-                        margin: "5px",
-                        cursor: "pointer",
+                        padding: '5px',
+                        margin: '5px',
+                        cursor: 'pointer',
                       }}
                       height={80}
                       width={67}
@@ -128,23 +166,25 @@ export default function Game() {
               {selectedCards.length > 0 ? (
                 <div>
                   <h3>Selected Cards:</h3>
-                  <ul style={{ display: "flex" }}>
+                  <ul style={{ display: 'flex' }}>
                     {selectedCards.map((id) => (
-                      <li style={{ paddingRight: "10px" }} key={id}>
+                      <li style={{ paddingRight: '10px' }} key={id}>
                         Token ID#{id.toString()}
                       </li>
                     ))}
                   </ul>
                 </div>
               ) : (
-                ""
+                ''
               )}
             </div>
           </div>
           <BoxButton
-            onClick={() => {
+            onClick={async () => {
               //requestChallenge();
-              test();
+              console.log('button working')
+              // requestChallenge()
+              sort()
             }}
           >
             Request Challenge
@@ -152,5 +192,5 @@ export default function Game() {
         </div>
       </div>
     </div>
-  );
+  )
 }

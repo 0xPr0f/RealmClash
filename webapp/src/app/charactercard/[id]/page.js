@@ -9,9 +9,11 @@ import BoxButton from "@/app/components/boxButton/boxButton";
 import { CHARACTERCARD_ABI } from "@/app/ABI";
 import { opBNBTestnet } from "@wagmi/core/chains";
 import { http, createConfig } from "@wagmi/core";
+import { injected } from "wagmi/connectors";
 
 export const config = createConfig({
   chains: [opBNBTestnet],
+
   transports: {
     [opBNBTestnet.id]: http(),
   },

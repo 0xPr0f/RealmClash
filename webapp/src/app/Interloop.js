@@ -1,65 +1,82 @@
-"use client";
+'use client'
 
-import * as React from "react";
-
-import "@rainbow-me/rainbowkit/styles.css";
+import * as React from 'react'
+import { injected, walletConnect } from 'wagmi/connectors'
+import '@rainbow-me/rainbowkit/styles.css'
 import {
   RainbowKitProvider,
   getDefaultWallets,
   getDefaultConfig,
   lightTheme,
   darkTheme,
-} from "@rainbow-me/rainbowkit";
+} from '@rainbow-me/rainbowkit'
 import {
   rabbyWallet,
   trustWallet,
   ledgerWallet,
-} from "@rainbow-me/rainbowkit/wallets";
-import { WagmiProvider } from "wagmi";
-import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
-import Footer from "./footer";
-import Header from "./header";
+} from '@rainbow-me/rainbowkit/wallets'
+import { WagmiProvider, http, createConfig } from 'wagmi'
+import { QueryClientProvider, QueryClient } from '@tanstack/react-query'
+import Footer from './footer'
+import Header from './header'
+import { goerli, opBNBTestnet, sepolia } from 'viem/chains'
+import { defaultWagmiConfig } from '@web3modal/wagmi/react/config'
 
-const { wallets } = getDefaultWallets();
+import { cookieStorage, createStorage } from 'wagmi'
+const { wallets } = getDefaultWallets()
 
 export const opBNBchainTestnet = {
   id: 5611,
-  name: "opBNB Testnet",
-  network: "Optimistic BNB Testnet",
+  name: 'opBNB Testnet',
+  network: 'Optimistic BNB Testnet',
   iconUrl:
-    "https://violet-reluctant-warbler-180.mypinata.cloud/ipfs/QmWtPYujXhaDX36UGoFeJyBXnXGi4GM47iXX8cSkhgSQTr",
-  iconBackground: "#FFFFFF",
+    'https://violet-reluctant-warbler-180.mypinata.cloud/ipfs/QmWtPYujXhaDX36UGoFeJyBXnXGi4GM47iXX8cSkhgSQTr',
+  iconBackground: '#FFFFFF',
   nativeCurrency: {
     decimals: 18,
-    name: "opBNB",
-    symbol: "tBNB",
+    name: 'opBNB',
+    symbol: 'tBNB',
   },
   rpcUrls: {
-    default: "https://opbnb-testnet-rpc.bnbchain.org",
+    default: 'https://opbnb-testnet-rpc.bnbchain.org',
   },
   blockExplorers: {
-    default: { name: "opBNBscan", url: "https://opbnb-testnet.bscscan.com/" },
-    etherscan: { name: "opBNBscan", url: "https://opbnb-testnet.bscscan.com/" },
+    default: { name: 'opBNBscan', url: 'https://opbnb-testnet.bscscan.com/' },
+    etherscan: { name: 'opBNBscan', url: 'https://opbnb-testnet.bscscan.com/' },
   },
   testnet: true,
-};
+}
 
-const config = getDefaultConfig({
-  appName: "Realm Clash",
+export const config = getDefaultConfig({
+  appName: 'Realm Clash',
   projectId: process.env.NEXT_PUBLIC_PROJECT_ID,
   wallets: [
     ...wallets,
     {
-      groupName: "Other",
+      groupName: 'Others',
       wallets: [rabbyWallet, trustWallet, ledgerWallet],
     },
   ],
-  chains: [opBNBchainTestnet],
-
+  chains: [opBNBTestnet],
+  storage: createStorage({
+    storage: cookieStorage,
+  }),
   ssr: true,
-});
-const queryClient = new QueryClient();
+})
 
+// Get projectId at https://cloud.walletconnect.com
+export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID
+
+if (!projectId) throw new Error('Project ID is not defined')
+
+const metadata = {
+  name: 'Web3Modal',
+  description: 'Web3Modal Example',
+  url: 'https://web3modal.com', // origin must match your domain & subdomain
+  icons: ['https://avatars.githubusercontent.com/u/37784886'],
+}
+
+const queryClient = new QueryClient()
 export default function Interloop({ children }) {
   return (
     <div>
@@ -68,11 +85,11 @@ export default function Interloop({ children }) {
           <RainbowKitProvider
             modalSize="compact"
             theme={darkTheme({
-              accentColor: "#c3073f",
-              accentColorForeground: "#1a1a1d",
-              borderRadius: "none",
-              fontStack: "system",
-              overlayBlur: "small",
+              accentColor: '#c3073f',
+              accentColorForeground: '#1a1a1d',
+              borderRadius: 'none',
+              fontStack: 'system',
+              overlayBlur: 'small',
             })}
           >
             <Header />
@@ -82,5 +99,5 @@ export default function Interloop({ children }) {
         </QueryClientProvider>
       </WagmiProvider>
     </div>
-  );
+  )
 }

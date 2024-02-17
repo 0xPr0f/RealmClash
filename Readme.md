@@ -31,3 +31,28 @@ This repo contain a POC for an idea i dreamt off.
 - gas optimaztions and unit computational testing
 - Introduction of armor and boosts(spells)
 - QOL, better UI and smart contracts
+
+### Project
+
+Realm clash is opensource both the contracts and frontend, the idea is also open for adjustments and evaluation.
+
+### RealmClash/contract
+
+Contains all the contract that makes this poc function which include natspecs so it can be easier to read through and understand. This contract is built to be fully on chain and the front end is build to access that.
+
+There are still alot of plans and optimaztion for this contract, but current hinderance in the 3 days of bulding this contract are.
+
+- Stack too deep on `contract/CharacterCard.sol` when attaching stats, tried using arrays in the argument and indexing it to fill the struct, no avail
+- Redundant for loops, for loops are know for consuming gas, assembly could have been used, but for the sake for this POC it wasnt
+- Time
+
+### RealmClash/webapp
+
+Contains the nextjs front end for the contracts, it is fairly minimalist and probably not appealing, i am not too good with UI and colors
+
+Hinderance in webapp
+
+- wagmi and viem 2.x contributed in psychological trauma as when using the useWriteContract hook, it does work, but when using the `wagmi/core`, that writeContract function, seems to work.
+- Rainbow kit was bugging out on localhost where some of the buttons where unresponsive.
+- vercel and nextjs, i was relatively new to both and didnt know vercel needed config to find the routes of my project and nexjs file/folder structure routing was easy but just weird.
+- probably color blind or terrible taste in color and not that great at UI

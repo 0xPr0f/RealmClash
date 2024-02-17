@@ -7,19 +7,23 @@ import {Game} from "./Game.sol";
  */
 contract RealmFactory {
     // Event emitted when a new game is created
-    event GameCreated (address indexed initiator, address indexed challengee, uint[] initiatorDeck);
-    
+    event GameCreated(
+        address indexed initiator,
+        address indexed challengee,
+        uint[] initiatorDeck
+    );
+
     // Mapping to track allowed contract owners
     mapping(address => bool) private _allowedOwners;
 
     // Mapping to track player win counts
-    mapping (address => uint) private _addressToWinCount;
+    mapping(address => uint) private _addressToWinCount;
 
     // Mapping to track player lose counts
-    mapping (address => uint) private _addressToLoseCount;
+    mapping(address => uint) private _addressToLoseCount;
 
     // Mapping to track players' participation in games
-    mapping (address => address[]) private _playerToGames;
+    mapping(address => address[]) private _playerToGames;
 
     // Address of the CharacterCard contract
     address public characterCardAddress; // Set during contract deployment
@@ -30,8 +34,8 @@ contract RealmFactory {
     address[] private _allGames;
 
     // Modifier to restrict access to contract owners
-    modifier onlyOwners(){
-        require (_allowedOwners[msg.sender], "Not allowed");
+    modifier onlyOwners() {
+        require(_allowedOwners[msg.sender], "Not allowed");
         _;
     }
 
@@ -49,26 +53,36 @@ contract RealmFactory {
     function addOwner(address _addr) external onlyOwners {
         _allowedOwners[_addr] = true;
     }
-     
+
     /**
      * @dev Create a new game manually between two players.
      * @param _2ndPlayer The address of the second player.
      * @param _1stPlayerCharDeck The deck of the first player.
      */
-    function createNewGameManual(address _2ndPlayer, uint[] memory _1stPlayerCharDeck) external {
+    function createNewGameManual(
+        address _2ndPlayer,
+        uint[] memory _1stPlayerCharDeck
+    ) external {
         gameIdCounter++;
         // Create a new Game contract
-        Game game = new Game(msg.sender, _2ndPlayer, _1stPlayerCharDeck, address(this), characterCardAddress,gameIdCounter);
+        Game game = new Game(
+            msg.sender,
+            _2ndPlayer,
+            _1stPlayerCharDeck,
+            address(this),
+            characterCardAddress,
+            gameIdCounter
+        );
         // Store the address of the new game contract
         _allGames.push(address(game));
         // Update playerToGames mapping for both players
-       // _playerToGames[msg.sender].push(address(game));
+        // _playerToGames[msg.sender].push(address(game));
         _playerToGames[_2ndPlayer].push(address(game));
         // Emit GameCreated event
-        emit GameCreated(msg.sender, _2ndPlayer, _1stPlayerCharDeck); 
+        emit GameCreated(msg.sender, _2ndPlayer, _1stPlayerCharDeck);
     }
 
-    function totalGames () external view returns(uint){
+    function totalGames() external view returns (uint) {
         return gameIdCounter;
     }
 
@@ -115,7 +129,9 @@ contract RealmFactory {
      * @param _player The address of the player.
      * @return The list of game contracts.
      */
-    function getPlayerGames(address _player) external view returns (address[] memory) {
+    function getPlayerGames(
+        address _player
+    ) external view returns (address[] memory) {
         return _playerToGames[_player];
     }
 
@@ -133,7 +149,9 @@ contract RealmFactory {
      * @dev Set the address of the CharacterCard contract.
      * @param _characterCardAddress The address of the CharacterCard contract.
      */
-    function setCharacterCardAddress(address _characterCardAddress) external onlyOwners {
+    function setCharacterCardAddress(
+        address _characterCardAddress
+    ) external onlyOwners {
         characterCardAddress = _characterCardAddress;
     }
 }

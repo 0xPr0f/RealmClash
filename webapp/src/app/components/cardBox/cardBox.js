@@ -73,7 +73,9 @@ export function CardBoxGame({
     >
       {showStats ? (
         <div className={styles.StatusBar}>
-          {result.data && <span>H: {result.data[0].toString()}</span>}
+          {result.data && (
+            <span>H: {result.data && result.data[0].toString()}</span>
+          )}
 
           {result.data && (
             <span>A: {result.data && result.data[1].toString()}</span>
