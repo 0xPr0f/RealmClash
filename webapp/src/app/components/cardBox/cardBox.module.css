@@ -19,3 +19,31 @@
   padding: 0;
   font-size: 11px;
 }
+.circle {
+  position: absolute;
+  left: 100%;
+  top: 100%;
+  transform: translate(-50%, -50%) rotate(-45deg);
+  width: 15px;
+  height: 15px;
+  background-color: green;
+  border-radius: 50%;
+}
+.containerDot {
+  width: 200px; /* Set the width of the container */
+  height: 200px; /* Set the height of the container */
+  background-color: blue; /* Set background color of the container */
+}
+
+.cardGame {
+  width: 120px;
+  height: 170px;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  margin: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+}

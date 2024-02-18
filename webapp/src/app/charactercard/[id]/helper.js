@@ -1,17 +1,17 @@
-import React from "react";
+import React from 'react'
 
-export const TextHelper = ({ lhsv, rhsv }) => {
+export const TextHelper = ({ lhsv, rhsv, children }) => {
   return (
     <p>
       <span
         style={{
-          fontWeight: "lighter",
-          fontSize: "18px",
+          fontWeight: 'lighter',
+          fontSize: '18px',
         }}
       >
-        {lhsv}:
-      </span>{" "}
+        {lhsv}:{' '}
+      </span>
       <span>{rhsv}</span>
     </p>
-  );
-};
+  )
+}

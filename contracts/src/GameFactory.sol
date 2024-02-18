@@ -8,6 +8,7 @@ import {Game} from "./Game.sol";
 contract RealmFactory {
     // Event emitted when a new game is created
     event GameCreated(
+        address indexed game,
         address indexed initiator,
         address indexed challengee,
         uint[] initiatorDeck
@@ -23,16 +24,18 @@ contract RealmFactory {
     mapping(address => uint) private _addressToLoseCount;
 
     // Mapping to track players' participation in games
-    mapping(address => address[]) private _playerToGames;
+    mapping(address => address[]) public _playerToGames;
 
     // Address of the CharacterCard contract
-    address public characterCardAddress; // Set during contract deployment
+    address public characterCardAddress; // Set after contract deployment (dont do this)
 
     uint private gameIdCounter;
 
     // Array to store all game contracts
     address[] private _allGames;
-
+    function allGames() external view returns (address[] memory) {
+        return _allGames;
+    }
     // Modifier to restrict access to contract owners
     modifier onlyOwners() {
         require(_allowedOwners[msg.sender], "Not allowed");
@@ -76,10 +79,15 @@ contract RealmFactory {
         // Store the address of the new game contract
         _allGames.push(address(game));
         // Update playerToGames mapping for both players
-        // _playerToGames[msg.sender].push(address(game));
+        _playerToGames[msg.sender].push(address(game));
         _playerToGames[_2ndPlayer].push(address(game));
         // Emit GameCreated event
-        emit GameCreated(msg.sender, _2ndPlayer, _1stPlayerCharDeck);
+        emit GameCreated(
+            address(game),
+            msg.sender,
+            _2ndPlayer,
+            _1stPlayerCharDeck
+        );
     }
 
     function totalGames() external view returns (uint) {

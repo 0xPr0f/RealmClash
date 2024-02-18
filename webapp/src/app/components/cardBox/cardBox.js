@@ -1,12 +1,12 @@
-import { useAccount, useReadContract } from "wagmi";
-import styles from "./cardBox.module.css";
-import { GAME_ABI } from "@/app/ABI";
-import { config } from "@/app/charactercard/[id]/page";
-import { opBNBTestnet } from "viem/chains";
-import { useEffect, useState } from "react";
-import { serialize } from "wagmi";
+import { useAccount, useReadContract } from 'wagmi'
+import styles from './cardBox.module.css'
+import { GAME_ABI } from '@/app/ABI'
+import { config } from '@/app/charactercard/[id]/page'
+import { opBNBTestnet } from 'viem/chains'
+import { useEffect, useState } from 'react'
+import { serialize } from 'wagmi'
 export default function CardBox({
-  children = "card 1",
+  children = 'card 1',
   className,
   onClick,
   showStats = true,
@@ -18,7 +18,7 @@ export default function CardBox({
   return (
     <div
       style={style}
-      className={[styles.cardHolder, className ? className : ""].join(" ")}
+      className={[styles.cardHolder, className ? className : ''].join(' ')}
     >
       {showStats ? (
         <div className={styles.StatusBar}>
@@ -27,7 +27,7 @@ export default function CardBox({
           <span>A: 100</span>
         </div>
       ) : (
-        ""
+        ''
       )}
       <div
         className={styles.card}
@@ -37,39 +37,37 @@ export default function CardBox({
         {children}
       </div>
     </div>
-  );
+  )
 }
 
 export function CardBoxGame({
-  children = "card 1",
+  children = 'card 1',
   className,
   onClick,
   showStats = true,
   width,
   height,
   borderRadius,
-  health,
-  attack,
   style,
   tokenId,
   gameaddress,
+  displayActiveButton = false,
 }) {
-  const account = useAccount();
-  const [resultnice, setResultnice] = useState();
+  const account = useAccount()
   const result = useReadContract({
     abi: GAME_ABI,
     address: gameaddress,
-    functionName: "characterStatsInGame",
+    functionName: 'characterStatsInGame',
     config: config,
     args: [tokenId?.toString()],
     account: account,
     chainId: opBNBTestnet.id,
-  });
+  })
 
   return (
     <div
       style={style}
-      className={[styles.cardHolder, className ? className : ""].join(" ")}
+      className={[styles.cardHolder, className ? className : ''].join(' ')}
     >
       {showStats ? (
         <div className={styles.StatusBar}>
@@ -82,15 +80,18 @@ export function CardBoxGame({
           )}
         </div>
       ) : (
-        ""
+        ''
       )}
       <div
-        className={styles.card}
+        className={styles.cardGame}
         style={{ width: width, height: height, borderRadius: borderRadius }}
         onClick={onClick}
       >
-        {children}
+        <div>
+          {children}
+          {displayActiveButton && <div className={styles.circle}></div>}
+        </div>
       </div>
     </div>
-  );
+  )
 }

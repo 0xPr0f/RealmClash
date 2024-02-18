@@ -12,6 +12,7 @@ export const BoxButton = ({
   customloading,
   outsidePadding,
   className,
+  spinSharply = false,
 }) => {
   return (
     <div style={{ padding: outsidePadding }}>
@@ -29,9 +30,13 @@ export const BoxButton = ({
           padding: padding,
           cursor: cursor,
         }}
-        className={[styles.button, className].join(' ')}
+        className={
+          spinSharply
+            ? [styles.buttonSharp, className].join(' ')
+            : [styles.button, className].join(' ')
+        }
       >
-        <span className={styles.spaninside}> {children}</span>
+        <span>{children}</span>
       </button>
     </div>
   )

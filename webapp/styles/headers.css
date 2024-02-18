@@ -10,11 +10,11 @@
   display: block;
   color: #950740;
   /*text-align: center; */
-  padding: 16px 25px;
+  padding: 16px 10px;
   text-decoration: none;
   font-weight: 300;
-  font-size: 1rem; /* 24px */
-  line-height: 1.5rem; /* 32px */
+  font-size: 0.9rem; /* 24px */
+  line-height: 1.4rem; /* 32px */
 }
 .picture {
   float: left;

@@ -57,5 +57,5 @@
     auto-fill,
     minmax(80px, 1fr)
   ); /* Adjust column width as needed */
-  gap: 5px; /* Adjust gap between grid items */
+  gap: 6px; /* Adjust gap between grid items */
 }

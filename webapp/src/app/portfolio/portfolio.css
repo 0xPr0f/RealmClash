@@ -7,23 +7,39 @@
   margin: 0 auto; /* Auto margin horizontally centers the div */
   padding-top: 50px;
   padding-bottom: 50px;
-  width: 1000px;
+  width: 700px;
   flex: 1; /* Allow the content to grow to fill the available space */
 }
+
 .gridcontainer {
-  height: 700px; /* Adjust the height as needed */
-  overflow: auto; /* Enable scrollbars if content overflows */
+  height: 500px;
+  width: 650px;
+  overflow: auto;
 }
 
 .grid {
   display: grid;
   grid-template-columns: repeat(
     auto-fill,
-    minmax(200px, 1fr)
+    minmax(150px, 1fr)
   ); /* Adjust column width as needed */
-  gap: 8px; /* Adjust gap between grid items */
+  gap: 1px; /* Adjust gap between grid items */
 }
 
 .padbox {
   padding: 20px;
+}
+.scrollablegridcontainer {
+  overflow-y: auto; /* Enable vertical scrolling */
+  max-height: 300px;
+  max-width: 600px;
+}
+
+.cardgrid {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(80px, 1fr)
+  ); /* Adjust column width as needed */
+  gap: 1px; /* Adjust gap between grid items */
 }

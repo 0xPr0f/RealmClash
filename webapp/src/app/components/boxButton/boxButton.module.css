@@ -17,17 +17,35 @@
   font-weight: 300;
   transition: transform 0.4s;
 }
+.buttonSharp {
+  background-color: #4e4e50;
+  padding: 5px 10px;
+  border: none;
+  color: #c3073f;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 0;
+  font-weight: 300;
+}
 
 .button:hover .spaninside {
-  transform: rotate(180deg); /* Rotate the content 360 degrees on hover */
+  transform: rotate(180deg);
 }
 
 .spaninside {
   display: inline-block;
-  transition: transform 0.5s; /* Add transition for smooth animation */
+  transition: transform 0.5s;
 }
 .button:hover {
-  transform: rotate(
-    -360deg
-  ); /* Rotate the button itself 360 degrees on hover */
+  transform: rotate(-180deg);
+}
+
+.buttonSharp:hover .spanSharpinside {
+  transform: rotate(180deg); /* Rotate the content 360 degrees on hover */
+}
+
+.buttonSharp:hover {
+  transform: rotate(-180deg);
 }

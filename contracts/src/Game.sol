@@ -66,7 +66,11 @@ contract Game {
         bool isAlive; // Flag indicating if the character is alive
     }
     mapping(uint => CharacterCardsInGameStats) public characterStatsInGame;
-
+    function returnAddressToCharacterIdIngame(
+        address _add
+    ) external view returns (uint[] memory) {
+        return matchDetails.addressToCharacterIdIngame[_add];
+    }
     // Modifier to check if the player owns the specified character cards
     modifier checkPlayerAgainstCards(address _addr) {
         _;
@@ -95,6 +99,20 @@ contract Game {
         require(!matchDetails.gameOver, "Game Over");
         _;
     }
+
+    /// events
+    event setSwitchCharacter(
+        uint previous,
+        uint current,
+        address indexed player
+    );
+    event TakeDamage(
+        uint dealer,
+        uint damageDealt,
+        uint defender,
+        address indexed player
+    );
+    event GameWon(address indexed winner, address indexed loser);
 
     /// @dev Initializes the game with the specified players and character decks
     /// @param _1stPlayer Address of the first player
@@ -173,6 +191,7 @@ contract Game {
             _2ndPlayerCharDeck,
             matchDetails.gameId
         );
+        startGameAndRowDice();
     }
 
     function _setGameId(uint _id) internal {
@@ -180,7 +199,7 @@ contract Game {
     }
 
     /// @dev Function to start the game and roll the dice to determine the player's turn
-    function startGameAndRowDice() external {
+    function startGameAndRowDice() public {
         require(
             !matchDetails.gameStarted && matchDetails.gameAccepted,
             "Started"
@@ -294,7 +313,9 @@ contract Game {
                 msg.sender,
                 matchDetails.playersInGame
             );
+            emit GameWon(matchDetails.winner, msg.sender);
         }
+        require(matchDetails.gameOver == false);
     }
 
     /**
@@ -433,7 +454,7 @@ contract Game {
     function fixAllCharacterAndStats(
         uint[] memory value,
         address _address
-    ) public {
+    ) internal {
         for (uint i = 0; i < value.length; ++i) {
             require(
                 CharacterCardInterface(CharactersContract)._isCharacterOwner(
@@ -498,11 +519,7 @@ contract Game {
         uint __num1g,
         uint __num2l
     ) internal pure returns (bool) {
-        if (__num1g >= __num2l) {
-            return true;
-        } else {
-            return false;
-        }
+        return (__num2l < __num1g);
     }
 
     /**
@@ -545,6 +562,11 @@ contract Game {
     function setSwitchActiveCharacter(
         uint _tokenId
     ) external returns (uint activeCharacter) {
+        address previousActiveCharacters = __returnOtherValues(
+            msg.sender,
+            matchDetails.playersInGame
+        );
+        uint previousCharacter = getActiveCharacter(previousActiveCharacters);
         uint[] storage values = matchDetails.addressToCharacterIdIngame[
             msg.sender
         ];
@@ -553,9 +575,10 @@ contract Game {
         }
         _activeCharacter[msg.sender][_tokenId] = true;
         require(isCharacterAlive(_tokenId));
-        activeCharacter = _tokenId;
+
         __switchPlayer();
-        // emit an event
+        emit setSwitchCharacter(previousCharacter, _tokenId, msg.sender);
+        activeCharacter = _tokenId;
     }
 
     /**
