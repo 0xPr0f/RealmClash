@@ -3016,89 +3016,6 @@ export const GAME_ABI = [
 ]
 export const FAUCET_ABI = [
   {
-    inputs: [],
-    stateMutability: 'nonpayable',
-    type: 'constructor',
-  },
-  {
-    inputs: [],
-    name: 'ArcherURI',
-    outputs: [
-      {
-        internalType: 'string',
-        name: '',
-        type: 'string',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'BowURI',
-    outputs: [
-      {
-        internalType: 'string',
-        name: '',
-        type: 'string',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'HopGoblinURI',
-    outputs: [
-      {
-        internalType: 'string',
-        name: '',
-        type: 'string',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'KnightURI',
-    outputs: [
-      {
-        internalType: 'string',
-        name: '',
-        type: 'string',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'MachetURI',
-    outputs: [
-      {
-        internalType: 'string',
-        name: '',
-        type: 'string',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'SwordURI',
-    outputs: [
-      {
-        internalType: 'string',
-        name: '',
-        type: 'string',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
     inputs: [
       {
         internalType: 'address',
@@ -3109,19 +3026,6 @@ export const FAUCET_ABI = [
     name: 'addOwner',
     outputs: [],
     stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'characterCardAddress',
-    outputs: [
-      {
-        internalType: 'address',
-        name: '',
-        type: 'address',
-      },
-    ],
-    stateMutability: 'view',
     type: 'function',
   },
   {
@@ -3252,6 +3156,102 @@ export const FAUCET_ABI = [
     name: 'setWeaponCardAddress',
     outputs: [],
     stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    stateMutability: 'nonpayable',
+    type: 'constructor',
+  },
+  {
+    inputs: [],
+    name: 'ArcherURI',
+    outputs: [
+      {
+        internalType: 'string',
+        name: '',
+        type: 'string',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'BowURI',
+    outputs: [
+      {
+        internalType: 'string',
+        name: '',
+        type: 'string',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'characterCardAddress',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'HopGoblinURI',
+    outputs: [
+      {
+        internalType: 'string',
+        name: '',
+        type: 'string',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'KnightURI',
+    outputs: [
+      {
+        internalType: 'string',
+        name: '',
+        type: 'string',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'MachetURI',
+    outputs: [
+      {
+        internalType: 'string',
+        name: '',
+        type: 'string',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'SwordURI',
+    outputs: [
+      {
+        internalType: 'string',
+        name: '',
+        type: 'string',
+      },
+    ],
+    stateMutability: 'view',
     type: 'function',
   },
   {

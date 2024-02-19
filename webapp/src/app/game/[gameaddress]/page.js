@@ -136,7 +136,6 @@ export default function GameRoom({ params }) {
     abi: GAME_ABI,
     address: params.gameaddress,
     functionName: 'addressToPlay',
-    args: [address],
     account: account,
     chainId: opBNBTestnet.id,
   })
@@ -390,25 +389,25 @@ export default function GameRoom({ params }) {
                     <br />
                     <MenuItem>
                       <TextHelper
-                        lhsv="Game ID"
+                        lhsv="Game ID:"
                         rhsv={MatchDetails && MatchDetails[0]?.toString()}
                       />
                     </MenuItem>
                     <MenuItem>
                       <TextHelper
-                        lhsv="Accepted Time"
+                        lhsv="Accepted Time:"
                         rhsv={MatchDetails && MatchDetails[2]?.toString()}
                       />
                     </MenuItem>
                     <MenuItem>
                       <TextHelper
-                        lhsv="Game Started"
+                        lhsv="Game Started:"
                         rhsv={MatchDetails && MatchDetails[4]?.toString()}
                       />
                     </MenuItem>
                     <MenuItem>
                       <TextHelper
-                        lhsv="Winner"
+                        lhsv="Winner:"
                         rhsv={
                           MatchDetails && shortenText(MatchDetails[8], 4, 4)
                         }
@@ -416,7 +415,7 @@ export default function GameRoom({ params }) {
                     </MenuItem>
                     <MenuItem>
                       <TextHelper
-                        lhsv="Game Over"
+                        lhsv="Game Over:"
                         rhsv={MatchDetails && MatchDetails[7]?.toString()}
                       />
                     </MenuItem>
@@ -470,7 +469,14 @@ export default function GameRoom({ params }) {
               >
                 <div>
                   <TextHelper
-                    lhsv="Power Point"
+                    lhsv={
+                      AddressTurnToPlay === address
+                        ? 'Your turn to play'
+                        : 'Opponent turn to play'
+                    }
+                  />
+                  <TextHelper
+                    lhsv="Power Point:"
                     rhsv={
                       !(PowerPointCount === undefined)
                         ? PowerPointCount.toString()

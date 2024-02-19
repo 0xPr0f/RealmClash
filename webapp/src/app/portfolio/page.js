@@ -1,9 +1,15 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { CHARACTERCARD_ABI, FAUCET_ABI, GAME_ABI } from '../ABI'
+import {
+  CHARACTERCARD_ABI,
+  FAUCET_ABI,
+  GAMEFACTORY_ABI,
+  GAME_ABI,
+} from '../ABI'
 import {
   CHARACTERCARD_CONTRACTADDRESS,
   FAUCET_CONTRACTADDRESS,
+  GAMEFACTORY_CONTRACTADDRESS,
 } from '../ADDRESSES'
 import CardBox from '../components/cardBox/cardBox'
 import './portfolio.css'
@@ -19,6 +25,7 @@ import { writeContract, waitForTransactionReceipt } from '@wagmi/core'
 import EmptyView from '../components/emptyView/emptyView'
 import { config } from '../Interloop'
 import { ethers } from 'ethers'
+import { decodeTransactionLogs } from '../game/helper'
 
 export default function Portfolio() {
   const account = useAccount()
@@ -81,8 +88,8 @@ export default function Portfolio() {
     }
   }
   const playerGames = useReadContract({
-    abi: CHARACTERCARD_ABI,
-    address: CHARACTERCARD_CONTRACTADDRESS,
+    abi: GAMEFACTORY_ABI,
+    address: GAMEFACTORY_CONTRACTADDRESS,
     functionName: 'getPlayerGames',
     args: [address],
     account: account,
@@ -140,22 +147,21 @@ export default function Portfolio() {
     router.push(`/game/${gameEventDecode.args.game}`)
   }
   const useFaucet = async () => {
-    if (!isConnected) return
     try {
+      setIsLoadingNice(true)
       const request = await writeContract(config, {
         abi: FAUCET_ABI,
         address: FAUCET_CONTRACTADDRESS,
         functionName: 'mintAndaddCharacterAttributes',
         args: [address],
         chainId: opBNBTestnet.id,
-        account: address,
+        account: account,
       })
-      console.log()
+      console.log(request)
       await waitForTransactionReceipt(config, {
         hash: request,
-      }).then(() => {
-        router.reload()
       })
+      router.refresh()
     } catch (e) {
       setIsLoadingNice(false)
     }
@@ -221,38 +227,36 @@ export default function Portfolio() {
                 </BoxButton>
               </div>
             </div>
+
             <div className="scrollablegridcontainer">
-              {allPlayerGames ||
-                ['0xe9b675C8fC1051363E6B1b200b9E38629fE464B7']?.map(
-                  (gameadress) => (
-                    <div
-                      key={gameadress}
-                      style={{
-                        paddingLeft: '10px',
-                        paddingRight: '10px',
+              {allPlayerGames?.map((gameadress) => (
+                <div
+                  key={gameadress}
+                  style={{
+                    paddingLeft: '10px',
+                    paddingRight: '10px',
+                  }}
+                >
+                  <div
+                    style={{
+                      paddingLeft: '1px',
+                      paddingRight: '1px',
+                      backgroundColor: selectedBox.includes(gameadress)
+                        ? '#c3073f'
+                        : '#1a1a1d',
+                    }}
+                  >
+                    <HoriGridBox
+                      onClick={() => {
+                        handleBoxClick(gameadress)
+                        console.log(gameadress)
                       }}
                     >
-                      <div
-                        style={{
-                          paddingLeft: '1px',
-                          paddingRight: '1px',
-                          backgroundColor: selectedBox.includes(gameadress)
-                            ? '#c3073f'
-                            : '#1a1a1d',
-                        }}
-                      >
-                        <HoriGridBox
-                          onClick={() => {
-                            handleBoxClick(gameadress)
-                            console.log(gameadress)
-                          }}
-                        >
-                          <TextHelper lhsv="Address" rhsv={gameadress} />
-                        </HoriGridBox>
-                      </div>
-                    </div>
-                  )
-                )}
+                      <TextHelper lhsv="Address:" rhsv={gameadress} />
+                    </HoriGridBox>
+                  </div>
+                </div>
+              ))}
 
               <br />
               <div className="scrollablegridcontainer">

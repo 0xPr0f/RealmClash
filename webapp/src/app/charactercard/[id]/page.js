@@ -139,51 +139,51 @@ export default function CharacterCardViewFullPage({ params }) {
             </div>
             <div style={{ flex: '1', padding: '20px' }}>
               <div style={{ paddingTop: '20px' }}>
-                <TextHelper lhsv="Name" rhsv={characterdetails?.name} />
+                <TextHelper lhsv="Name:" rhsv={characterdetails?.name} />
                 <TextHelper
-                  lhsv="Base Health"
+                  lhsv="Base Health:"
                   rhsv={characterdetails?.baseHealth.toString()}
                 />
                 <TextHelper
-                  lhsv="Base Attack"
+                  lhsv="Base Attack:"
                   rhsv={characterdetails?.baseAttack.toString()}
                 />
                 <TextHelper
-                  lhsv="Base Magic Power"
+                  lhsv="Base Magic Power:"
                   rhsv={characterdetails?.baseMagicPower.toString()}
                 />
                 <TextHelper
-                  lhsv="Base Skill Multipier"
+                  lhsv="Base Skill Multipier:"
                   rhsv={characterdetails?.baseSkillMultipier.toString()}
                 />
                 <TextHelper
-                  lhsv="Class Name"
+                  lhsv="Class Name:"
                   rhsv={characterdetails?.className.toString()}
                 />
                 <TextHelper
-                  lhsv="Is Usable"
+                  lhsv="Is Usable:"
                   rhsv={characterdetails?.isUsable.toString()}
                 />
                 <TextHelper
-                  lhsv="TokenId"
+                  lhsv="TokenId:"
                   rhsv={characterdetails?.tokenId.toString()}
                 />
 
                 <TextHelper
-                  lhsv="ULT 2 power"
+                  lhsv="ULT 2 power:"
                   rhsv={characterdetails?.ult2.toString()}
                 />
                 <TextHelper
-                  lhsv="ULT 3 power"
+                  lhsv="ULT 3 power:"
                   rhsv={characterdetails?.ult3.toString()}
                 />
-                <TextHelper lhsv="Owner" rhsv={shortenText(owner, 4, 5)} />
+                <TextHelper lhsv="Owner:" rhsv={shortenText(owner, 4, 5)} />
                 <TextHelper
-                  lhsv="WeaponId"
+                  lhsv="WeaponId:"
                   rhsv={characterdetails?.weaponId.toString()}
                 />
                 <TextHelper
-                  lhsv="ArmorId"
+                  lhsv="ArmorId:"
                   rhsv={characterdetails?.armorId.toString()}
                 />
               </div>

@@ -197,7 +197,7 @@ contract ClashFaucet {
         uint _minInclusive,
         uint _maxExclusive
     ) internal view returns (uint) {
-        uint[] memory values;
+        uint[] memory values = new uint[](2);
         values[0] = block.timestamp;
         values[1] = block.number;
         return
@@ -212,6 +212,7 @@ contract ClashFaucet {
         uint _minInclusive,
         uint _maxExclusive
     ) internal view returns (uint256) {
+        uint testnumb = _maxExclusive - _minInclusive;
         return
             (uint(
                 keccak256(
@@ -223,6 +224,6 @@ contract ClashFaucet {
                         _minInclusive + _maxExclusive
                     )
                 )
-            ) % _minInclusive) + _maxExclusive;
+            ) % testnumb) + _minInclusive;
     }
 }

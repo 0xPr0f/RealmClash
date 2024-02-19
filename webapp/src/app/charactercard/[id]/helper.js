@@ -9,7 +9,7 @@ export const TextHelper = ({ lhsv, rhsv, children }) => {
           fontSize: '18px',
         }}
       >
-        {lhsv}:{' '}
+        {lhsv}{' '}
       </span>
       <span>{rhsv}</span>
     </p>
