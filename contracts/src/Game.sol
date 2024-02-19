@@ -238,7 +238,7 @@ contract Game {
     /// @param _tokenId The ID of the character token to use for the attack
     function useNormalAttack(uint _tokenId) external GameOver {
         __checkBeforePlay();
-        require(!__checkIfGameLost(msg.sender), "Game over, switch player");
+        require(!__checkIfGameLost(msg.sender), "Game over");
 
         uint totalDamage = __dishTotalDamage(_tokenId, 1, msg.sender);
         address def = __returnOtherValues(
@@ -292,7 +292,6 @@ contract Game {
     }
 
     // ACCESS CONTROL AND VALIDATION LOGIC
-
     /**
      * @dev Overloaded function to check if a specific address is in the game.
      * @param _addr The address to check.
@@ -370,12 +369,20 @@ contract Game {
         uint _defendingTokenId
     ) internal {
         uint temphealth = characterStatsInGame[_defendingTokenId].Health;
+        characterStatsInGame[_defendingTokenId].Health = __safelySubtractToZero(
+            _attackingDamage,
+            temphealth
+        );
+        characterStatsInGame[_defendingTokenId].isAlive =
+            characterStatsInGame[_defendingTokenId].Health >= 1;
+        // upgraded due to redundancy
+        /*
         if (temphealth > _attackingDamage) {
             characterStatsInGame[_defendingTokenId].Health -= _attackingDamage;
         } else if (temphealth <= _attackingDamage) {
             characterStatsInGame[_defendingTokenId].Health = 0;
             characterStatsInGame[_defendingTokenId].isAlive = false;
-        }
+        }*/
         // emit an event
     }
 
@@ -398,7 +405,7 @@ contract Game {
             timeForUlt[msg.sender] >= 2
         ) {
             timeForUlt[msg.sender] -= 2;
-            playerToDiceRow[_player] = __subtractToZero(
+            playerToDiceRow[_player] = __safelySubtractToZero(
                 2,
                 playerToDiceRow[_player]
             );
@@ -411,7 +418,7 @@ contract Game {
             timeForUlt[msg.sender] >= 3
         ) {
             timeForUlt[msg.sender] -= 3;
-            playerToDiceRow[_player] = __subtractToZero(
+            playerToDiceRow[_player] = __safelySubtractToZero(
                 4,
                 playerToDiceRow[_player]
             );
@@ -498,15 +505,19 @@ contract Game {
      * @param __from The value to subtract from.
      * @return newValue The result of the subtraction.
      */
-    function __subtractToZero(
+    function __safelySubtractToZero(
         uint __value,
         uint __from
-    ) internal pure returns (uint newValue) {
+    ) internal pure returns (uint) {
+        return (__value > __from) ? 0 : __from - __value;
+        // upgraded due to redundancy
+        /*
         if (__from > __value) {
             return __from - __value;
         } else if (__from <= __value) {
             return 0;
         }
+        */
     }
 
     /**
@@ -533,8 +544,8 @@ contract Game {
         address[] memory values
     ) internal pure returns (address) {
         for (uint i = 0; i < values.length; i++) {
-            if (values[i] == value && i + 1 < values.length) {
-                return values[i + 1];
+            if (values[i] == value) {
+                return values[1 - i];
             }
         }
         return address(0);

@@ -101,9 +101,10 @@ contract ClashFaucet {
             genR(_address, 10, 20),
             genR(_address, 20, 40)
         );
+        mintAndaddWeaponAttributes(_address);
     }
 
-    function mintAndaddWeaponAttributes(address _address) external {
+    function mintAndaddWeaponAttributes(address _address) public {
         uint tokenId1 = WeaponCard(weaponCardAddress).mint(_address, SwordURI);
 
         WeaponCard(weaponCardAddress).attachWeaponStats(

@@ -14,9 +14,16 @@ import { opBNBTestnet } from 'viem/chains'
 import { useWatchContractEvent } from 'wagmi'
 import { config } from '@/app/Interloop'
 import { writeContract, waitForTransactionReceipt } from '@wagmi/core'
-import { Button, notification } from 'antd'
+import { notification } from 'antd'
+import { Dropdown } from '@mui/base'
 import { IoClose } from 'react-icons/io5'
 import { FaCheck } from 'react-icons/fa'
+import { Menu } from '@mui/base/Menu'
+import { MenuButton } from '@mui/base/MenuButton'
+import { MenuItem } from '@mui/base/MenuItem'
+import { TextHelper } from '@/app/charactercard/[id]/helper'
+import { shortenText } from '@/app/components/utilities/utilities'
+import { IoSettingsSharp } from 'react-icons/io5'
 
 export default function GameRoom({ params }) {
   const router = useRouter()
@@ -29,6 +36,8 @@ export default function GameRoom({ params }) {
   const [oppositePlayerAddress, setOppositePlayerAddress] = useState()
   const [ActiveCharacter, setActiveCharacter] = useState()
   const [MatchDetails, setMatchDetails] = useState()
+  const [PowerPointCount, setPowerPointCount] = useState()
+  const [AddressTurnToPlay, setAddressTurnToPlay] = useState()
   const [isLoadingATX, setIsLoadingATX] = useState()
   const [api, contextHolder] = notification.useNotification()
   const openNotification = ({ _message, _description, _duration, _icon }) => {
@@ -97,7 +106,6 @@ export default function GameRoom({ params }) {
     args: [address],
     account: account,
     config: config,
-    account: account,
     chainId: opBNBTestnet.id,
   })
   const isAddressInGame = useReadContract({
@@ -112,8 +120,8 @@ export default function GameRoom({ params }) {
     abi: GAME_ABI,
     address: params.gameaddress,
     functionName: 'playerToDiceRow',
+    args: [address],
     account: account,
-
     chainId: opBNBTestnet.id,
   })
   const timeToULTCount = useReadContract({
@@ -257,6 +265,8 @@ export default function GameRoom({ params }) {
     setAllYourCardsInGame(charactersTokenIdsY?.data)
     setMatchDetails(matchDetails?.data)
     setAllOppositeCardsInGame(charactersTokenIdsO?.data)
+    setPowerPointCount(powerPointCount?.data)
+    setAddressTurnToPlay(addressToPlay?.data)
   }, [charactersTokenIdsY, returnOtherAddress])
   useEffect(() => {
     setActiveCharacter(activeCharacter.data)
@@ -269,6 +279,12 @@ export default function GameRoom({ params }) {
     onLogs(logs) {
       console.log('SwitchCharacter logs:', logs)
       setActiveCharacter(activeCharacter?.data)
+      setOppositePlayerAddress(returnOtherAddress?.data)
+      setAllYourCardsInGame(charactersTokenIdsY?.data)
+      setMatchDetails(matchDetails?.data)
+      setAllOppositeCardsInGame(charactersTokenIdsO?.data)
+      setPowerPointCount(powerPointCount?.data)
+      setAddressTurnToPlay(addressToPlay?.data)
     },
   })
   useWatchContractEvent({
@@ -277,11 +293,51 @@ export default function GameRoom({ params }) {
     eventName: 'TakeDamage',
     onLogs(logs) {
       console.log('Take Damage logs:', logs)
+      setActiveCharacter(activeCharacter?.data)
       setAllYourCardsInGame(charactersTokenIdsY?.data)
       setAllOppositeCardsInGame(charactersTokenIdsO?.data)
+      setOppositePlayerAddress(returnOtherAddress?.data)
+      setAllYourCardsInGame(charactersTokenIdsY?.data)
+      setMatchDetails(matchDetails?.data)
+      setAllOppositeCardsInGame(charactersTokenIdsO?.data)
+      setPowerPointCount(powerPointCount?.data)
+      setAddressTurnToPlay(addressToPlay?.data)
     },
   })
-
+  useWatchContractEvent({
+    address: params?.gameaddress,
+    abi: GAME_ABI,
+    eventName: 'GameStarted',
+    onLogs(logs) {
+      console.log('Take Damage logs:', logs)
+      setActiveCharacter(activeCharacter?.data)
+      setAllYourCardsInGame(charactersTokenIdsY?.data)
+      setAllOppositeCardsInGame(charactersTokenIdsO?.data)
+      setOppositePlayerAddress(returnOtherAddress?.data)
+      setAllYourCardsInGame(charactersTokenIdsY?.data)
+      setMatchDetails(matchDetails?.data)
+      setAllOppositeCardsInGame(charactersTokenIdsO?.data)
+      setPowerPointCount(powerPointCount?.data)
+      setAddressTurnToPlay(addressToPlay?.data)
+    },
+  })
+  useWatchContractEvent({
+    address: params?.gameaddress,
+    abi: GAME_ABI,
+    eventName: 'setSwitchCharacter',
+    onLogs(logs) {
+      console.log('Switch character logs:', logs)
+      setActiveCharacter(activeCharacter?.data)
+      setAllYourCardsInGame(charactersTokenIdsY?.data)
+      setAllOppositeCardsInGame(charactersTokenIdsO?.data)
+      setOppositePlayerAddress(returnOtherAddress?.data)
+      setAllYourCardsInGame(charactersTokenIdsY?.data)
+      setMatchDetails(matchDetails?.data)
+      setAllOppositeCardsInGame(charactersTokenIdsO?.data)
+      setPowerPointCount(powerPointCount?.data)
+      setAddressTurnToPlay(addressToPlay?.data)
+    },
+  })
   useWatchContractEvent({
     address: params?.gameaddress,
     abi: GAME_ABI,
@@ -295,22 +351,78 @@ export default function GameRoom({ params }) {
   return (
     <div>
       {console.log(ActiveCharacter?.toString())}
+      {console.log(MatchDetails)}
+      {console.log('address to play', AddressTurnToPlay)}
       {contextHolder}
       <div style={{ padding: '20px' }}>
         address : {JSON.stringify(params.gameaddress)}
+        {console.log(returnOtherAddress, allOppositeCardsInGame)}
       </div>
       {params.gameaddress.length === 42 ? (
         <div>
           <div className="game-board">
-            <div className="cards-up">
-              {
-                /*allOppositeCardsInGame || */
-                [1, 2, 3]?.map((cardId) => (
-                  <CardBoxGame key={cardId}>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-evenly',
+              }}
+            >
+              <div className="cards-up">
+                {allOppositeCardsInGame?.map((cardId) => (
+                  <CardBoxGame
+                    gameaddress={params.gameaddress}
+                    showStats={true}
+                    tokenId={cardId}
+                    key={cardId}
+                  >
                     Card {cardId.toString()}
                   </CardBoxGame>
-                ))
-              }
+                ))}
+              </div>
+              <div>
+                <Dropdown>
+                  <MenuButton>
+                    <BoxButton>
+                      <IoSettingsSharp color="#c3073f" />
+                    </BoxButton>
+                  </MenuButton>
+                  <Menu>
+                    <br />
+                    <MenuItem>
+                      <TextHelper
+                        lhsv="Game ID"
+                        rhsv={MatchDetails && MatchDetails[0]?.toString()}
+                      />
+                    </MenuItem>
+                    <MenuItem>
+                      <TextHelper
+                        lhsv="Accepted Time"
+                        rhsv={MatchDetails && MatchDetails[2]?.toString()}
+                      />
+                    </MenuItem>
+                    <MenuItem>
+                      <TextHelper
+                        lhsv="Game Started"
+                        rhsv={MatchDetails && MatchDetails[4]?.toString()}
+                      />
+                    </MenuItem>
+                    <MenuItem>
+                      <TextHelper
+                        lhsv="Winner"
+                        rhsv={
+                          MatchDetails && shortenText(MatchDetails[8], 4, 4)
+                        }
+                      />
+                    </MenuItem>
+                    <MenuItem>
+                      <TextHelper
+                        lhsv="Game Over"
+                        rhsv={MatchDetails && MatchDetails[7]?.toString()}
+                      />
+                    </MenuItem>
+                  </Menu>
+                </Dropdown>
+              </div>
             </div>
             <div className="cardsdown">
               <div className="buttons">
@@ -328,6 +440,7 @@ export default function GameRoom({ params }) {
                   <FaArrowsRotate size={20} fontWeight={1} />
                 </BoxButton>
               </div>
+
               <div className="cards-down">
                 {allYourCardsInGame?.map((cardId) => (
                   <CardBoxGame
@@ -346,47 +459,67 @@ export default function GameRoom({ params }) {
                   </CardBoxGame>
                 ))}
               </div>
-              {/*You will have to be connected to be able to see the buttons to do stuff*/}
-              <div className="theAttackButtons">
-                <div className="buttons">
-                  <BoxButton
-                    disabled={isLoadingATX}
-                    outsidePadding="20px"
-                    borderRadius="100%"
-                    height="80px"
-                    width="80px"
-                    onClick={async () => {
-                      console.log('use button check if disabled')
-                      useNormalAttack(selectedCard)
-                    }}
-                  >
-                    <GiCrossedSwords size={43} />
-                  </BoxButton>
-                  <BoxButton
-                    disabled={isLoadingATX}
-                    borderRadius="100%"
-                    height="68px"
-                    width="68px"
-                    onClick={() => {
-                      console.log('use button check if disabled')
-                      useULT2Attack(selectedCard)
-                    }}
-                  >
-                    <GiSwordWound size={40} />
-                  </BoxButton>
-                  <BoxButton
-                    disabled={isLoadingATX}
-                    outsidePadding="20px"
-                    borderRadius="100%"
-                    height="60px"
-                    width="60px"
-                    onClick={() => {
-                      console.log('use button check if disabled')
-                      useULT3Attack(selectedCard)
-                    }}
-                  >
-                    <GiPointySword size={40} />
-                  </BoxButton>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  height: '250px',
+                }}
+              >
+                <div>
+                  <TextHelper
+                    lhsv="Power Point"
+                    rhsv={
+                      !(PowerPointCount === undefined)
+                        ? PowerPointCount.toString()
+                        : 2
+                    }
+                  />
+                </div>
+                {/*You will have to be connected to be able to see the buttons to do stuff*/}
+                <div className="theAttackButtons">
+                  <div className="buttons">
+                    <BoxButton
+                      disabled={isLoadingATX}
+                      outsidePadding="20px"
+                      borderRadius="100%"
+                      height="80px"
+                      width="80px"
+                      onClick={async () => {
+                        console.log('use button check if disabled')
+                        useNormalAttack(selectedCard)
+                      }}
+                    >
+                      <GiCrossedSwords size={43} />
+                    </BoxButton>
+                    <BoxButton
+                      disabled={isLoadingATX}
+                      borderRadius="100%"
+                      height="68px"
+                      width="68px"
+                      onClick={() => {
+                        console.log('use button check if disabled')
+                        useULT2Attack(selectedCard)
+                      }}
+                    >
+                      <GiSwordWound size={40} />
+                    </BoxButton>
+                    <BoxButton
+                      disabled={isLoadingATX}
+                      outsidePadding="20px"
+                      borderRadius="100%"
+                      height="60px"
+                      width="60px"
+                      onClick={() => {
+                        console.log('use button check if disabled')
+                        useULT3Attack(selectedCard)
+                      }}
+                    >
+                      <GiPointySword size={40} />
+                    </BoxButton>
+                  </div>
                 </div>
               </div>
             </div>

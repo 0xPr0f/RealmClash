@@ -1,11 +1,13 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { CHARACTERCARD_ABI, GAME_ABI } from '../ABI'
-import { CHARACTERCARD_CONTRACTADDRESS } from '../ADDRESSES'
+import { CHARACTERCARD_ABI, FAUCET_ABI, GAME_ABI } from '../ABI'
+import {
+  CHARACTERCARD_CONTRACTADDRESS,
+  FAUCET_CONTRACTADDRESS,
+} from '../ADDRESSES'
 import CardBox from '../components/cardBox/cardBox'
 import './portfolio.css'
 import { useReadContract, useAccount } from 'wagmi'
-import { config } from '../charactercard/[id]/page'
 import { opBNBTestnet } from 'viem/chains'
 import { useRouter } from 'next/navigation'
 import { TextHelper } from '../charactercard/[id]/helper'
@@ -14,9 +16,13 @@ import BoxButton from '../components/boxButton/boxButton'
 import { ScaleLoader } from 'react-spinners'
 import { isValidAddress } from '../components/utilities/utilities'
 import { writeContract, waitForTransactionReceipt } from '@wagmi/core'
+import EmptyView from '../components/emptyView/emptyView'
+import { config } from '../Interloop'
+import { ethers } from 'ethers'
 
 export default function Portfolio() {
   const account = useAccount()
+  const { isConnected } = useAccount()
   const { address } = useAccount()
   const router = useRouter()
   const [alltokenId, setAlltokenId] = useState([])
@@ -68,6 +74,7 @@ export default function Portfolio() {
     ) {
       console.log('game started', selectedBox[0], selectedBox)
       setIsLoadingNice(true)
+      console.log('game started 1')
       sendRequest()
     } else {
       console.log('you need three characters')
@@ -98,14 +105,16 @@ export default function Portfolio() {
 
   const sendRequest = async () => {
     try {
+      console.log('game started 2 ..... ')
       const request = await writeContract(config, {
         abi: GAME_ABI,
-        address: selectedBox[0].toString(),
+        address: selectedBox[0],
         functionName: 'acceptMatch',
         args: [selectedCards],
         chainId: opBNBTestnet.id,
-        account: address,
+        account: account,
       })
+      console.log('game started 3')
       console.log(request)
       decodeTx(request)
     } catch (e) {
@@ -130,6 +139,27 @@ export default function Portfolio() {
     console.log('game :', gameEventDecode.args.game)
     router.push(`/game/${gameEventDecode.args.game}`)
   }
+  const useFaucet = async () => {
+    if (!isConnected) return
+    try {
+      const request = await writeContract(config, {
+        abi: FAUCET_ABI,
+        address: FAUCET_CONTRACTADDRESS,
+        functionName: 'mintAndaddCharacterAttributes',
+        args: [address],
+        chainId: opBNBTestnet.id,
+        account: address,
+      })
+      console.log()
+      await waitForTransactionReceipt(config, {
+        hash: request,
+      }).then(() => {
+        router.reload()
+      })
+    } catch (e) {
+      setIsLoadingNice(false)
+    }
+  }
   return (
     <div>
       <div className="centeredcontainer">
@@ -138,9 +168,33 @@ export default function Portfolio() {
             <div
               style={{
                 display: 'flex',
-                justifyContent: 'right',
+                justifyContent: 'space-between',
               }}
             >
+              <div style={{ padding: '15px' }}>
+                <BoxButton
+                  spinSharply={true}
+                  disabled={isLoadingNice}
+                  onClick={async () => {
+                    useFaucet()
+                  }}
+                >
+                  {isLoadingNice ? (
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      <ScaleLoader
+                        color="#c3073f"
+                        height={15}
+                        margin={1}
+                        radius={1}
+                        width={3}
+                      />{' '}
+                      Loading
+                    </div>
+                  ) : (
+                    <>Use Faucet</>
+                  )}
+                </BoxButton>
+              </div>
               <div style={{ padding: '15px' }}>
                 <BoxButton
                   spinSharply={true}
@@ -199,67 +253,94 @@ export default function Portfolio() {
                     </div>
                   )
                 )}
-            </div>
-            <br />
-            <div className="scrollablegridcontainer">
-              <div className="cardgrid">
-                {alltokenId?.map((cardId) => (
-                  <CardBox
-                    showStats={false}
-                    key={cardId}
-                    onClick={() => handleCardClick(cardId)}
-                    style={{
-                      backgroundColor: selectedCards.includes(cardId)
-                        ? '#c3073f'
-                        : '#1a1a1d',
 
-                      padding: '0px',
-                      margin: '4px',
-                      cursor: 'pointer',
-                    }}
-                    height={80}
-                    width={67}
-                  >
-                    Card {cardId.toString()}
-                  </CardBox>
-                ))}
-              </div>
-            </div>
-            {selectedCards.length > 0 ? (
-              <div>
-                <h3>Selected Cards:</h3>
-                <ul style={{ display: 'flex' }}>
-                  {selectedCards.map((id) => (
-                    <li style={{ paddingRight: '10px' }} key={id}>
-                      Token ID#{id.toString()}
-                    </li>
+              <br />
+              <div className="scrollablegridcontainer">
+                <div className="cardgrid">
+                  {alltokenId?.map((cardId) => (
+                    <CardBox
+                      showStats={false}
+                      key={cardId}
+                      onClick={() => handleCardClick(cardId)}
+                      style={{
+                        backgroundColor: selectedCards.includes(cardId)
+                          ? '#c3073f'
+                          : '#1a1a1d',
+
+                        padding: '0px',
+                        margin: '4px',
+                        cursor: 'pointer',
+                      }}
+                      height={80}
+                      width={67}
+                    >
+                      Card {cardId.toString()}
+                    </CardBox>
                   ))}
-                </ul>
+                </div>
               </div>
-            ) : (
-              ''
-            )}
-          </div>
+              {selectedCards.length > 0 ? (
+                <div>
+                  <h3>Selected Cards:</h3>
+                  <ul style={{ display: 'flex' }}>
+                    {selectedCards.map((id) => (
+                      <li style={{ paddingRight: '10px' }} key={id}>
+                        Token ID#{id.toString()}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : (
+                ''
+              )}
+            </div>
 
-          <div className="padbox">
-            <TextHelper lhsv="Your character cards, click to view" />
-            <div className="gridcontainer">
-              <div className="grid">
-                {alltokenId?.map((cardId) => (
-                  <CardBox
-                    showStats={false}
-                    key={cardId}
-                    height={180}
-                    width={130}
-                    onClick={() => {
-                      router.push(`/charactercard/${cardId.toString()}`, {
-                        scroll: false,
-                      })
-                    }}
-                  >
-                    Card {cardId.toString()}
-                  </CardBox>
-                ))}
+            <div className="padbox">
+              <TextHelper lhsv="Your character cards, click to view" />
+              <div className="gridcontainer">
+                {alltokenId?.length > 0 ? (
+                  <div className="grid">
+                    {alltokenId?.map((cardId) => (
+                      <CardBox
+                        showStats={false}
+                        key={cardId}
+                        height={180}
+                        width={130}
+                        onClick={() => {
+                          router.push(`/charactercard/${cardId.toString()}`, {
+                            scroll: false,
+                          })
+                        }}
+                      >
+                        Card {cardId.toString()}
+                      </CardBox>
+                    ))}
+                  </div>
+                ) : (
+                  <div>
+                    <EmptyView>
+                      <span>No Cards</span>
+                      <div
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          padding: '20px',
+                        }}
+                      >
+                        <BoxButton
+                          spinSharply={true}
+                          //disabled={isLoadingNice}
+                          onClick={async () => {
+                            useFaucet()
+                          }}
+                        >
+                          Use Faucet
+                        </BoxButton>
+                      </div>
+                    </EmptyView>
+                  </div>
+                )}
               </div>
             </div>
           </div>

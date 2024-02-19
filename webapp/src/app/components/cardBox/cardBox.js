@@ -1,10 +1,10 @@
 import { useAccount, useReadContract } from 'wagmi'
 import styles from './cardBox.module.css'
 import { GAME_ABI } from '@/app/ABI'
-import { config } from '@/app/charactercard/[id]/page'
 import { opBNBTestnet } from 'viem/chains'
 import { useEffect, useState } from 'react'
 import { serialize } from 'wagmi'
+import { config } from '@/app/Interloop'
 export default function CardBox({
   children = 'card 1',
   className,

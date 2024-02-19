@@ -1,7 +1,18 @@
 // All deployment on opBNB testnet
 export const CHARACTERCARD_CONTRACTADDRESS =
   '0xd2B6b32ee8B4B759D2A02e28BE1ACBe9a921BB55'
+export const FAUCET_CONTRACTADDRESS =
+  '0xd2B6b32ee8B4B759D2A02e28BE1ACBe9a921BB55'
 export const WEAPONCARD_CONTRACTADDRESS =
   '0x45B8033001897cC3669d986e8bF6F3b32d391a9B'
 export const GAMEFACTORY_CONTRACTADDRESS =
   '0x4a95a874d94c0f0000b7d50ebfa745afe52dd7ee'
+
+//URI for cards
+/* *Knight
+ *Archer
+ *Hop Goblin
+ *Sword
+ *Bow
+ *Machet
+ */
