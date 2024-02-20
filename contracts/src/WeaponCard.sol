@@ -178,6 +178,9 @@ contract RealmClashWeapons is ERC721, ERC721Enumerable, ERC721URIStorage {
     ) external view returns (WeaponCardStats memory) {
         return weaponStats[_tokenId];
     }
+    function setCharacterCardAddress(address _address) external Minters {
+        CharacterCardContract = _address;
+    }
 
     /**
      * @dev Set the token URI for a given token ID.
