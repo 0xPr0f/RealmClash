@@ -293,7 +293,7 @@ weapon card.
     function attackStats(uint _tokenId) external view returns (uint) {
         uint characterattack;
         characterattack = ((_characterStatsMap(_tokenId).baseAttack +
-            (_characterStatsMap(_tokenId).baseMagicPower)) *
+            (_characterStatsMap(_tokenId).baseMagicPower)) +
             (_characterStatsMap(_tokenId).baseSkillMultipier));
         if (__returnValueBool0(_characterStatsMap(_tokenId).weaponId)) {
             characterattack +=
@@ -310,7 +310,7 @@ weapon card.
                     WeaponCardInterface(WeaponCardContract)
                         ._weaponStatsMap(_characterStatsMap(_tokenId).weaponId)
                         .baseMagicPower
-                ) *
+                ) +
                 (
                     WeaponCardInterface(WeaponCardContract)
                         ._weaponStatsMap(_characterStatsMap(_tokenId).weaponId)

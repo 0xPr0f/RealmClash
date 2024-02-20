@@ -1,10 +1,11 @@
 import { useAccount, useReadContract } from 'wagmi'
 import styles from './cardBox.module.css'
-import { GAME_ABI } from '@/app/ABI'
+import { CHARACTERCARD_ABI, GAME_ABI } from '@/app/ABI'
 import { opBNBTestnet } from 'viem/chains'
-import { useEffect, useState } from 'react'
-import { serialize } from 'wagmi'
+import React, { useEffect, useState } from 'react'
 import { config } from '@/app/Interloop'
+import Image from 'next/image'
+import { CHARACTERCARD_CONTRACTADDRESS } from '@/app/ADDRESSES'
 export default function CardBox({
   children = 'card 1',
   className,
@@ -14,6 +15,7 @@ export default function CardBox({
   height,
   borderRadius,
   style,
+  src,
 }) {
   return (
     <div
@@ -34,6 +36,14 @@ export default function CardBox({
         style={{ width: width, height: height, borderRadius: borderRadius }}
         onClick={onClick}
       >
+        {src && (
+          <Image
+            src={src}
+            /*  width={500}
+      height={500} */
+            alt="Picture"
+          />
+        )}
         {children}
       </div>
     </div>
@@ -54,6 +64,7 @@ export function CardBoxGame({
   displayActiveButton = false,
 }) {
   const account = useAccount()
+  const [tokenuri, setTokenuri] = useState()
   const result = useReadContract({
     abi: GAME_ABI,
     address: gameaddress,
@@ -63,7 +74,19 @@ export function CardBoxGame({
     account: account,
     chainId: opBNBTestnet.id,
   })
+  const fetchUri = useReadContract({
+    abi: CHARACTERCARD_ABI,
+    address: CHARACTERCARD_CONTRACTADDRESS,
+    functionName: 'tokenURI',
+    config: config,
+    args: [tokenId?.toString()],
+    account: account,
+    chainId: opBNBTestnet.id,
+  })
 
+  useEffect(() => {
+    setTokenuri(fetchUri?.data)
+  }, [])
   return (
     <div
       style={style}
@@ -88,6 +111,14 @@ export function CardBoxGame({
         onClick={onClick}
       >
         <div>
+          {tokenuri && (
+            <Image
+              src={tokenuri}
+              /*  width={500}
+      height={500} */
+              alt="Picture"
+            />
+          )}
           {children}
           {displayActiveButton && <div className={styles.circle}></div>}
         </div>

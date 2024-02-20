@@ -29,19 +29,25 @@ contract Game {
     // Address of the CharactersContract
     address public CharactersContract;
     // Array of players
-    address[] public players;
+    // address[] public players;
     // Mapping of player addresses to their character cards
-    mapping(address => uint[]) public playerToCharCards;
+    mapping(address => uint[]) public _playerToCharCards;
     // Mapping of player addresses to their dice rolls
     mapping(address => uint) public playerToDiceRow;
     // Mapping of active characters for each player
     mapping(address => mapping(uint => bool)) public _activeCharacter;
     // Address of the player whose turn it is to play
-    address addressToPlay;
+    address public addressToPlay;
     // Address of the player who previously played
-    address addressPreviouslyPlayed;
+    address public addressPreviouslyPlayed;
     // Mapping of players to the time remaining for their ultimates
-    mapping(address => uint) timeForUlt;
+    mapping(address => uint) public timeForUlt;
+
+    function playerToCharCards(
+        address _address
+    ) internal view returns (uint[] memory) {
+        return _playerToCharCards[_address];
+    }
     /// @dev Struct for storing match details
     struct MatchDetails {
         uint gameId; // ID of the game
@@ -66,16 +72,18 @@ contract Game {
         bool isAlive; // Flag indicating if the character is alive
     }
     mapping(uint => CharacterCardsInGameStats) public characterStatsInGame;
+
     function returnAddressToCharacterIdIngame(
         address _add
-    ) external view returns (uint[] memory) {
+    ) public view returns (uint[] memory) {
         return matchDetails.addressToCharacterIdIngame[_add];
     }
+
     // Modifier to check if the player owns the specified character cards
     modifier checkPlayerAgainstCards(address _addr) {
         _;
-        uint number = playerToCharCards[_addr].length;
-        uint[] memory array = playerToCharCards[_addr];
+        uint number = playerToCharCards(_addr).length;
+        uint[] memory array = playerToCharCards(_addr);
         for (uint i = 0; i < number; ++i) {
             require(
                 CharacterCardInterface(CharactersContract)._isCharacterOwner(
@@ -85,6 +93,17 @@ contract Game {
                 "Not yours sadly"
             );
         }
+    }
+    // Modifier to check if the player owns the specified character cards
+    modifier checkCards(address _addr, uint tokenId) {
+        _;
+        require(
+            CharacterCardInterface(CharactersContract)._isCharacterOwner(
+                tokenId,
+                _addr
+            ),
+            "Not yours sadly"
+        );
     }
 
     // Modifier to check if the player is in the game
@@ -127,7 +146,7 @@ contract Game {
         uint _id
     ) checkPlayerAgainstCards(_1stPlayer) {
         require(_1stPlayer != _2ndPlayer && _1stPlayerCharDeck.length == 3);
-        playerToCharCards[_1stPlayer] = _1stPlayerCharDeck;
+        _playerToCharCards[_1stPlayer] = _1stPlayerCharDeck;
         matchDetails.gameInitiatedTime = block.timestamp;
         matchDetails.playersInGame.push(_1stPlayer);
         matchDetails.playersInGame.push(_2ndPlayer);
@@ -183,6 +202,7 @@ contract Game {
             msg.sender
         ] = _2ndPlayerCharDeck;
         matchDetails.gameAcceptedTime = block.timestamp;
+        _playerToCharCards[msg.sender] = _2ndPlayerCharDeck;
         matchDetails.gameAccepted = true;
         fixAllCharacterAndStats(_2ndPlayerCharDeck, msg.sender);
         emit GameAccepted(
@@ -199,7 +219,7 @@ contract Game {
     }
 
     /// @dev Function to start the game and roll the dice to determine the player's turn
-    function startGameAndRowDice() public {
+    function startGameAndRowDice() internal {
         require(
             !matchDetails.gameStarted && matchDetails.gameAccepted,
             "Started"
@@ -238,7 +258,12 @@ contract Game {
     /// @param _tokenId The ID of the character token to use for the attack
     function useNormalAttack(uint _tokenId) external GameOver {
         __checkBeforePlay();
-        require(!__checkIfGameLost(msg.sender), "Game over");
+
+        require(
+            !__checkIfGameLost(msg.sender) &&
+                playerOwnsIDIngame(msg.sender, _tokenId),
+            "Game over"
+        );
 
         uint totalDamage = __dishTotalDamage(_tokenId, 1, msg.sender);
         address def = __returnOtherValues(
@@ -250,14 +275,18 @@ contract Game {
 
         __takedamage(totalDamage, defTokenId);
         __switchPlayer();
-        __checkAfterPlay();
+        __setAfterPlay();
     }
 
     /// @dev Function to use an ult2 attack with the specified character token ID
     /// @param _tokenId The ID of the character token to use for the attack
     function useUlt2Attack(uint _tokenId) external GameOver {
         __checkBeforePlay();
-        require(!__checkIfGameLost(msg.sender), "Game over, switch player");
+        require(
+            !__checkIfGameLost(msg.sender) &&
+                playerOwnsIDIngame(msg.sender, _tokenId),
+            "not id owner/game over"
+        );
 
         uint totalDamage = __dishTotalDamage(_tokenId, 2, msg.sender);
         address def = __returnOtherValues(
@@ -269,14 +298,18 @@ contract Game {
 
         __takedamage(totalDamage, defTokenId);
         __switchPlayer();
-        __checkAfterPlay();
+        __setAfterPlay();
     }
 
     /// @dev Function to use an ult3 attack with the specified character token ID
     /// @param _tokenId The ID of the character token to use for the attack
     function useUlt3Attack(uint _tokenId) external GameOver {
         __checkBeforePlay();
-        require(!__checkIfGameLost(msg.sender), "Game over, switch player");
+        require(
+            !__checkIfGameLost(msg.sender) &&
+                playerOwnsIDIngame(msg.sender, _tokenId),
+            "Game over, switch player"
+        );
 
         uint totalDamage = __dishTotalDamage(_tokenId, 3, msg.sender);
         address def = __returnOtherValues(
@@ -288,7 +321,7 @@ contract Game {
 
         __takedamage(totalDamage, defTokenId);
         __switchPlayer();
-        __checkAfterPlay();
+        __setAfterPlay();
     }
 
     // ACCESS CONTROL AND VALIDATION LOGIC
@@ -308,13 +341,10 @@ contract Game {
     function __beforePlay() internal {
         matchDetails.gameOver = __checkIfGameLost(msg.sender);
         if (matchDetails.gameOver) {
-            matchDetails.winner = __returnOtherValues(
-                msg.sender,
-                matchDetails.playersInGame
-            );
-            emit GameWon(matchDetails.winner, msg.sender);
+            matchDetails.winner = returnOtherPlayer(msg.sender);
+            emit GameWon(matchDetails.winner, returnOtherPlayer(msg.sender));
         }
-        require(matchDetails.gameOver == false);
+        require(!matchDetails.gameOver);
     }
 
     /**
@@ -325,7 +355,7 @@ contract Game {
             isCharacterAlive(getActiveCharacter(msg.sender)),
             "char down, switch"
         );
-        require(addressToPlay == msg.sender);
+        require(addressToPlay == msg.sender, "NAT");
     }
 
     /**
@@ -338,8 +368,15 @@ contract Game {
     /**
      * @dev Check game state after a play.
      */
-    function __checkAfterPlay() internal {
+    function __setAfterPlay() internal {
         addressPreviouslyPlayed = msg.sender;
+        matchDetails.gameOver = __checkIfGameLost(
+            returnOtherPlayer(msg.sender)
+        );
+        if (matchDetails.gameOver) {
+            matchDetails.winner = msg.sender;
+            emit GameWon(matchDetails.winner, msg.sender);
+        }
     }
 
     /**
@@ -398,7 +435,8 @@ contract Game {
         uint ult,
         address _player
     ) internal returns (uint) {
-        (, uint _attack, ) = getCharacterInGameStats(_tokenId);
+        (, uint _attack, bool _isAlive) = getCharacterInGameStats(_tokenId);
+        require(_isAlive, "cant dish with the dead");
         if (
             ult == 2 &&
             playerToDiceRow[_player] >= 2 &&
@@ -411,7 +449,8 @@ contract Game {
             );
             return
                 _attack +
-                CharacterCardInterface(CharactersContract).getUlt2(_tokenId);
+                (CharacterCardInterface(CharactersContract).getUlt2(_tokenId) *
+                    2);
         } else if (
             ult == 3 &&
             playerToDiceRow[_player] >= 4 &&
@@ -424,7 +463,8 @@ contract Game {
             );
             return
                 _attack +
-                CharacterCardInterface(CharactersContract).getUlt3(_tokenId);
+                (CharacterCardInterface(CharactersContract).getUlt3(_tokenId) *
+                    2);
         } else {
             return _attack + 0;
         }
@@ -487,10 +527,10 @@ contract Game {
      * @param _addr The address of the player.
      * @return true if the player has lost, false otherwise.
      */
-    function __checkIfGameLost(address _addr) internal view returns (bool) {
+    function __checkIfGameLost(address _addr) public view returns (bool) {
         uint __deadCount;
-        uint number = playerToCharCards[_addr].length;
-        uint[] memory array = playerToCharCards[_addr];
+        uint number = playerToCharCards(_addr).length;
+        uint[] memory array = playerToCharCards(_addr);
         for (uint i = 0; i < number; ++i) {
             if (!isCharacterAlive(array[i])) {
                 __deadCount++;
@@ -518,6 +558,20 @@ contract Game {
             return 0;
         }
         */
+    }
+
+    function playerOwnsIDIngame(
+        address _address,
+        uint tokenId
+    ) internal view returns (bool) {
+        uint number = returnAddressToCharacterIdIngame(_address).length;
+        uint[] memory array = returnAddressToCharacterIdIngame(_address);
+        for (uint i = 0; i < number; ++i) {
+            if (array[i] == tokenId) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -572,12 +626,8 @@ contract Game {
      */
     function setSwitchActiveCharacter(
         uint _tokenId
-    ) external returns (uint activeCharacter) {
-        address previousActiveCharacters = __returnOtherValues(
-            msg.sender,
-            matchDetails.playersInGame
-        );
-        uint previousCharacter = getActiveCharacter(previousActiveCharacters);
+    ) external checkCards(msg.sender, _tokenId) returns (uint activeCharacter) {
+        uint previousCharacter = getActiveCharacter(msg.sender);
         uint[] storage values = matchDetails.addressToCharacterIdIngame[
             msg.sender
         ];
@@ -585,7 +635,12 @@ contract Game {
             _activeCharacter[msg.sender][values[i]] = false;
         }
         _activeCharacter[msg.sender][_tokenId] = true;
-        require(isCharacterAlive(_tokenId));
+        require(
+            isCharacterAlive(_tokenId) &&
+                msg.sender == addressToPlay &&
+                playerOwnsIDIngame(msg.sender, _tokenId),
+            "SW failed"
+        );
 
         __switchPlayer();
         emit setSwitchCharacter(previousCharacter, _tokenId, msg.sender);
@@ -607,7 +662,7 @@ contract Game {
      * @return true if the player has three cards, false otherwise.
      */
     function checkFor3cards(address _addr) public view returns (bool) {
-        return playerToCharCards[_addr].length == 3;
+        return playerToCharCards(_addr).length == 3;
     }
 
     /**
@@ -617,7 +672,7 @@ contract Game {
      */
     function returnOtherPlayer(
         address _returnOpp
-    ) external view returns (address) {
+    ) public view returns (address) {
         return __returnOtherValues(_returnOpp, matchDetails.playersInGame);
     }
 

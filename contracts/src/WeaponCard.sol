@@ -62,6 +62,14 @@ contract RealmClashWeapons is ERC721, ERC721Enumerable, ERC721URIStorage {
     }
 
     /**
+     * @dev Function to add a new minter.
+     * @param _addr Address of the minter to be added.
+     */
+    function addMinter(address _addr) public Minters {
+        _allowedMinters[_addr] = true;
+    }
+
+    /**
      * @dev Mint a new weapon NFT.
      * @param to The address to mint the token to.
      * @param uri The URI for the token metadata.

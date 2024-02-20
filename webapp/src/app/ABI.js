@@ -1654,6 +1654,19 @@ export const WEAPONCARD_ABI = [
     inputs: [
       {
         internalType: 'address',
+        name: '_addr',
+        type: 'address',
+      },
+    ],
+    name: 'addMinter',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
         name: 'to',
         type: 'address',
       },
@@ -2416,351 +2429,22 @@ export const GAME_ABI = [
   {
     inputs: [
       {
-        internalType: 'address',
-        name: '_1stPlayer',
-        type: 'address',
-      },
-      {
-        internalType: 'address',
-        name: '_2ndPlayer',
-        type: 'address',
-      },
-      {
-        internalType: 'uint256[]',
-        name: '_1stPlayerCharDeck',
-        type: 'uint256[]',
-      },
-      {
-        internalType: 'address',
-        name: '_factory',
-        type: 'address',
-      },
-      {
-        internalType: 'address',
-        name: '_characterCards',
-        type: 'address',
-      },
-      {
         internalType: 'uint256',
-        name: '_id',
+        name: '_tokenId',
         type: 'uint256',
       },
-    ],
-    stateMutability: 'nonpayable',
-    type: 'constructor',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'initiator',
-        type: 'address',
-      },
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'game',
-        type: 'address',
-      },
-      {
-        indexed: false,
-        internalType: 'uint256[]',
-        name: 'carddeck',
-        type: 'uint256[]',
-      },
-      {
-        indexed: true,
-        internalType: 'uint256',
-        name: 'gameId',
-        type: 'uint256',
-      },
-    ],
-    name: 'GameAccepted',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'initiator',
-        type: 'address',
-      },
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'game',
-        type: 'address',
-      },
-      {
-        indexed: true,
-        internalType: 'uint256',
-        name: 'gameId',
-        type: 'uint256',
-      },
-    ],
-    name: 'GameStarted',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'winner',
-        type: 'address',
-      },
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'loser',
-        type: 'address',
-      },
-    ],
-    name: 'GameWon',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'dealer',
-        type: 'uint256',
-      },
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'damageDealt',
-        type: 'uint256',
-      },
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'defender',
-        type: 'uint256',
-      },
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'player',
-        type: 'address',
-      },
-    ],
-    name: 'TakeDamage',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'previous',
-        type: 'uint256',
-      },
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'current',
-        type: 'uint256',
-      },
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'player',
-        type: 'address',
-      },
-    ],
-    name: 'setSwitchCharacter',
-    type: 'event',
-  },
-  {
-    inputs: [],
-    name: 'CharactersContract',
-    outputs: [
-      {
-        internalType: 'address',
-        name: '',
-        type: 'address',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'ClashFactory',
-    outputs: [
-      {
-        internalType: 'address',
-        name: '',
-        type: 'address',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address',
-        name: '',
-        type: 'address',
-      },
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    name: '_activeCharacter',
-    outputs: [
-      {
-        internalType: 'bool',
-        name: '',
-        type: 'bool',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address',
-        name: '_hash',
-        type: 'address',
-      },
-      {
-        internalType: 'address[]',
-        name: 'values',
-        type: 'address[]',
-      },
-    ],
-    name: '_generateRandomNumber',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'uint256[]',
-        name: '_2ndPlayerCharDeck',
-        type: 'uint256[]',
-      },
-    ],
-    name: 'acceptMatch',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    name: 'characterStatsInGame',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: 'Health',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint256',
-        name: 'Attack',
-        type: 'uint256',
-      },
-      {
-        internalType: 'bool',
-        name: 'isAlive',
-        type: 'bool',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'checkAddressIsInGame',
-    outputs: [
-      {
-        internalType: 'bool',
-        name: '',
-        type: 'bool',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
       {
         internalType: 'address',
         name: '_addr',
         type: 'address',
       },
     ],
-    name: 'checkAddressIsInGame',
+    name: '_isCharacterOwner',
     outputs: [
       {
         internalType: 'bool',
         name: '',
         type: 'bool',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address',
-        name: '_addr',
-        type: 'address',
-      },
-    ],
-    name: 'checkFor3cards',
-    outputs: [
-      {
-        internalType: 'bool',
-        name: '',
-        type: 'bool',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address',
-        name: '_addr',
-        type: 'address',
-      },
-    ],
-    name: 'getActiveCharacter',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: 'x',
-        type: 'uint256',
       },
     ],
     stateMutability: 'view',
@@ -2774,113 +2458,7 @@ export const GAME_ABI = [
         type: 'uint256',
       },
     ],
-    name: 'getCharacterInGameStats',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: 'health',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint256',
-        name: 'attack',
-        type: 'uint256',
-      },
-      {
-        internalType: 'bool',
-        name: 'isAlive',
-        type: 'bool',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'matchDetails',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: 'gameId',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint256',
-        name: 'gameInitiatedTime',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint256',
-        name: 'gameAcceptedTime',
-        type: 'uint256',
-      },
-      {
-        internalType: 'bool',
-        name: 'gameAccepted',
-        type: 'bool',
-      },
-      {
-        internalType: 'bool',
-        name: 'gameStarted',
-        type: 'bool',
-      },
-      {
-        internalType: 'address',
-        name: 'firstInitiatedPlayer',
-        type: 'address',
-      },
-      {
-        internalType: 'address',
-        name: 'secondInitiatedPlayer',
-        type: 'address',
-      },
-      {
-        internalType: 'bool',
-        name: 'gameOver',
-        type: 'bool',
-      },
-      {
-        internalType: 'address',
-        name: 'winner',
-        type: 'address',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address',
-        name: '',
-        type: 'address',
-      },
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    name: 'playerToCharCards',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address',
-        name: '',
-        type: 'address',
-      },
-    ],
-    name: 'playerToDiceRow',
+    name: 'attackStats',
     outputs: [
       {
         internalType: 'uint256',
@@ -2895,81 +2473,21 @@ export const GAME_ABI = [
     inputs: [
       {
         internalType: 'uint256',
-        name: '',
+        name: '_tokenIdofCharacter',
         type: 'uint256',
       },
-    ],
-    name: 'players',
-    outputs: [
-      {
-        internalType: 'address',
-        name: '',
-        type: 'address',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address',
-        name: '_add',
-        type: 'address',
-      },
-    ],
-    name: 'returnAddressToCharacterIdIngame',
-    outputs: [
-      {
-        internalType: 'uint256[]',
-        name: '',
-        type: 'uint256[]',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address',
-        name: '_returnOpp',
-        type: 'address',
-      },
-    ],
-    name: 'returnOtherPlayer',
-    outputs: [
-      {
-        internalType: 'address',
-        name: '',
-        type: 'address',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
       {
         internalType: 'uint256',
-        name: '_tokenId',
+        name: '_tokenIdofWeapon',
         type: 'uint256',
       },
-    ],
-    name: 'setSwitchActiveCharacter',
-    outputs: [
       {
-        internalType: 'uint256',
-        name: 'activeCharacter',
-        type: 'uint256',
+        internalType: 'address',
+        name: '_user',
+        type: 'address',
       },
     ],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'startGameAndRowDice',
+    name: 'deatchWeapon',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
@@ -2982,9 +2500,15 @@ export const GAME_ABI = [
         type: 'uint256',
       },
     ],
-    name: 'useNormalAttack',
-    outputs: [],
-    stateMutability: 'nonpayable',
+    name: 'getUlt2',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
     type: 'function',
   },
   {
@@ -2995,9 +2519,15 @@ export const GAME_ABI = [
         type: 'uint256',
       },
     ],
-    name: 'useUlt2Attack',
-    outputs: [],
-    stateMutability: 'nonpayable',
+    name: 'getUlt3',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
     type: 'function',
   },
   {
@@ -3008,13 +2538,102 @@ export const GAME_ABI = [
         type: 'uint256',
       },
     ],
-    name: 'useUlt3Attack',
-    outputs: [],
-    stateMutability: 'nonpayable',
+    name: 'healthStats',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
     type: 'function',
   },
 ]
 export const FAUCET_ABI = [
+  {
+    inputs: [],
+    stateMutability: 'nonpayable',
+    type: 'constructor',
+  },
+  {
+    inputs: [],
+    name: 'ArcherURI',
+    outputs: [
+      {
+        internalType: 'string',
+        name: '',
+        type: 'string',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'BowURI',
+    outputs: [
+      {
+        internalType: 'string',
+        name: '',
+        type: 'string',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'HopGoblinURI',
+    outputs: [
+      {
+        internalType: 'string',
+        name: '',
+        type: 'string',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'KnightURI',
+    outputs: [
+      {
+        internalType: 'string',
+        name: '',
+        type: 'string',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'MachetURI',
+    outputs: [
+      {
+        internalType: 'string',
+        name: '',
+        type: 'string',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'SwordURI',
+    outputs: [
+      {
+        internalType: 'string',
+        name: '',
+        type: 'string',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
   {
     inputs: [
       {
@@ -3026,6 +2645,19 @@ export const FAUCET_ABI = [
     name: 'addOwner',
     outputs: [],
     stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'characterCardAddress',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
     type: 'function',
   },
   {
@@ -3156,102 +2788,6 @@ export const FAUCET_ABI = [
     name: 'setWeaponCardAddress',
     outputs: [],
     stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    stateMutability: 'nonpayable',
-    type: 'constructor',
-  },
-  {
-    inputs: [],
-    name: 'ArcherURI',
-    outputs: [
-      {
-        internalType: 'string',
-        name: '',
-        type: 'string',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'BowURI',
-    outputs: [
-      {
-        internalType: 'string',
-        name: '',
-        type: 'string',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'characterCardAddress',
-    outputs: [
-      {
-        internalType: 'address',
-        name: '',
-        type: 'address',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'HopGoblinURI',
-    outputs: [
-      {
-        internalType: 'string',
-        name: '',
-        type: 'string',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'KnightURI',
-    outputs: [
-      {
-        internalType: 'string',
-        name: '',
-        type: 'string',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'MachetURI',
-    outputs: [
-      {
-        internalType: 'string',
-        name: '',
-        type: 'string',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'SwordURI',
-    outputs: [
-      {
-        internalType: 'string',
-        name: '',
-        type: 'string',
-      },
-    ],
-    stateMutability: 'view',
     type: 'function',
   },
   {

@@ -37,17 +37,23 @@ contract ClashFaucet {
     // Address of the WeaponCard contract
     address public weaponCardAddress;
     // Hard coded URI for Knight
-    string public KnightURI = "";
+    string public KnightURI =
+        "https://violet-reluctant-warbler-180.mypinata.cloud/ipfs/Qmbixv66mSEXSXrc3yAdLjB7DYEDDgYGXn3U56Xy36AdLL/Knightdude2.jpeg";
     // Hard coded URI for Archer
-    string public ArcherURI = "";
+    string public ArcherURI =
+        "https://violet-reluctant-warbler-180.mypinata.cloud/ipfs/Qmbixv66mSEXSXrc3yAdLjB7DYEDDgYGXn3U56Xy36AdLL/archerladyordudenotsure.jpeg";
     // Hard coded URI for Hop Goblin
-    string public HopGoblinURI = "";
+    string public HopGoblinURI =
+        "https://violet-reluctant-warbler-180.mypinata.cloud/ipfs/Qmbixv66mSEXSXrc3yAdLjB7DYEDDgYGXn3U56Xy36AdLL/hopgoblindude.jpeg";
     // Hard coded URI for Knight
-    string public SwordURI = "";
+    string public SwordURI =
+        "https://violet-reluctant-warbler-180.mypinata.cloud/ipfs/Qmbixv66mSEXSXrc3yAdLjB7DYEDDgYGXn3U56Xy36AdLL/knightsword.jpeg";
     // Hard coded URI for Archer
-    string public BowURI = "";
+    string public BowURI =
+        "https://violet-reluctant-warbler-180.mypinata.cloud/ipfs/Qmbixv66mSEXSXrc3yAdLjB7DYEDDgYGXn3U56Xy36AdLL/archerbow.jpeg";
     // Hard coded URI for Hop Goblin
-    string public MachetURI = "";
+    string public MachetURI =
+        "https://violet-reluctant-warbler-180.mypinata.cloud/ipfs/Qmbixv66mSEXSXrc3yAdLjB7DYEDDgYGXn3U56Xy36AdLL/machette.jpeg";
     // Mapping to track allowed contract owners
     mapping(address => bool) private _allowedOwners;
     function mintAndaddCharacterAttributes(address _address) external {

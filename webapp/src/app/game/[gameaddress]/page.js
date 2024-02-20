@@ -37,6 +37,7 @@ export default function GameRoom({ params }) {
   const [ActiveCharacter, setActiveCharacter] = useState()
   const [MatchDetails, setMatchDetails] = useState()
   const [PowerPointCount, setPowerPointCount] = useState()
+  const [ultCount, setUltCount] = useState()
   const [AddressTurnToPlay, setAddressTurnToPlay] = useState()
   const [isLoadingATX, setIsLoadingATX] = useState()
   const [api, contextHolder] = notification.useNotification()
@@ -128,7 +129,7 @@ export default function GameRoom({ params }) {
     abi: GAME_ABI,
     address: params.gameaddress,
     functionName: 'timeForUlt',
-    args: [account],
+    args: [address],
     account: account,
     chainId: opBNBTestnet.id,
   })
@@ -266,6 +267,7 @@ export default function GameRoom({ params }) {
     setAllOppositeCardsInGame(charactersTokenIdsO?.data)
     setPowerPointCount(powerPointCount?.data)
     setAddressTurnToPlay(addressToPlay?.data)
+    setUltCount(timeToULTCount?.data)
   }, [charactersTokenIdsY, returnOtherAddress])
   useEffect(() => {
     setActiveCharacter(activeCharacter.data)
@@ -284,6 +286,7 @@ export default function GameRoom({ params }) {
       setAllOppositeCardsInGame(charactersTokenIdsO?.data)
       setPowerPointCount(powerPointCount?.data)
       setAddressTurnToPlay(addressToPlay?.data)
+      setUltCount(timeToULTCount?.data)
     },
   })
   useWatchContractEvent({
@@ -301,6 +304,7 @@ export default function GameRoom({ params }) {
       setAllOppositeCardsInGame(charactersTokenIdsO?.data)
       setPowerPointCount(powerPointCount?.data)
       setAddressTurnToPlay(addressToPlay?.data)
+      setUltCount(timeToULTCount?.data)
     },
   })
   useWatchContractEvent({
@@ -318,6 +322,7 @@ export default function GameRoom({ params }) {
       setAllOppositeCardsInGame(charactersTokenIdsO?.data)
       setPowerPointCount(powerPointCount?.data)
       setAddressTurnToPlay(addressToPlay?.data)
+      setUltCount(timeToULTCount?.data)
     },
   })
   useWatchContractEvent({
@@ -467,6 +472,7 @@ export default function GameRoom({ params }) {
                   height: '250px',
                 }}
               >
+                {console.log(AddressTurnToPlay)}
                 <div>
                   <TextHelper
                     lhsv={
@@ -482,6 +488,10 @@ export default function GameRoom({ params }) {
                         ? PowerPointCount.toString()
                         : 2
                     }
+                  />
+                  <TextHelper
+                    lhsv="Ult rounds:"
+                    rhsv={!(ultCount === undefined) ? ultCount.toString() : 2}
                   />
                 </div>
                 {/*You will have to be connected to be able to see the buttons to do stuff*/}

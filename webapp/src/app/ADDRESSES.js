@@ -9,10 +9,11 @@ export const GAMEFACTORY_CONTRACTADDRESS =
   '0xD6235e30D34b4484d8fC7A08c9F86B71baD8193C'
 
 //URI for cards
-/* *Knight =
- *Archer =
- *Hop Goblin =
- *Sword =
- *Bow =
- *Machet =
+/* *Knight = "https://violet-reluctant-warbler-180.mypinata.cloud/ipfs/Qmbixv66mSEXSXrc3yAdLjB7DYEDDgYGXn3U56Xy36AdLL/Knightdude2.jpeg"
+"https://violet-reluctant-warbler-180.mypinata.cloud/ipfs/Qmbixv66mSEXSXrc3yAdLjB7DYEDDgYGXn3U56Xy36AdLL/knightdude.jpeg"
+ *Archer ="https://violet-reluctant-warbler-180.mypinata.cloud/ipfs/Qmbixv66mSEXSXrc3yAdLjB7DYEDDgYGXn3U56Xy36AdLL/archerladyordudenotsure.jpeg"
+ *Hop Goblin ="https://violet-reluctant-warbler-180.mypinata.cloud/ipfs/Qmbixv66mSEXSXrc3yAdLjB7DYEDDgYGXn3U56Xy36AdLL/hopgoblindude.jpeg"
+ *Sword = "https://violet-reluctant-warbler-180.mypinata.cloud/ipfs/Qmbixv66mSEXSXrc3yAdLjB7DYEDDgYGXn3U56Xy36AdLL/knightsword.jpeg"
+ *Bow = "https://violet-reluctant-warbler-180.mypinata.cloud/ipfs/Qmbixv66mSEXSXrc3yAdLjB7DYEDDgYGXn3U56Xy36AdLL/archerbow.jpeg"
+ *Machet = "https://violet-reluctant-warbler-180.mypinata.cloud/ipfs/Qmbixv66mSEXSXrc3yAdLjB7DYEDDgYGXn3U56Xy36AdLL/machette.jpeg"
  */
