@@ -47,15 +47,13 @@
   padding: 10px;
 }
 .scrollablegridcontainer {
-  overflow-y: auto; /* Enable vertical scrolling */
-  max-height: 410px; /* Set maximum height for the scrollable container */
+  overflow-y: auto;
+  min-height: 130px;
+  max-height: 470px;
 }
 
 .cardgrid {
   display: grid;
-  grid-template-columns: repeat(
-    auto-fill,
-    minmax(80px, 1fr)
-  ); /* Adjust column width as needed */
-  gap: 6px; /* Adjust gap between grid items */
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 6px;
 }

@@ -452,7 +452,7 @@ export default function GameRoom({ params }) {
                       Number(ActiveCharacter?.toString()) === Number(cardId)
                     }
                     gameaddress={params.gameaddress}
-                    tokenId={cardId}
+                    tokenId={cardId.toString()}
                     key={cardId}
                     className={`card ${
                       selectedCard === Number(cardId) ? 'selected' : ''

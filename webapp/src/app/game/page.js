@@ -23,6 +23,7 @@ import { config } from '../Interloop'
 import { ethers } from 'ethers'
 import { decodeTransactionLogs } from './helper'
 import { useRouter } from 'next/navigation'
+import { TextHelper } from '../charactercard/[id]/helper'
 
 export default function Game() {
   const [challengee, setChallengee] = useState('')
@@ -137,6 +138,7 @@ export default function Game() {
                 <div className={styles.cardgrid}>
                   {alltokenId?.map((cardId) => (
                     <CardBox
+                      tokenId={cardId.toString()}
                       showStats={false}
                       key={cardId}
                       onClick={() => handleCardClick(cardId)}
@@ -152,7 +154,7 @@ export default function Game() {
                       height={80}
                       width={67}
                     >
-                      Card {cardId.toString()}
+                      <TextHelper lhsv={`ID#${cardId.toString()}`} />
                     </CardBox>
                   ))}
                 </div>

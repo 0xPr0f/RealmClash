@@ -6,8 +6,9 @@ import React, { useEffect, useState } from 'react'
 import { config } from '@/app/Interloop'
 import Image from 'next/image'
 import { CHARACTERCARD_CONTRACTADDRESS } from '@/app/ADDRESSES'
+import { TextHelper } from '@/app/charactercard/[id]/helper'
 export default function CardBox({
-  children = 'card 1',
+  children,
   className,
   onClick,
   showStats = true,
@@ -15,8 +16,22 @@ export default function CardBox({
   height,
   borderRadius,
   style,
-  src,
+  tokenId,
 }) {
+  const [tokenuri, setTokenuri] = useState()
+  const account = useAccount()
+  const fetchUri = useReadContract({
+    abi: CHARACTERCARD_ABI,
+    address: CHARACTERCARD_CONTRACTADDRESS,
+    functionName: 'tokenURI',
+    config: config,
+    args: [tokenId?.toString()],
+    account: account,
+    chainId: opBNBTestnet.id,
+  })
+  useEffect(() => {
+    setTokenuri(fetchUri?.data)
+  }, [])
   return (
     <div
       style={style}
@@ -36,22 +51,26 @@ export default function CardBox({
         style={{ width: width, height: height, borderRadius: borderRadius }}
         onClick={onClick}
       >
-        {src && (
-          <Image
-            src={src}
-            /*  width={500}
-      height={500} */
-            alt="Picture"
-          />
-        )}
-        {children}
+        <div
+          style={{
+            position: 'relative',
+            width: width,
+            height: height,
+            borderRadius: borderRadius,
+          }}
+        >
+          {tokenId && tokenuri && (
+            <Image sizes="20" priority src={tokenuri} fill alt="Picture" />
+          )}
+        </div>
+        <div>{children}</div>
       </div>
     </div>
   )
 }
 
 export function CardBoxGame({
-  children = 'card 1',
+  children,
   className,
   onClick,
   showStats = true,
@@ -105,24 +124,30 @@ export function CardBoxGame({
       ) : (
         ''
       )}
+
       <div
-        className={styles.cardGame}
+        className={styles.card}
         style={{ width: width, height: height, borderRadius: borderRadius }}
         onClick={onClick}
       >
-        <div>
-          {tokenuri && (
-            <Image
-              src={tokenuri}
-              /*  width={500}
-      height={500} */
-              alt="Picture"
-            />
+        {console.log(tokenId, tokenuri)}
+        <div
+          style={{
+            position: 'relative',
+            width: '119px',
+            height: '169px',
+          }}
+        >
+          {tokenuri ? (
+            <Image priority src={tokenuri} fill alt="Picture" />
+          ) : (
+            'Refresh page'
           )}
-          {children}
-          {displayActiveButton && <div className={styles.circle}></div>}
         </div>
+        <div>{children}</div>
       </div>
+
+      {displayActiveButton && <div className={styles.circle}></div>}
     </div>
   )
 }

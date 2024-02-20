@@ -161,6 +161,8 @@ export default function Portfolio() {
       await waitForTransactionReceipt(config, {
         hash: request,
       })
+      // router.refresh does not work, will fix later
+      setIsLoadingNice(false)
       router.refresh()
     } catch (e) {
       setIsLoadingNice(false)
@@ -263,6 +265,7 @@ export default function Portfolio() {
                 <div className="cardgrid">
                   {alltokenId?.map((cardId) => (
                     <CardBox
+                      tokenId={cardId.toString()}
                       showStats={false}
                       key={cardId}
                       onClick={() => handleCardClick(cardId)}
@@ -277,9 +280,7 @@ export default function Portfolio() {
                       }}
                       height={80}
                       width={67}
-                    >
-                      Card {cardId.toString()}
-                    </CardBox>
+                    ></CardBox>
                   ))}
                 </div>
               </div>
@@ -306,6 +307,7 @@ export default function Portfolio() {
                   <div className="grid">
                     {alltokenId?.map((cardId) => (
                       <CardBox
+                        tokenId={cardId.toString()}
                         showStats={false}
                         key={cardId}
                         height={180}
@@ -316,7 +318,7 @@ export default function Portfolio() {
                           })
                         }}
                       >
-                        Card {cardId.toString()}
+                        <TextHelper lhsv={`Card ID#${cardId.toString()}`} />
                       </CardBox>
                     ))}
                   </div>

@@ -9,13 +9,14 @@ import BoxButton from '@/app/components/boxButton/boxButton'
 import { CHARACTERCARD_ABI } from '@/app/ABI'
 import { opBNBTestnet } from '@wagmi/core/chains'
 import { config } from '@/app/Interloop'
+import Image from 'next/image'
 
 export default function CharacterCardViewFullPage({ params }) {
   const [characterdetails, setCharacterdetails] = useState()
   const [owner, setowner] = useState()
   const account = useAccount()
   const { writeContract } = useWriteContract()
-
+  const [tokenuri, setTokenuri] = useState()
   const getCharacterStats = useReadContract({
     abi: CHARACTERCARD_ABI,
     address: CHARACTERCARD_CONTRACTADDRESS,
@@ -72,7 +73,18 @@ export default function CharacterCardViewFullPage({ params }) {
       args: [BigInt(tokenIdofCharacter), BigInt(tokenIdofWeapon)],
       account: account,
     })
-
+  const fetchUri = useReadContract({
+    abi: CHARACTERCARD_ABI,
+    address: CHARACTERCARD_CONTRACTADDRESS,
+    functionName: 'tokenURI',
+    config: config,
+    args: [params.id?.toString()],
+    account: account,
+    chainId: opBNBTestnet.id,
+  })
+  useEffect(() => {
+    setTokenuri(fetchUri?.data)
+  }, [fetchUri])
   return (
     <div>
       <div style={{ padding: '20px' }}>
@@ -129,10 +141,12 @@ export default function CharacterCardViewFullPage({ params }) {
                 <div
                   style={{
                     width: '100%',
-                    height: '400px',
+                    height: '370px',
                     backgroundColor: '#1a1a1d',
+                    position: 'relative',
                   }}
                 >
+                  {tokenuri ? <Image src={tokenuri} fill alt="Picture" /> : ''}
                   {/* You can replace the background color with the actual image */}
                 </div>
               </div>
@@ -209,6 +223,7 @@ export default function CharacterCardViewFullPage({ params }) {
                   onClick={() => {
                     console.log(getCharacterStats)
                     console.log(characterdetails?.isUsable)
+                    console.log(tokenuri)
                   }}
                 >
                   Equip Weapon

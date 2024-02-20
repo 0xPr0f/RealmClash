@@ -1,4 +1,5 @@
 import { TextHelper } from '../charactercard/[id]/helper'
+import Image from 'next/image'
 
 export default function Leaderboard() {
   return (
