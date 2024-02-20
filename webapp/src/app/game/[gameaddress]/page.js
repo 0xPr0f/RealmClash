@@ -29,6 +29,7 @@ export default function GameRoom({ params }) {
   const router = useRouter()
   const account = useAccount()
   const { address } = useAccount()
+  const { isConnected } = useAccount()
   //const { writeContract } = useWriteContract();
   const [selectedCard, setSelectedCard] = useState(null)
   const [allYourCardsInGame, setAllYourCardsInGame] = useState()
@@ -261,17 +262,17 @@ export default function GameRoom({ params }) {
     }
   }
   useEffect(() => {
+    if (!isConnected) return
     setOppositePlayerAddress(returnOtherAddress?.data)
+    setActiveCharacter(activeCharacter.data)
     setAllYourCardsInGame(charactersTokenIdsY?.data)
     setMatchDetails(matchDetails?.data)
     setAllOppositeCardsInGame(charactersTokenIdsO?.data)
     setPowerPointCount(powerPointCount?.data)
     setAddressTurnToPlay(addressToPlay?.data)
     setUltCount(timeToULTCount?.data)
-  }, [charactersTokenIdsY, returnOtherAddress])
-  useEffect(() => {
-    setActiveCharacter(activeCharacter.data)
-  }, [activeCharacter])
+  })
+  useEffect(() => {})
 
   useWatchContractEvent({
     address: params?.gameaddress,
@@ -295,16 +296,19 @@ export default function GameRoom({ params }) {
     eventName: 'TakeDamage',
     onLogs(logs) {
       console.log('Take Damage logs:', logs)
-      setActiveCharacter(activeCharacter?.data)
-      setAllYourCardsInGame(charactersTokenIdsY?.data)
-      setAllOppositeCardsInGame(charactersTokenIdsO?.data)
-      setOppositePlayerAddress(returnOtherAddress?.data)
-      setAllYourCardsInGame(charactersTokenIdsY?.data)
-      setMatchDetails(matchDetails?.data)
-      setAllOppositeCardsInGame(charactersTokenIdsO?.data)
-      setPowerPointCount(powerPointCount?.data)
-      setAddressTurnToPlay(addressToPlay?.data)
-      setUltCount(timeToULTCount?.data)
+      console.log('Take Damage logs:', logs)
+      useEffect(() => {
+        setActiveCharacter(activeCharacter?.data)
+        setAllYourCardsInGame(charactersTokenIdsY?.data)
+        setAllOppositeCardsInGame(charactersTokenIdsO?.data)
+        setOppositePlayerAddress(returnOtherAddress?.data)
+        setAllYourCardsInGame(charactersTokenIdsY?.data)
+        setMatchDetails(matchDetails?.data)
+        setAllOppositeCardsInGame(charactersTokenIdsO?.data)
+        setPowerPointCount(powerPointCount?.data)
+        setAddressTurnToPlay(addressToPlay?.data)
+        setUltCount(timeToULTCount?.data)
+      }, [])
     },
   })
   useWatchContractEvent({
@@ -313,16 +317,18 @@ export default function GameRoom({ params }) {
     eventName: 'GameStarted',
     onLogs(logs) {
       console.log('Take Damage logs:', logs)
-      setActiveCharacter(activeCharacter?.data)
-      setAllYourCardsInGame(charactersTokenIdsY?.data)
-      setAllOppositeCardsInGame(charactersTokenIdsO?.data)
-      setOppositePlayerAddress(returnOtherAddress?.data)
-      setAllYourCardsInGame(charactersTokenIdsY?.data)
-      setMatchDetails(matchDetails?.data)
-      setAllOppositeCardsInGame(charactersTokenIdsO?.data)
-      setPowerPointCount(powerPointCount?.data)
-      setAddressTurnToPlay(addressToPlay?.data)
-      setUltCount(timeToULTCount?.data)
+      useEffect(() => {
+        setActiveCharacter(activeCharacter?.data)
+        setAllYourCardsInGame(charactersTokenIdsY?.data)
+        setAllOppositeCardsInGame(charactersTokenIdsO?.data)
+        setOppositePlayerAddress(returnOtherAddress?.data)
+        setAllYourCardsInGame(charactersTokenIdsY?.data)
+        setMatchDetails(matchDetails?.data)
+        setAllOppositeCardsInGame(charactersTokenIdsO?.data)
+        setPowerPointCount(powerPointCount?.data)
+        setAddressTurnToPlay(addressToPlay?.data)
+        setUltCount(timeToULTCount?.data)
+      }, [])
     },
   })
   useWatchContractEvent({
