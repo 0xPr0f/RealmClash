@@ -7,6 +7,7 @@ import { config } from '@/app/Interloop'
 import Image from 'next/image'
 import { CHARACTERCARD_CONTRACTADDRESS } from '@/app/ADDRESSES'
 import { TextHelper } from '@/app/charactercard/[id]/helper'
+import { useRouter } from 'next/navigation'
 export default function CardBox({
   children,
   className,
@@ -18,6 +19,7 @@ export default function CardBox({
   style,
   tokenId,
 }) {
+  const router = useRouter()
   const [tokenuri, setTokenuri] = useState()
   const account = useAccount()
   const fetchUri = useReadContract({
@@ -31,6 +33,7 @@ export default function CardBox({
   })
   useEffect(() => {
     setTokenuri(fetchUri?.data)
+    router.refresh()
   }, [])
   return (
     <div
@@ -105,7 +108,7 @@ export function CardBoxGame({
 
   useEffect(() => {
     setTokenuri(fetchUri?.data)
-  }, [])
+  }, [fetchUri])
   return (
     <div
       style={style}

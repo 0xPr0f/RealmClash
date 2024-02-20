@@ -183,7 +183,7 @@ export default function Game() {
             }}
           >
             {isLoadingNice ? (
-              <div style={{ display: 'flex', alignItems: 'center' }}>
+              <span style={{ display: 'flex', alignItems: 'center' }}>
                 {' '}
                 <ScaleLoader
                   color="#c3073f"
@@ -193,7 +193,7 @@ export default function Game() {
                   width={3}
                 />{' '}
                 Loading
-              </div>
+              </span>
             ) : (
               <>Request Challenge</>
             )}

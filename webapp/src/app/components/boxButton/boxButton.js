@@ -13,6 +13,7 @@ export const BoxButton = ({
   outsidePadding,
   className,
   spinSharply = false,
+  wantText,
 }) => {
   return (
     <div style={{ padding: outsidePadding }}>
@@ -38,6 +39,16 @@ export const BoxButton = ({
       >
         <span>{children}</span>
       </button>
+      {wantText && (
+        <span
+          style={{
+            fontWeight: '200',
+            fontSize: '15px',
+          }}
+        >
+          {wantText}
+        </span>
+      )}
     </div>
   )
 }

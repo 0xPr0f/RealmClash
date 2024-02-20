@@ -1,6 +1,6 @@
 'use client'
-import React, { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import React, { useEffect, useReducer, useState } from 'react'
+//import { useRouter } from 'next/navigation'
 import './game.css'
 import CardBox, { CardBoxGame } from '@/app/components/cardBox/cardBox'
 import BoxButton from '@/app/components/boxButton/boxButton'
@@ -24,6 +24,10 @@ import { MenuItem } from '@mui/base/MenuItem'
 import { TextHelper } from '@/app/charactercard/[id]/helper'
 import { shortenText } from '@/app/components/utilities/utilities'
 import { IoSettingsSharp } from 'react-icons/io5'
+import { useTransition } from 'react'
+import { useRouter } from 'next/navigation'
+import { useTryReadContract } from './helper'
+import { readContract } from '@wagmi/core'
 
 export default function GameRoom({ params }) {
   const router = useRouter()
@@ -42,6 +46,14 @@ export default function GameRoom({ params }) {
   const [AddressTurnToPlay, setAddressTurnToPlay] = useState()
   const [isLoadingATX, setIsLoadingATX] = useState()
   const [api, contextHolder] = notification.useNotification()
+  const [reducerValue, forceUpdate] = useReducer((x) => x + 1, 0)
+
+  const [data, setData] = useState(null)
+
+  const handleRef = () => {
+    router.refresh() // This will refresh the router
+  }
+
   const openNotification = ({ _message, _description, _duration, _icon }) => {
     api.open({
       message: _message,
@@ -162,6 +174,8 @@ export default function GameRoom({ params }) {
         _icon: <FaCheck size={30} color="#c3073f" />,
       })
       setIsLoadingATX(false)
+      //router.refresh()
+      forceUpdate()
     } catch (e) {
       setIsLoadingATX(false)
       openNotification({
@@ -192,6 +206,8 @@ export default function GameRoom({ params }) {
         _icon: <FaCheck size={30} color="#c3073f" />,
       })
       setIsLoadingATX(false)
+      //router.refresh()
+      forceUpdate()
     } catch (e) {
       setIsLoadingATX(false)
       openNotification({
@@ -221,6 +237,8 @@ export default function GameRoom({ params }) {
         _icon: <FaCheck size={30} color="#c3073f" />,
       })
       setIsLoadingATX(false)
+      // router.refresh()
+      forceUpdate()
     } catch (e) {
       setIsLoadingATX(false)
       openNotification({
@@ -252,6 +270,8 @@ export default function GameRoom({ params }) {
       })
       console.log(selectedCard)
       setIsLoadingATX(false)
+      //router.refresh()
+      forceUpdate()
     } catch (e) {
       setIsLoadingATX(false)
       openNotification({
@@ -262,7 +282,6 @@ export default function GameRoom({ params }) {
     }
   }
   useEffect(() => {
-    if (!isConnected) return
     setOppositePlayerAddress(returnOtherAddress?.data)
     setActiveCharacter(activeCharacter.data)
     setAllYourCardsInGame(charactersTokenIdsY?.data)
@@ -271,8 +290,20 @@ export default function GameRoom({ params }) {
     setPowerPointCount(powerPointCount?.data)
     setAddressTurnToPlay(addressToPlay?.data)
     setUltCount(timeToULTCount?.data)
-  })
-  useEffect(() => {})
+    console.log('data fetched', addressToPlay?.data, AddressTurnToPlay)
+  }, [activeCharacter])
+
+  useEffect(() => {
+    setOppositePlayerAddress(returnOtherAddress?.data)
+    setActiveCharacter(activeCharacter.data)
+    setAllYourCardsInGame(charactersTokenIdsY?.data)
+    setMatchDetails(matchDetails?.data)
+    setAllOppositeCardsInGame(charactersTokenIdsO?.data)
+    setPowerPointCount(powerPointCount?.data)
+    setAddressTurnToPlay(addressToPlay)
+    setUltCount(timeToULTCount?.data)
+    console.log('data fetched reducer')
+  }, [reducerValue])
 
   useWatchContractEvent({
     address: params?.gameaddress,
@@ -288,6 +319,9 @@ export default function GameRoom({ params }) {
       setPowerPointCount(powerPointCount?.data)
       setAddressTurnToPlay(addressToPlay?.data)
       setUltCount(timeToULTCount?.data)
+
+      // router.refresh()
+      forceUpdate()
     },
   })
   useWatchContractEvent({
@@ -297,18 +331,17 @@ export default function GameRoom({ params }) {
     onLogs(logs) {
       console.log('Take Damage logs:', logs)
       console.log('Take Damage logs:', logs)
-      useEffect(() => {
-        setActiveCharacter(activeCharacter?.data)
-        setAllYourCardsInGame(charactersTokenIdsY?.data)
-        setAllOppositeCardsInGame(charactersTokenIdsO?.data)
-        setOppositePlayerAddress(returnOtherAddress?.data)
-        setAllYourCardsInGame(charactersTokenIdsY?.data)
-        setMatchDetails(matchDetails?.data)
-        setAllOppositeCardsInGame(charactersTokenIdsO?.data)
-        setPowerPointCount(powerPointCount?.data)
-        setAddressTurnToPlay(addressToPlay?.data)
-        setUltCount(timeToULTCount?.data)
-      }, [])
+
+      setActiveCharacter(activeCharacter?.data)
+      setAllYourCardsInGame(charactersTokenIdsY?.data)
+      setAllOppositeCardsInGame(charactersTokenIdsO?.data)
+      setOppositePlayerAddress(returnOtherAddress?.data)
+      setAllYourCardsInGame(charactersTokenIdsY?.data)
+      setMatchDetails(matchDetails?.data)
+      setAllOppositeCardsInGame(charactersTokenIdsO?.data)
+      setPowerPointCount(powerPointCount?.data)
+      setAddressTurnToPlay(addressToPlay?.data)
+      setUltCount(timeToULTCount?.data)
     },
   })
   useWatchContractEvent({
@@ -317,18 +350,17 @@ export default function GameRoom({ params }) {
     eventName: 'GameStarted',
     onLogs(logs) {
       console.log('Take Damage logs:', logs)
-      useEffect(() => {
-        setActiveCharacter(activeCharacter?.data)
-        setAllYourCardsInGame(charactersTokenIdsY?.data)
-        setAllOppositeCardsInGame(charactersTokenIdsO?.data)
-        setOppositePlayerAddress(returnOtherAddress?.data)
-        setAllYourCardsInGame(charactersTokenIdsY?.data)
-        setMatchDetails(matchDetails?.data)
-        setAllOppositeCardsInGame(charactersTokenIdsO?.data)
-        setPowerPointCount(powerPointCount?.data)
-        setAddressTurnToPlay(addressToPlay?.data)
-        setUltCount(timeToULTCount?.data)
-      }, [])
+
+      setActiveCharacter(activeCharacter?.data)
+      setAllYourCardsInGame(charactersTokenIdsY?.data)
+      setAllOppositeCardsInGame(charactersTokenIdsO?.data)
+      setOppositePlayerAddress(returnOtherAddress?.data)
+      setAllYourCardsInGame(charactersTokenIdsY?.data)
+      setMatchDetails(matchDetails?.data)
+      setAllOppositeCardsInGame(charactersTokenIdsO?.data)
+      setPowerPointCount(powerPointCount?.data)
+      setAddressTurnToPlay(addressToPlay?.data)
+      setUltCount(timeToULTCount?.data)
     },
   })
   useWatchContractEvent({
@@ -337,6 +369,7 @@ export default function GameRoom({ params }) {
     eventName: 'setSwitchCharacter',
     onLogs(logs) {
       console.log('Switch character logs:', logs)
+
       setActiveCharacter(activeCharacter?.data)
       setAllYourCardsInGame(charactersTokenIdsY?.data)
       setAllOppositeCardsInGame(charactersTokenIdsO?.data)
@@ -355,6 +388,7 @@ export default function GameRoom({ params }) {
     onLogs(logs) {
       console.log('Game won:', logs)
       setMatchDetails(matchDetails?.data)
+      router.refresh()
     },
   })
 
@@ -392,7 +426,19 @@ export default function GameRoom({ params }) {
               <div>
                 <Dropdown>
                   <MenuButton>
-                    <BoxButton>
+                    <BoxButton
+                      onClick={() => {
+                        // forceUpdate()
+
+                        console.log(data)
+                        console.log(
+                          'data fetched',
+                          addressToPlay,
+                          AddressTurnToPlay,
+                          data
+                        )
+                      }}
+                    >
                       <IoSettingsSharp color="#c3073f" />
                     </BoxButton>
                   </MenuButton>
@@ -455,7 +501,7 @@ export default function GameRoom({ params }) {
                 {allYourCardsInGame?.map((cardId) => (
                   <CardBoxGame
                     displayActiveButton={
-                      Number(ActiveCharacter?.toString()) === Number(cardId)
+                      Number(ActiveCharacter?.toString()) === cardId.toString()
                     }
                     gameaddress={params.gameaddress}
                     tokenId={cardId.toString()}
@@ -504,6 +550,7 @@ export default function GameRoom({ params }) {
                 <div className="theAttackButtons">
                   <div className="buttons">
                     <BoxButton
+                      wantText="+1ur"
                       disabled={isLoadingATX}
                       outsidePadding="20px"
                       borderRadius="100%"
@@ -516,7 +563,9 @@ export default function GameRoom({ params }) {
                     >
                       <GiCrossedSwords size={43} />
                     </BoxButton>
+
                     <BoxButton
+                      wantText="-2pp,-2ur"
                       disabled={isLoadingATX}
                       borderRadius="100%"
                       height="68px"
@@ -528,7 +577,9 @@ export default function GameRoom({ params }) {
                     >
                       <GiSwordWound size={40} />
                     </BoxButton>
+
                     <BoxButton
+                      wantText="-4pp,-3ur"
                       disabled={isLoadingATX}
                       outsidePadding="20px"
                       borderRadius="100%"

@@ -188,7 +188,7 @@ export default function Portfolio() {
                   }}
                 >
                   {isLoadingNice ? (
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <span style={{ display: 'flex', alignItems: 'center' }}>
                       <ScaleLoader
                         color="#c3073f"
                         height={15}
@@ -197,7 +197,7 @@ export default function Portfolio() {
                         width={3}
                       />{' '}
                       Loading
-                    </div>
+                    </span>
                   ) : (
                     <>Use Faucet</>
                   )}
@@ -213,7 +213,7 @@ export default function Portfolio() {
                   }}
                 >
                   {isLoadingNice ? (
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <span style={{ display: 'flex', alignItems: 'center' }}>
                       <ScaleLoader
                         color="#c3073f"
                         height={15}
@@ -222,7 +222,7 @@ export default function Portfolio() {
                         width={3}
                       />{' '}
                       Loading
-                    </div>
+                    </span>
                   ) : (
                     <>Accept Challenge</>
                   )}
