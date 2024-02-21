@@ -455,9 +455,11 @@ export default function GameRoom({ params }) {
   })
   return (
     <div>
+      {/*}
       {console.log(ActiveCharacter?.toString())}
       {console.log(MatchDetails)}
       {console.log('address to play', AddressTurnToPlay)}
+  */}
       {contextHolder}
       <div style={{ padding: '20px' }}>
         address : {JSON.stringify(params.gameaddress)}
