@@ -363,7 +363,7 @@ export default function GameRoom({ params }) {
     abi: GAME_ABI,
     eventName: 'setSwitchCharacter',
     onLogs(logs) {
-      console.log('SwitchCharacter logs:', logs)
+      //console.log('SwitchCharacter logs:', logs)
       returnFetch()
       setActiveCharacter(activeCharacter?.data)
       setOppositePlayerAddress(returnOtherAddress?.data)
@@ -380,7 +380,7 @@ export default function GameRoom({ params }) {
     abi: GAME_ABI,
     eventName: 'TakeDamage',
     onLogs(logs) {
-      console.log('Take Damage logs:', logs)
+      // console.log('Take Damage logs:', logs)
       returnFetch()
       setActiveCharacter(activeCharacter?.data)
       setAllYourCardsInGame(charactersTokenIdsY?.data)
@@ -399,7 +399,7 @@ export default function GameRoom({ params }) {
     abi: GAME_ABI,
     eventName: 'GameStarted',
     onLogs(logs) {
-      console.log('Game started:', logs)
+      //console.log('Game started:', logs)
       returnFetch()
       setActiveCharacter(activeCharacter?.data)
       setAllYourCardsInGame(charactersTokenIdsY?.data)
@@ -418,7 +418,7 @@ export default function GameRoom({ params }) {
     abi: GAME_ABI,
     eventName: 'setSwitchCharacter',
     onLogs(logs) {
-      console.log('Switch character logs:', logs)
+      //console.log('Switch character logs:', logs)
       returnFetch()
       setActiveCharacter(activeCharacter?.data)
       setAllYourCardsInGame(charactersTokenIdsY?.data)
@@ -437,7 +437,7 @@ export default function GameRoom({ params }) {
     abi: GAME_ABI,
     eventName: 'GameWon',
     onLogs(logs) {
-      console.log('Game won:', logs)
+      //console.log('Game won:', logs)
       returnFetch()
       setMatchDetails(matchDetails?.data)
     },
@@ -447,7 +447,7 @@ export default function GameRoom({ params }) {
     abi: GAME_ABI,
     eventName: 'GameAccepted',
     onLogs(logs) {
-      console.log('Game accepted:', logs)
+      //console.log('Game accepted:', logs)
       returnFetch()
       setMatchDetails(matchDetails?.data)
       returnSetStates()
@@ -463,7 +463,6 @@ export default function GameRoom({ params }) {
       {contextHolder}
       <div style={{ padding: '20px' }}>
         address : {JSON.stringify(params.gameaddress)}
-        {console.log(returnOtherAddress, allOppositeCardsInGame)}
       </div>
       {params.gameaddress.length === 42 ? (
         <div>
@@ -488,24 +487,17 @@ export default function GameRoom({ params }) {
               </div>
               <div>
                 <Dropdown>
-                  <MenuButton>
-                    <Tooltip title="see game stats and refresh" arrow>
+                  <Tooltip title="stats dropdown and refresh" arrow>
+                    <MenuButton>
                       <BoxButton
                         onClick={() => {
                           returnFetch()
-                          //addressToPlay.refetch()
-                          //console.log(data)
-                          console.log(
-                            'data fetched',
-                            addressToPlay,
-                            AddressTurnToPlay
-                          )
                         }}
                       >
                         <IoSettingsSharp color="#c3073f" />
                       </BoxButton>
-                    </Tooltip>
-                  </MenuButton>
+                    </MenuButton>
+                  </Tooltip>
                   <Menu>
                     <br />
                     <MenuItem>
@@ -545,8 +537,8 @@ export default function GameRoom({ params }) {
               </div>
             </div>
             <div className="cardsdown">
-              <div className="buttons">
-                <Tooltip title="switch character" arrow>
+              <Tooltip title="switch character" arrow>
+                <div className="buttons">
                   <BoxButton
                     disabled={isLoadingATX}
                     outsidePadding="20px"
@@ -560,15 +552,11 @@ export default function GameRoom({ params }) {
                   >
                     <FaArrowsRotate size={20} fontWeight={1} />
                   </BoxButton>
-                </Tooltip>
-              </div>
-
+                </div>
+              </Tooltip>
               <div className="cards-down">
                 {allYourCardsInGame?.map((cardId) => (
                   <CardBoxGame
-                    displayActiveButton={
-                      Number(ActiveCharacter?.toString()) === cardId.toString()
-                    }
                     gameaddress={params.gameaddress}
                     tokenId={cardId.toString()}
                     key={cardId}
@@ -577,7 +565,22 @@ export default function GameRoom({ params }) {
                     }`}
                     onClick={() => handleCardClick(Number(cardId))}
                   >
-                    Card {cardId.toString()}
+                    <span
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                      }}
+                    >
+                      Card {cardId.toString()}
+                      {activeCharacter.data?.toString() ===
+                      cardId.toString() ? (
+                        <Tooltip title="active character" arrow>
+                          <div className="circle"></div>
+                        </Tooltip>
+                      ) : (
+                        ''
+                      )}
+                    </span>
                   </CardBoxGame>
                 ))}
               </div>
@@ -590,7 +593,6 @@ export default function GameRoom({ params }) {
                   height: '250px',
                 }}
               >
-                {console.log(AddressTurnToPlay)}
                 <div>
                   <TextHelper
                     lhsv={
@@ -615,54 +617,59 @@ export default function GameRoom({ params }) {
                 {/*You will have to be connected to be able to see the buttons to do stuff*/}
                 <div className="theAttackButtons">
                   <div className="buttons">
-                    <BoxButton
-                      wantText="+1ur"
-                      disabled={isLoadingATX}
-                      outsidePadding="20px"
-                      borderRadius="100%"
-                      height="80px"
-                      width="80px"
-                      onClick={async () => {
-                        //console.log('use button check if disabled')
-                        useNormalAttack(selectedCard)
-                      }}
-                    >
-                      {' '}
-                      <Tooltip title="use normal attack" arrow>
-                        <GiCrossedSwords size={43} />
-                      </Tooltip>
-                    </BoxButton>
-
-                    <Tooltip title="use first ultimate" arrow>
-                      <BoxButton
-                        wantText="-2pp,-2ur"
-                        disabled={isLoadingATX}
-                        borderRadius="100%"
-                        height="68px"
-                        width="68px"
-                        onClick={() => {
-                          //console.log('use button check if disabled')
-                          useULT2Attack(selectedCard)
-                        }}
-                      >
-                        <GiSwordWound size={40} />
-                      </BoxButton>
+                    <Tooltip title="normal attack {weak}" arrow>
+                      <div>
+                        <BoxButton
+                          wantText="+1ur"
+                          disabled={isLoadingATX}
+                          outsidePadding="20px"
+                          borderRadius="100%"
+                          height="80px"
+                          width="80px"
+                          onClick={async () => {
+                            //console.log('use button check if disabled')
+                            useNormalAttack(selectedCard)
+                          }}
+                        >
+                          {' '}
+                          <GiCrossedSwords size={43} />
+                        </BoxButton>
+                      </div>
                     </Tooltip>
-                    <Tooltip title="use strongest ultimate" arrow>
-                      <BoxButton
-                        wantText="-4pp,-3ur"
-                        disabled={isLoadingATX}
-                        outsidePadding="20px"
-                        borderRadius="100%"
-                        height="60px"
-                        width="60px"
-                        onClick={() => {
-                          //console.log('use button check if disabled')
-                          useULT3Attack(selectedCard)
-                        }}
-                      >
-                        <GiPointySword size={40} />
-                      </BoxButton>
+                    <Tooltip title="ultimate attack {medium}" arrow>
+                      <div>
+                        <BoxButton
+                          wantText="-2pp,-2ur"
+                          disabled={isLoadingATX}
+                          borderRadius="100%"
+                          height="68px"
+                          width="68px"
+                          onClick={() => {
+                            //console.log('use button check if disabled')
+                            useULT2Attack(selectedCard)
+                          }}
+                        >
+                          <GiSwordWound size={40} />
+                        </BoxButton>
+                      </div>
+                    </Tooltip>
+                    <Tooltip title="ultimate attack {strong}" arrow>
+                      <div>
+                        <BoxButton
+                          wantText="-4pp,-3ur"
+                          disabled={isLoadingATX}
+                          outsidePadding="20px"
+                          borderRadius="100%"
+                          height="60px"
+                          width="60px"
+                          onClick={() => {
+                            //console.log('use button check if disabled')
+                            useULT3Attack(selectedCard)
+                          }}
+                        >
+                          <GiPointySword size={40} />
+                        </BoxButton>
+                      </div>
                     </Tooltip>
                   </div>
                 </div>

@@ -84,7 +84,6 @@ export function CardBoxGame({
   displayActiveButton = false,
 }) {
   const account = useAccount()
-  const [tokenuri, setTokenuri] = useState()
   const result = useReadContract({
     abi: GAME_ABI,
     address: gameaddress,
@@ -93,6 +92,7 @@ export function CardBoxGame({
     args: [tokenId?.toString()],
     account: account,
     chainId: opBNBTestnet.id,
+    query: { gcTime: 0 },
   })
   const fetchUri = useReadContract({
     abi: CHARACTERCARD_ABI,
@@ -110,16 +110,17 @@ export function CardBoxGame({
     eventName: 'TakeDamage',
     onLogs(logs) {
       console.log('Take Damage logs: from cardbox', logs)
-      fetchUri.refetch()
+      result?.refetch()
     },
   })
-
+  useEffect(() => {
+    result?.refetch()
+  }, [tokenId, result])
   return (
     <div
       style={style}
       className={[styles.cardHolder, className ? className : ''].join(' ')}
     >
-      {console.log('refreshed the card boss')}
       {showStats ? (
         <div className={styles.StatusBar}>
           {result.data && (
@@ -139,11 +140,10 @@ export function CardBoxGame({
         style={{ width: width, height: height, borderRadius: borderRadius }}
         onClick={onClick}
       >
-        {console.log(tokenId, fetchUri?.data)}
         <div
           style={{
             position: 'relative',
-            width: '119px',
+            width: '118px',
             height: '169px',
           }}
         >
@@ -155,8 +155,6 @@ export function CardBoxGame({
         </div>
         <div>{children}</div>
       </div>
-
-      {displayActiveButton && <div className={styles.circle}></div>}
     </div>
   )
 }
