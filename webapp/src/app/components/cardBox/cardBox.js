@@ -19,7 +19,6 @@ export default function CardBox({
   style,
   tokenId,
 }) {
-  const router = useRouter()
   const [tokenuri, setTokenuri] = useState()
   const account = useAccount()
   const fetchUri = useReadContract({
@@ -33,7 +32,6 @@ export default function CardBox({
   })
   useEffect(() => {
     setTokenuri(fetchUri?.data)
-    router.refresh()
   }, [])
   return (
     <div
@@ -105,18 +103,17 @@ export function CardBoxGame({
     account: account,
     chainId: opBNBTestnet.id,
   })
+
   useWatchContractEvent({
     address: gameaddress,
     abi: GAME_ABI,
     eventName: 'TakeDamage',
     onLogs(logs) {
       console.log('Take Damage logs: from cardbox', logs)
+      fetchUri.refetch()
     },
   })
-  useEffect(() => {
-    fetchUri.refetch()
-    setTokenuri(fetchUri?.data)
-  })
+
   return (
     <div
       style={style}
@@ -142,7 +139,7 @@ export function CardBoxGame({
         style={{ width: width, height: height, borderRadius: borderRadius }}
         onClick={onClick}
       >
-        {console.log(tokenId, tokenuri)}
+        {console.log(tokenId, fetchUri?.data)}
         <div
           style={{
             position: 'relative',
@@ -150,8 +147,8 @@ export function CardBoxGame({
             height: '169px',
           }}
         >
-          {tokenuri ? (
-            <Image priority src={tokenuri} fill alt="Picture" />
+          {fetchUri?.data ? (
+            <Image priority src={fetchUri?.data} fill alt="Picture" />
           ) : (
             'Refresh page'
           )}

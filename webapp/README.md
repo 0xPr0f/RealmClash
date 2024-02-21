@@ -9,3 +9,5 @@ Steps to run project
 - this project is using npm so install dependencies
 - rename env to .env.local, add your project ID from wallet connect
 - start application `npm run dev`
+
+## How to play game

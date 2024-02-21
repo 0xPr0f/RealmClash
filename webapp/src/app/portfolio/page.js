@@ -134,7 +134,7 @@ export default function Portfolio() {
       hash: hashTx,
     })
     let abi = [
-      'event GameStarted(address indexed initiator, address indexed game, uint indexed gameId)',
+      'event GameAccepted(address indexed initiator, address indexed game, uint[] carddeck, uint indexed gameId)',
     ]
     let iface = new ethers.utils.Interface(abi)
     let gameEventDecode = decodeTransactionLogs(
@@ -143,8 +143,8 @@ export default function Portfolio() {
       iface
     )
     setIsLoadingNice(false)
-    //console.log('game :', gameEventDecode.args.game)
-    router.push(`/game/${gameEventDecode.args.game}`)
+    console.log('game :', gameEventDecode)
+    router.push(`/game/${selectedBox[0]}`)
   }
   const useFaucet = async () => {
     try {
