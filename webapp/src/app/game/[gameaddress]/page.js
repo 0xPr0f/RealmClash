@@ -441,6 +441,7 @@ export default function GameRoom({ params }) {
       returnFetch()
       setMatchDetails(matchDetails?.data)
     },
+    pollingInterval: 300_000,
   })
   useWatchContractEvent({
     address: params?.gameaddress,
