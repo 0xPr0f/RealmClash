@@ -56,11 +56,11 @@ export default function Game() {
 
   const requestChallenge = () => {
     if (selectedCards.length === 3 && isValidAddress(challengee)) {
-      console.log('game started', challengee, selectedCards)
+      //console.log('game started', challengee, selectedCards)
       setIsLoadingNice(true)
       sendRequest()
     } else {
-      console.log('you need three characters')
+      //console.log('you need three characters')
     }
   }
   // test address 0x772A4f348d85FDd00e89fDE4C7CAe8628c8DAd19
@@ -86,7 +86,7 @@ export default function Game() {
         chainId: opBNBTestnet.id,
         account: address,
       })
-      console.log(request)
+      //console.log(request)
       decodeTx(request)
     } catch (e) {
       setIsLoadingNice(false)
@@ -107,7 +107,7 @@ export default function Game() {
       iface
     )
     setIsLoadingNice(false)
-    console.log('game :', gameEventDecode.args.game)
+    //console.log('game :', gameEventDecode.args.game)
     router.push(`/game/${gameEventDecode.args.game}`)
   }
   return (
@@ -178,7 +178,7 @@ export default function Game() {
           <BoxButton
             disabled={isLoadingNice}
             onClick={async () => {
-              console.log('Initiating')
+              //console.log('Initiating')
               requestChallenge()
             }}
           >

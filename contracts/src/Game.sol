@@ -276,6 +276,7 @@ contract Game {
         __takedamage(totalDamage, defTokenId);
         __switchPlayer();
         __setAfterPlay();
+        emit TakeDamage(_tokenId, totalDamage, defTokenId, msg.sender);
     }
 
     /// @dev Function to use an ult2 attack with the specified character token ID
@@ -299,6 +300,7 @@ contract Game {
         __takedamage(totalDamage, defTokenId);
         __switchPlayer();
         __setAfterPlay();
+        emit TakeDamage(_tokenId, totalDamage, defTokenId, msg.sender);
     }
 
     /// @dev Function to use an ult3 attack with the specified character token ID
@@ -322,6 +324,7 @@ contract Game {
         __takedamage(totalDamage, defTokenId);
         __switchPlayer();
         __setAfterPlay();
+        emit TakeDamage(_tokenId, totalDamage, defTokenId, msg.sender);
     }
 
     // ACCESS CONTROL AND VALIDATION LOGIC

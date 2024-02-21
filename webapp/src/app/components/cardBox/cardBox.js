@@ -1,4 +1,4 @@
-import { useAccount, useReadContract } from 'wagmi'
+import { useAccount, useReadContract, useWatchContractEvent } from 'wagmi'
 import styles from './cardBox.module.css'
 import { CHARACTERCARD_ABI, GAME_ABI } from '@/app/ABI'
 import { opBNBTestnet } from 'viem/chains'
@@ -105,15 +105,24 @@ export function CardBoxGame({
     account: account,
     chainId: opBNBTestnet.id,
   })
-
+  useWatchContractEvent({
+    address: gameaddress,
+    abi: GAME_ABI,
+    eventName: 'TakeDamage',
+    onLogs(logs) {
+      console.log('Take Damage logs: from cardbox', logs)
+    },
+  })
   useEffect(() => {
+    fetchUri.refetch()
     setTokenuri(fetchUri?.data)
-  }, [fetchUri])
+  })
   return (
     <div
       style={style}
       className={[styles.cardHolder, className ? className : ''].join(' ')}
     >
+      {console.log('refreshed the card boss')}
       {showStats ? (
         <div className={styles.StatusBar}>
           {result.data && (

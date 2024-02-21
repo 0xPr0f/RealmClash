@@ -73,18 +73,18 @@ export default function Portfolio() {
       account: account,
     })
   const acceptChallenge = () => {
-    console.log(selectedBox, selectedBox.length, isValidAddress(selectedBox[0]))
+    //console.log(selectedBox, selectedBox.length, isValidAddress(selectedBox[0]))
     if (
       selectedBox.length === 1 &&
       isValidAddress(selectedBox[0]) &&
       selectedCards.length === 3
     ) {
-      console.log('game started', selectedBox[0], selectedBox)
+      //console.log('game started', selectedBox[0], selectedBox)
       setIsLoadingNice(true)
-      console.log('game started 1')
+      //console.log('game started 1')
       sendRequest()
     } else {
-      console.log('you need three characters')
+      //console.log('you need three characters')
     }
   }
   const playerGames = useReadContract({
@@ -112,7 +112,7 @@ export default function Portfolio() {
 
   const sendRequest = async () => {
     try {
-      console.log('game started 2 ..... ')
+      //console.log('game started 2 ..... ')
       const request = await writeContract(config, {
         abi: GAME_ABI,
         address: selectedBox[0],
@@ -121,8 +121,8 @@ export default function Portfolio() {
         chainId: opBNBTestnet.id,
         account: account,
       })
-      console.log('game started 3')
-      console.log(request)
+      //console.log('game started 3')
+      //console.log(request)
       decodeTx(request)
     } catch (e) {
       setIsLoadingNice(false)
@@ -143,7 +143,7 @@ export default function Portfolio() {
       iface
     )
     setIsLoadingNice(false)
-    console.log('game :', gameEventDecode.args.game)
+    //console.log('game :', gameEventDecode.args.game)
     router.push(`/game/${gameEventDecode.args.game}`)
   }
   const useFaucet = async () => {
@@ -157,7 +157,7 @@ export default function Portfolio() {
         chainId: opBNBTestnet.id,
         account: account,
       })
-      console.log(request)
+      //console.log(request)
       await waitForTransactionReceipt(config, {
         hash: request,
       })
@@ -208,7 +208,7 @@ export default function Portfolio() {
                   spinSharply={true}
                   disabled={isLoadingNice}
                   onClick={async () => {
-                    console.log('Initiating')
+                    //console.log('Initiating')
                     acceptChallenge()
                   }}
                 >
@@ -251,7 +251,7 @@ export default function Portfolio() {
                     <HoriGridBox
                       onClick={() => {
                         handleBoxClick(gameadress)
-                        console.log(gameadress)
+                        //console.log(gameadress)
                       }}
                     >
                       <TextHelper lhsv="Address:" rhsv={gameadress} />

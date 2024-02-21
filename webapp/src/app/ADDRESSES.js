@@ -6,7 +6,7 @@ export const FAUCET_CONTRACTADDRESS =
 export const WEAPONCARD_CONTRACTADDRESS =
   '0xeb930EeA29cbABe8742C951eeFF7E833Ab2c867E'
 export const GAMEFACTORY_CONTRACTADDRESS =
-  '0x71F07891f573807901493A916f1f25bB795201bF'
+  '0x7e514cCd18ec5Ba6CE8ce98b336349a0cBBb4B0b'
 
 //URI for cards
 /* *Knight = "https://violet-reluctant-warbler-180.mypinata.cloud/ipfs/Qmbixv66mSEXSXrc3yAdLjB7DYEDDgYGXn3U56Xy36AdLL/Knightdude2.jpeg"

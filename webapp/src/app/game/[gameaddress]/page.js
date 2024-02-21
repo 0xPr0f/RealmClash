@@ -4,7 +4,12 @@ import React, { useEffect, useReducer, useState } from 'react'
 import './game.css'
 import CardBox, { CardBoxGame } from '@/app/components/cardBox/cardBox'
 import BoxButton from '@/app/components/boxButton/boxButton'
-import { useReadContract, useAccount, useWriteContract } from 'wagmi'
+import {
+  useReadContract,
+  useAccount,
+  useWriteContract,
+  useWaitForTransactionReceipt,
+} from 'wagmi'
 import { GAME_ABI } from '@/app/ABI'
 import Tooltip from '@/app/components/toolTip/toolTip'
 import EmptyView from '@/app/components/emptyView/emptyView'
@@ -36,6 +41,7 @@ export default function GameRoom({ params }) {
   const { isConnected } = useAccount()
   //const { writeContract } = useWriteContract();
   const [selectedCard, setSelectedCard] = useState(null)
+  const [hash, setHash] = useState('')
   const [allYourCardsInGame, setAllYourCardsInGame] = useState()
   const [allOppositeCardsInGame, setAllOppositeCardsInGame] = useState()
   const [oppositePlayerAddress, setOppositePlayerAddress] = useState()
@@ -138,44 +144,50 @@ export default function GameRoom({ params }) {
     account: account,
     chainId: opBNBTestnet.id,
   })
-  const timeToULTCount = useReadContract({
-    abi: GAME_ABI,
-    address: params.gameaddress,
-    functionName: 'timeForUlt',
-    args: [address],
-    account: account,
-    chainId: opBNBTestnet.id,
-  })
+  const timeToULTCount = useReadContract(
+    {
+      abi: GAME_ABI,
+      address: params.gameaddress,
+      functionName: 'timeForUlt',
+      args: [address],
+      account: account,
+      chainId: opBNBTestnet.id,
+    },
+    {
+      enabled: false,
+    }
+  )
+
   const addressToPlay = useReadContract({
     abi: GAME_ABI,
     address: params.gameaddress,
     functionName: 'addressToPlay',
     account: account,
     chainId: opBNBTestnet.id,
+    query: { gcTime: 0 },
   })
   const useNormalAttack = async (tokenId) => {
-    console.log(selectedCard)
+    //console.log(selectedCard)
     if (!(tokenId && selectedCard)) {
       return checkIfSelectedCharacter(tokenId)
     }
     try {
       setIsLoadingATX(true)
-      await writeContract(config, {
+      const hash = await writeContract(config, {
         abi: GAME_ABI,
         address: params.gameaddress,
         functionName: 'useNormalAttack',
         args: [tokenId.toString()],
         account: account,
       })
-      console.log(selectedCard)
+      //console.log(selectedCard)
       openNotification({
         _message: 'Used Normal Attack',
         _description: `Token ID: ${selectedCard}`,
         _icon: <FaCheck size={30} color="#c3073f" />,
       })
       setIsLoadingATX(false)
-      //router.refresh()
-      forceUpdate()
+      setHash(hash)
     } catch (e) {
       setIsLoadingATX(false)
       openNotification({
@@ -191,14 +203,14 @@ export default function GameRoom({ params }) {
     }
     try {
       setIsLoadingATX(true)
-      await writeContract(config, {
+      const hash = await writeContract(config, {
         abi: GAME_ABI,
         address: params.gameaddress,
         functionName: 'useUlt2Attack',
         args: [tokenId.toString()],
         account: account,
       })
-      console.log(selectedCard)
+      //console.log(selectedCard)
 
       openNotification({
         _message: 'Used ULT2 Attack',
@@ -206,8 +218,7 @@ export default function GameRoom({ params }) {
         _icon: <FaCheck size={30} color="#c3073f" />,
       })
       setIsLoadingATX(false)
-      //router.refresh()
-      forceUpdate()
+      setHash(hash)
     } catch (e) {
       setIsLoadingATX(false)
       openNotification({
@@ -223,22 +234,21 @@ export default function GameRoom({ params }) {
     }
     try {
       setIsLoadingATX(true)
-      await writeContract(config, {
+      const hash = await writeContract(config, {
         abi: GAME_ABI,
         address: params.gameaddress,
         functionName: 'useUlt3Attack',
         args: [tokenId.toString()],
         account: account,
       })
-      console.log(selectedCard)
+      //console.log(selectedCard)
       openNotification({
         _message: 'Used ULT3 Attack',
         _description: `Token ID: ${selectedCard}`,
         _icon: <FaCheck size={30} color="#c3073f" />,
       })
       setIsLoadingATX(false)
-      // router.refresh()
-      forceUpdate()
+      setHash(hash)
     } catch (e) {
       setIsLoadingATX(false)
       openNotification({
@@ -254,7 +264,7 @@ export default function GameRoom({ params }) {
     }
     try {
       setIsLoadingATX(true)
-      await writeContract(config, {
+      const hash = await writeContract(config, {
         abi: GAME_ABI,
         address: params.gameaddress,
         functionName: 'setSwitchActiveCharacter',
@@ -268,10 +278,9 @@ export default function GameRoom({ params }) {
         _duration: 3,
         _icon: <FaCheck color="#c3073f" />,
       })
-      console.log(selectedCard)
+      //console.log(selectedCard)
       setIsLoadingATX(false)
-      //router.refresh()
-      forceUpdate()
+      setHash(hash)
     } catch (e) {
       setIsLoadingATX(false)
       openNotification({
@@ -280,6 +289,56 @@ export default function GameRoom({ params }) {
         _icon: <IoClose color="#c3073f" />,
       })
     }
+  }
+  const {
+    isFetching: isFetchingReceipt,
+    isLoading: isLoadingReceipt,
+    data: receipt,
+    isFetched,
+    isSuccess,
+    isError: isErrorReceipt,
+    error: errorTransaction,
+  } = useWaitForTransactionReceipt({
+    hash: hash,
+    chainId: opBNBTestnet.id,
+    query: {
+      enabled: true,
+    },
+  })
+
+  useEffect(() => {
+    if (isFetched && !!receipt) {
+      switch (receipt.status) {
+        case 'success': {
+          returnFetch()
+          break
+        }
+        case 'reverted': {
+          onSettled?.(receipt, error)
+          break
+        }
+      }
+    }
+  }, [isFetched, receipt])
+  const returnFetch = () => {
+    returnOtherAddress?.refetch()
+    activeCharacter?.refetch()
+    charactersTokenIdsY?.refetch()
+    charactersTokenIdsO?.refetch()
+    powerPointCount?.refetch()
+    addressToPlay?.refetch()
+    timeToULTCount?.refetch()
+    matchDetails?.refetch()
+  }
+  const returnSetStates = () => {
+    setOppositePlayerAddress(returnOtherAddress?.data)
+    setActiveCharacter(activeCharacter.data)
+    setAllYourCardsInGame(charactersTokenIdsY?.data)
+    setMatchDetails(matchDetails?.data)
+    setAllOppositeCardsInGame(charactersTokenIdsO?.data)
+    setPowerPointCount(powerPointCount?.data)
+    setAddressTurnToPlay(addressToPlay?.data)
+    setUltCount(timeToULTCount?.data)
   }
   useEffect(() => {
     setOppositePlayerAddress(returnOtherAddress?.data)
@@ -290,8 +349,7 @@ export default function GameRoom({ params }) {
     setPowerPointCount(powerPointCount?.data)
     setAddressTurnToPlay(addressToPlay?.data)
     setUltCount(timeToULTCount?.data)
-    console.log('data fetched', addressToPlay?.data, AddressTurnToPlay)
-  }, [activeCharacter])
+  }, [selectedCard])
 
   useEffect(() => {
     setOppositePlayerAddress(returnOtherAddress?.data)
@@ -300,17 +358,16 @@ export default function GameRoom({ params }) {
     setMatchDetails(matchDetails?.data)
     setAllOppositeCardsInGame(charactersTokenIdsO?.data)
     setPowerPointCount(powerPointCount?.data)
-    setAddressTurnToPlay(addressToPlay)
+    setAddressTurnToPlay(addressToPlay?.data)
     setUltCount(timeToULTCount?.data)
-    console.log('data fetched reducer')
-  }, [reducerValue])
-
+  })
   useWatchContractEvent({
     address: params?.gameaddress,
     abi: GAME_ABI,
     eventName: 'setSwitchCharacter',
     onLogs(logs) {
       console.log('SwitchCharacter logs:', logs)
+      returnFetch()
       setActiveCharacter(activeCharacter?.data)
       setOppositePlayerAddress(returnOtherAddress?.data)
       setAllYourCardsInGame(charactersTokenIdsY?.data)
@@ -319,9 +376,6 @@ export default function GameRoom({ params }) {
       setPowerPointCount(powerPointCount?.data)
       setAddressTurnToPlay(addressToPlay?.data)
       setUltCount(timeToULTCount?.data)
-
-      // router.refresh()
-      forceUpdate()
     },
   })
   useWatchContractEvent({
@@ -330,8 +384,7 @@ export default function GameRoom({ params }) {
     eventName: 'TakeDamage',
     onLogs(logs) {
       console.log('Take Damage logs:', logs)
-      console.log('Take Damage logs:', logs)
-
+      returnFetch()
       setActiveCharacter(activeCharacter?.data)
       setAllYourCardsInGame(charactersTokenIdsY?.data)
       setAllOppositeCardsInGame(charactersTokenIdsO?.data)
@@ -349,8 +402,8 @@ export default function GameRoom({ params }) {
     abi: GAME_ABI,
     eventName: 'GameStarted',
     onLogs(logs) {
-      console.log('Take Damage logs:', logs)
-
+      console.log('Game started:', logs)
+      returnFetch()
       setActiveCharacter(activeCharacter?.data)
       setAllYourCardsInGame(charactersTokenIdsY?.data)
       setAllOppositeCardsInGame(charactersTokenIdsO?.data)
@@ -369,7 +422,7 @@ export default function GameRoom({ params }) {
     eventName: 'setSwitchCharacter',
     onLogs(logs) {
       console.log('Switch character logs:', logs)
-
+      returnFetch()
       setActiveCharacter(activeCharacter?.data)
       setAllYourCardsInGame(charactersTokenIdsY?.data)
       setAllOppositeCardsInGame(charactersTokenIdsO?.data)
@@ -381,17 +434,28 @@ export default function GameRoom({ params }) {
       setAddressTurnToPlay(addressToPlay?.data)
     },
   })
+
   useWatchContractEvent({
     address: params?.gameaddress,
     abi: GAME_ABI,
     eventName: 'GameWon',
     onLogs(logs) {
       console.log('Game won:', logs)
+      returnFetch()
       setMatchDetails(matchDetails?.data)
-      router.refresh()
     },
   })
-
+  useWatchContractEvent({
+    address: params?.gameaddress,
+    abi: GAME_ABI,
+    eventName: 'GameAccepted',
+    onLogs(logs) {
+      console.log('Game accepted:', logs)
+      returnFetch()
+      setMatchDetails(matchDetails?.data)
+      returnSetStates()
+    },
+  })
   return (
     <div>
       {console.log(ActiveCharacter?.toString())}
@@ -428,14 +492,13 @@ export default function GameRoom({ params }) {
                   <MenuButton>
                     <BoxButton
                       onClick={() => {
-                        // forceUpdate()
-
-                        console.log(data)
+                        returnFetch()
+                        //addressToPlay.refetch()
+                        //console.log(data)
                         console.log(
                           'data fetched',
                           addressToPlay,
-                          AddressTurnToPlay,
-                          data
+                          AddressTurnToPlay
                         )
                       }}
                     >
@@ -489,7 +552,7 @@ export default function GameRoom({ params }) {
                   height="40px"
                   width="40px"
                   onClick={async () => {
-                    console.log('use button check if disabled')
+                    //console.log('use button check if disabled')
                     switchCharacter(selectedCard)
                   }}
                 >
@@ -557,7 +620,7 @@ export default function GameRoom({ params }) {
                       height="80px"
                       width="80px"
                       onClick={async () => {
-                        console.log('use button check if disabled')
+                        //console.log('use button check if disabled')
                         useNormalAttack(selectedCard)
                       }}
                     >
@@ -571,7 +634,7 @@ export default function GameRoom({ params }) {
                       height="68px"
                       width="68px"
                       onClick={() => {
-                        console.log('use button check if disabled')
+                        //console.log('use button check if disabled')
                         useULT2Attack(selectedCard)
                       }}
                     >
@@ -586,7 +649,7 @@ export default function GameRoom({ params }) {
                       height="60px"
                       width="60px"
                       onClick={() => {
-                        console.log('use button check if disabled')
+                        //console.log('use button check if disabled')
                         useULT3Attack(selectedCard)
                       }}
                     >
