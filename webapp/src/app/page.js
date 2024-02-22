@@ -1,7 +1,11 @@
-import React from "react";
-import "../../styles/headers.css";
-import BoxButton from "./components/boxButton/boxButton";
+'use client'
+import React from 'react'
+import '../../styles/headers.css'
+import BoxButton from './components/boxButton/boxButton'
+import { useRouter } from 'next/navigation'
+import { redirect } from 'next/navigation'
 export default function Home() {
+  const router = useRouter()
   return (
     <div>
       <div className="container">
@@ -69,14 +73,41 @@ export default function Home() {
           </p>
         </div>
         <div
-          style={{ display: "flex", justifyContent: "space-between" }}
+          style={{ display: 'flex', justifyContent: 'space-between' }}
           className="cta"
         >
-          <BoxButton className="ctabutton">Read Rules</BoxButton>
-          <BoxButton className="ctabutton">Mechanics</BoxButton>
-          <BoxButton className="ctabutton">Play Game</BoxButton>
+          <BoxButton
+            onClick={() => {
+              window.open(
+                'https://github.com/0xPr0f/realmclash/tree/master/webapp#how-to-play-game',
+                '_ blank'
+              )
+            }}
+            className="ctabutton"
+          >
+            Read Rules(GitHub)
+          </BoxButton>
+          <BoxButton
+            onClick={() => {
+              window.open(
+                'https://github.com/0xPr0f/realmclash/blob/master/contracts/Readme.md#Mechanics',
+                '_ blank'
+              )
+            }}
+            className="ctabutton"
+          >
+            Mechanics(GitHub)
+          </BoxButton>
+          <BoxButton
+            onClick={() => {
+              router.push('/game')
+            }}
+            className="ctabutton"
+          >
+            Play Game
+          </BoxButton>
         </div>
       </div>
     </div>
-  );
+  )
 }

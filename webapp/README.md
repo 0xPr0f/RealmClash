@@ -10,4 +10,8 @@ Steps to run project
 - rename env to .env.local, add your project ID from wallet connect
 - start application `npm run dev`
 
+#### Issues Details
+
+Currently, the front end has not been equipped to be able to equip or detach weapon on this route /charactercard/[id]
+
 ## How to play game

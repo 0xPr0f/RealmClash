@@ -1,5 +1,7 @@
 ## Realm Clash
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 contracts and webapp
 
 when you clone the project, it create clone two folder
@@ -36,7 +38,15 @@ This repo contain a POC for an idea i dreamt off.
 
 Realm clash is opensource both the contracts and frontend, the idea is also open for adjustments and evaluation.
 
-### RealmClash/contract
+images/  
+This contains the images of the game (when the `game.sol` contract is been used)
+
+#### Impending doom
+
+Almost hitting API request limit with pinanta which is used to pin the tokenuri (which is currently just the image)
+
+<details>
+<summary>RealmClash/contract unasked details</summary>
 
 Contains all the contract that makes this poc function which include natspecs so it can be easier to read through and understand. This contract is built to be fully on chain and the front end is build to access that.
 
@@ -44,15 +54,16 @@ There are still alot of plans and optimaztion for this contract, but current hin
 
 - Stack too deep on `contract/CharacterCard.sol` when attaching stats, tried using arrays in the argument and indexing it to fill the struct, no avail
 - Redundant for loops, for loops are know for consuming gas, assembly could have been used, but for the sake for this POC it wasnt
-- Time
+- No use of libraries
+</details>
 
-### RealmClash/webapp
+<details>
+<summary>RealmClash/webapp unasked details</summary>
 
 Contains the nextjs front end for the contracts, it is fairly minimalist and probably not appealing, i am not too good with UI and colors
 
 Hinderance in webapp
 
-- wagmi and viem 2.x contributed in psychological trauma as when using the useWriteContract hook, it does work, but when using the `wagmi/core`, that writeContract function, seems to work.
-- Rainbow kit was bugging out on localhost where some of the buttons where unresponsive.
-- vercel and nextjs, i was relatively new to both and didnt know vercel needed config to find the routes of my project and nexjs file/folder structure routing was easy but just weird.
+- wagmi and viem 2.x contributed in psychological trauma.
 - probably color blind or terrible taste in color and not that great at UI
+</details>
