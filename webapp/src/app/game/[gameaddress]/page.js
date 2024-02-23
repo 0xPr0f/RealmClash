@@ -510,7 +510,11 @@ export default function GameRoom({ params }) {
                     <MenuItem>
                       <TextHelper
                         lhsv="Accepted Time:"
-                        rhsv={MatchDetails && MatchDetails[2]?.toString()}
+                        rhsv={new Date(
+                          MatchDetails && MatchDetails[2]?.toString()
+                        )
+                          .toLocaleString()
+                          .toString()}
                       />
                     </MenuItem>
                     <MenuItem>
