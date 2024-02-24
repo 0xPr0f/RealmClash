@@ -513,8 +513,8 @@ export default function GameRoom({ params }) {
                         rhsv={
                           MatchDetails
                             ? new Date(
-                                MatchDetails[2]?.toString()
-                              ).toLocaleString()
+                                Number(MatchDetails[2]) * 1000?.toString()
+                              ).toLocaleDateString()
                             : ''
                         }
                       />
