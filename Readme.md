@@ -19,9 +19,9 @@ To install everything and then start the application, if there are any issues, c
 This repo contain a POC for an idea i dreamt off.
 
 # TLDR
-[how to play game](https://github.com/0xPr0f/realmclash/tree/master/webapp#how-to-play-game)
-[Mechanics of the game](https://github.com/0xPr0f/realmclash/blob/master/contracts/Readme.md#Mechanics)
-[Address Deployments on opBNB](https://github.com/0xPr0f/realmclash/blob/master/contracts/Readme.md#deployment)
+[how to play game](https://github.com/0xPr0f/realmclash/tree/master/webapp#how-to-play-game)         
+[Mechanics of the game](https://github.com/0xPr0f/realmclash/blob/master/contracts/Readme.md#Mechanics)        
+[Address Deployments on opBNB](https://github.com/0xPr0f/realmclash/blob/master/contracts/Readme.md#deployment)      
 
 There is currently no demo vid explaning the contracts or game, i feel the project has been well documented, Feel free to request for one, if anything is still unclear (you can create an issue or tg me @profoz)
 
