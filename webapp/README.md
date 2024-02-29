@@ -30,6 +30,7 @@ Both parties must use their power points and ultpoints strategically to overcome
 When a character dies in a team (H = 0), the game would end and the winner would be the last man standing.
 
 check `/Images/gameimages` in the root project github for nice pictures or a match pictures e.t.c    
+green dot = active character after calling switch character      
 
 ![Game Room Details](../Images/gameimages/gamedetails.png)
 
