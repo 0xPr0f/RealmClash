@@ -4,6 +4,7 @@ import '../../styles/headers.css'
 import BoxButton from './components/boxButton/boxButton'
 import { useRouter } from 'next/navigation'
 import { redirect } from 'next/navigation'
+import { loadExternalURL } from './components/utilities/utilities'
 export default function Home() {
   const router = useRouter()
   return (
@@ -78,9 +79,8 @@ export default function Home() {
         >
           <BoxButton
             onClick={() => {
-              window.open(
-                'https://github.com/0xPr0f/realmclash/tree/master/webapp#how-to-play-game',
-                '_ blank'
+              loadExternalURL(
+                'https://github.com/0xPr0f/realmclash/tree/master/webapp#how-to-play-game'
               )
             }}
             className="ctabutton"
@@ -89,9 +89,8 @@ export default function Home() {
           </BoxButton>
           <BoxButton
             onClick={() => {
-              window.open(
-                'https://github.com/0xPr0f/realmclash/blob/master/contracts/Readme.md#Mechanics',
-                '_ blank'
+              loadExternalURL(
+                'https://github.com/0xPr0f/realmclash/blob/master/contracts/Readme.md#Mechanics'
               )
             }}
             className="ctabutton"

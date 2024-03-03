@@ -1,54 +1,67 @@
 export const loadExternalURL = (url, newpage = true) => {
   if (newpage == true) {
-    window.open(url, "_blank");
+    window.open(url, '_blank')
   } else if (newpage == false) {
-    window.open(url, "_self");
+    window.open(url, '_self')
   }
-};
+}
 
 export const copyToClipboard = async (value) => {
   try {
-    await navigator.clipboard.writeText(value);
+    await navigator.clipboard.writeText(value)
   } catch (error) {
-    console.log(error);
+    console.log(error)
   }
-};
+}
 
 export const shortenText = (str, n1 = 6, n2 = 4) => {
   if (str) {
-    return `${str.slice(0, n1)}...${str.slice(str.length - n2)}`;
+    return `${str.slice(0, n1)}...${str.slice(str.length - n2)}`
   }
-  return "";
-};
+  return ''
+}
+
+export const replaceBaseUrl = (originalUrl) => {
+  // This is for pinata complaining about my host and it not showing on metamask mobile, so i assume it is the issue.
+  // This may result in slower image load speeds
+  const url = new URL(originalUrl)
+  const newBaseUrl = 'https://cloudflare-ipfs.com/'
+  const newBase = new URL(newBaseUrl)
+  url.protocol = newBase.protocol
+  url.host = newBase.host
+  url.port = newBase.port
+
+  return url.toString()
+}
 
 export function die(message) {
-  console.error(message);
-  process.exit(1);
+  console.error(message)
+  process.exit(1)
 }
 
 function padTo2Digits(num) {
   if (num > 9) {
-    return num.toString().padStart(2, "0");
+    return num.toString().padStart(2, '0')
   } else if (num < 10) {
-    return num.toString().padStart(1, "0");
+    return num.toString().padStart(1, '0')
   } else if (num > 99) {
-    return num.toString().padStart(3, "0");
+    return num.toString().padStart(3, '0')
   } else if (num > 999) {
-    return num.toString().padStart(4, "0");
+    return num.toString().padStart(4, '0')
   } else if (num > 9999) {
-    return num.toString().padStart(5, "0");
+    return num.toString().padStart(5, '0')
   } else if (num > 99999) {
-    return num.toString().padStart(6, "0");
+    return num.toString().padStart(6, '0')
   }
 }
 
 export function convertMsToTime(milliseconds) {
-  let seconds = Math.floor(milliseconds / 1000);
-  let minutes = Math.floor(seconds / 60);
-  let hours = Math.floor(minutes / 60);
-  let day = Math.floor(hours / 24);
+  let seconds = Math.floor(milliseconds / 1000)
+  let minutes = Math.floor(seconds / 60)
+  let hours = Math.floor(minutes / 60)
+  let day = Math.floor(hours / 24)
 
-  seconds = seconds % 60;
+  seconds = seconds % 60
 
   // 👇️ If you don't want to roll hours over, e.g. 24 to 00
   // 👇️ comment (or remove) the line below
@@ -56,30 +69,30 @@ export function convertMsToTime(milliseconds) {
   // or `36:15:31` instead of `12:15:31`, etc.
   // hours = hours % 24;
   if (minutes > 119) {
-    return `${padTo2Digits(hours)} hours`;
+    return `${padTo2Digits(hours)} hours`
   } else if (minutes < 120) {
-    return `${padTo2Digits(minutes)} mins`;
+    return `${padTo2Digits(minutes)} mins`
   } else if (hours > 120) {
-    return `${padTo2Digits(day)} days`;
+    return `${padTo2Digits(day)} days`
   }
 }
 
 export function blobToFile(theBlob, fileName) {
   //A Blob() is almost a File() - it's just missing the two properties below which we will add
-  theBlob.lastModifiedDate = new Date();
-  theBlob.name = fileName;
-  return theBlob;
+  theBlob.lastModifiedDate = new Date()
+  theBlob.name = fileName
+  return theBlob
 }
 
 function check(address) {
-  const re = /(?:0[xX])?[0-9a-fA-F]+/;
+  const re = /(?:0[xX])?[0-9a-fA-F]+/
   if (re.test(address)) {
   }
 }
 export function isValidAddress(address) {
   // Regular expression pattern for Ethereum addresses
-  const pattern = /^(0x)?[0-9a-fA-F]{40}$/;
+  const pattern = /^(0x)?[0-9a-fA-F]{40}$/
 
   // Check if the address matches the pattern
-  return pattern.test(address);
+  return pattern.test(address)
 }

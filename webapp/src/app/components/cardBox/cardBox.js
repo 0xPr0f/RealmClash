@@ -8,6 +8,7 @@ import Image from 'next/image'
 import { CHARACTERCARD_CONTRACTADDRESS } from '@/app/ADDRESSES'
 import { TextHelper } from '@/app/charactercard/[id]/helper'
 import { useRouter } from 'next/navigation'
+import { replaceBaseUrl } from '../utilities/utilities'
 export default function CardBox({
   children,
   className,
@@ -61,7 +62,13 @@ export default function CardBox({
           }}
         >
           {tokenId && tokenuri && (
-            <Image sizes="20" priority src={tokenuri} fill alt="Picture" />
+            <Image
+              sizes="20"
+              priority
+              src={replaceBaseUrl(tokenuri)}
+              fill
+              alt="Picture"
+            />
           )}
         </div>
         <div>{children}</div>
@@ -148,7 +155,12 @@ export function CardBoxGame({
           }}
         >
           {fetchUri?.data ? (
-            <Image priority src={fetchUri?.data} fill alt="Picture" />
+            <Image
+              priority
+              src={replaceBaseUrl(fetchUri?.data)}
+              fill
+              alt="Picture"
+            />
           ) : (
             'Refresh page'
           )}

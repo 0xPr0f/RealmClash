@@ -1,6 +1,9 @@
 'use client'
 import { CHARACTERCARD_CONTRACTADDRESS } from '@/app/ADDRESSES'
-import { shortenText } from '@/app/components/utilities/utilities'
+import {
+  replaceBaseUrl,
+  shortenText,
+} from '@/app/components/utilities/utilities'
 import React, { useEffect, useState } from 'react'
 import { useReadContract, useAccount, useWriteContract } from 'wagmi'
 import { readContract } from '@wagmi/core'
@@ -146,7 +149,11 @@ export default function CharacterCardViewFullPage({ params }) {
                     position: 'relative',
                   }}
                 >
-                  {tokenuri ? <Image src={tokenuri} fill alt="Picture" /> : ''}
+                  {tokenuri ? (
+                    <Image src={replaceBaseUrl(tokenuri)} fill alt="Picture" />
+                  ) : (
+                    ''
+                  )}
                   {/* You can replace the background color with the actual image */}
                 </div>
               </div>
