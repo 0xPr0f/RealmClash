@@ -50,7 +50,7 @@ This contains the images of the game (when the `game.sol` contract is been used)
 
 #### Impending doom
 
-Almost hitting API request limit with pinanta which is used to pin the tokenuri (which is currently just the image)
+Almost hitting API request limit with pinanta which is used to pin the tokenuri (which is currently just the image) -> Follow up, my account got suspended and the host `violet-reluctant-warbler-180.mypinata.cloud` no longer works, so i am removing the host and appending a public ipfs host `https://cloudflare-ipfs.com/` to it on the frontend(it would make it slower but would work and last much longer) since the host was hardcoded in the contract, it can be changed from the contract. Just let it cache and no much problem after that
 
 <details>
 <summary>RealmClash/contract unasked details</summary>
