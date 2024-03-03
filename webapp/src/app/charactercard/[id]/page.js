@@ -150,7 +150,13 @@ export default function CharacterCardViewFullPage({ params }) {
                   }}
                 >
                   {tokenuri ? (
-                    <Image src={replaceBaseUrl(tokenuri)} fill alt="Picture" />
+                    <Image
+                      src={replaceBaseUrl(tokenuri)}
+                      fill
+                      priority
+                      placeholder="blur"
+                      alt="Picture"
+                    />
                   ) : (
                     ''
                   )}

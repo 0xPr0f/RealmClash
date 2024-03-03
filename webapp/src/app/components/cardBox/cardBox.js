@@ -67,6 +67,7 @@ export default function CardBox({
               priority
               src={replaceBaseUrl(tokenuri)}
               fill
+              placeholder="blur"
               alt="Picture"
             />
           )}
@@ -159,6 +160,7 @@ export function CardBoxGame({
               priority
               src={replaceBaseUrl(fetchUri?.data)}
               fill
+              placeholder="blur"
               alt="Picture"
             />
           ) : (
