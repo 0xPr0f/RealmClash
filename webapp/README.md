@@ -12,7 +12,9 @@ Steps to run project
 
 #### Issues Details
 
-Currently, the front end has not been equipped to be able to equip or detach weapon on this route /charactercard/[id]
+Currently, 
+1. The front end has not been equipped to be able to equip or detach weapon on this route /charactercard/[id].  
+2. The picture on the cards may sometimes not show immediately or on first reload, refresh your brower(hard refresh, it may take multiple tries), when the image starts loading, it caches it to make other future loads smooth.
 
 #### Dynamic routes
 ```js
