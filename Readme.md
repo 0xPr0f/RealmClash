@@ -14,7 +14,7 @@ The webapp is made from next js.
 To setup the contratcs, `cd ./contracts` the run the foundy install.  
 also move out and back to the webapp folder and run the npm install. Rename the `env` to `.env.local` and put your projectId from wallet connect.
 
-To install everything and then start the application, if there are any issues, create an issue on the github and it will be looked at.
+To install everything and then start the application `npm run dev`, if there are any issues, create an issue on the github and it will be looked at.
 
 This repo contain a POC for an idea i dreamt off.
 
