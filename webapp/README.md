@@ -14,6 +14,29 @@ Steps to run project
 
 Currently, the front end has not been equipped to be able to equip or detach weapon on this route /charactercard/[id]
 
+#### Dynamic routes
+```js
+  { "source": "/game/:gameaddress", "destination": "/game/[gameaddress]" },
+  { "source": "/charactercard/:id", "destination": "/charactercard/[id]" }
+```
+These dynamic routes exist.  
+tip: nextjs uses file structure routing.
+
+1. `/game/:gameaddress` this indicate the route of a game where `:gameaddress` is an ethereum address(0x...xXXx) which is the game address of a game you are in, there is currently no view mode for this route meaning that if you are not in the game, you can stay on this route to watch the game as it would not work, it is one of the things on the list for implementation.
+<details>
+    <summary>Picture of /game/:gameaddress when game is accepted</summary>
+
+ ![Game Room POV](../Images/gameimages/fullyloaded2player.png)
+</details>
+
+2. `/charactercard/:id` this indicate the route of the character card where `:id` is a number(1) which is the token ID of the character card been looked at. you can view any character id, your wallet most likely need to be connected.
+<details>
+    <summary>Picture of /charactercard/:id when :id is token Id 13</summary>
+
+![Character individual view](../Images/gameimages/characterindividualview.png)
+</details>
+
+
 ## How to play game
 Visit [the game website](https://realmclash.vercel.app/)
 For better experience, connect your wallet on opBNB testnet        
@@ -30,7 +53,8 @@ Both parties must use their power points and ultpoints strategically to overcome
 When a character dies in a team (H = 0), the game would end and the winner would be the last man standing.
 
 check `/Images/gameimages` in the root project github for nice pictures or a match pictures e.t.c    
-green dot = active character after calling switch character      
+green dot = active character after calling switch character.      
+To play a character, click on it and the card will rise up to indicate it has been selected for play (like card 5 in the image below).    
 
 ![Game Room Details](../Images/gameimages/gamedetails.png)
 
